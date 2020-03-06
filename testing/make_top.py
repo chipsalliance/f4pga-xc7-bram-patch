@@ -20,8 +20,13 @@ def main():
     if type(depth) is str:
         depth = int(depth)
 
-    write_topfile(fname=fname, wid_mem=width, depth_mem=depth,
-                  f_init=f_init, init_frmt=init_frmt)
+    write_topfile(
+        fname=fname,
+        wid_mem=width,
+        depth_mem=depth,
+        f_init=f_init,
+        init_frmt=init_frmt
+    )
     print('Wrote {} with init file {}'.format(fname, f_init))
 
 
@@ -30,34 +35,48 @@ def write_topfile(fname, wid_mem, f_init, depth_mem, init_frmt):
     # print('{}'.format(addr_wid))
     with open(fname, 'w') as f:
         write_top_hdr(f=f, wid_mem=wid_mem, addr_wid=addr_wid)
-        write_module(f=f, f_init=f_init, init_frmt=init_frmt,
-                     wid_mem=wid_mem, depth_mem=depth_mem)
+        write_module(
+            f=f,
+            f_init=f_init,
+            init_frmt=init_frmt,
+            wid_mem=wid_mem,
+            depth_mem=depth_mem
+        )
         write_end(f, addr_wid)
 
 
 def write_top_hdr(f, addr_wid, wid_mem=WID_MEM, dout_count=COUNT):
     module = 'module top(\n'
     module += 'input logic clk,\n'
-    module += 'input logic[{}:0] raddr,\n'.format(addr_wid-1)
-    module += 'input logic[{}:0] waddr,\n'.format(addr_wid-1)
-    module += 'input logic [{}:0] din,\n'.format(wid_mem-1)
+    module += 'input logic[{}:0] raddr,\n'.format(addr_wid - 1)
+    module += 'input logic[{}:0] waddr,\n'.format(addr_wid - 1)
+    module += 'input logic [{}:0] din,\n'.format(wid_mem - 1)
     if dout_count is not None:
         for x in range(dout_count):
-            module += 'output logic [{}:0] dout{},\n'.format(wid_mem-1, x)
+            module += 'output logic [{}:0] dout{},\n'.format(wid_mem - 1, x)
     else:
-        module += 'output logic [{}:0] dout,\n'.format(wid_mem-1)
+        module += 'output logic [{}:0] dout,\n'.format(wid_mem - 1)
     module += 'input logic reset);\n\n'
     f.write(module)
 
 
-def write_module(f, f_init=F_INIT, init_frmt=INIT_FRMT, wid_mem=WID_MEM, depth_mem=DEPTH_MEM, suffix=None):
+def write_module(
+    f,
+    f_init=F_INIT,
+    init_frmt=INIT_FRMT,
+    wid_mem=WID_MEM,
+    depth_mem=DEPTH_MEM,
+    suffix=None
+):
     if init_frmt == "hex":
         init_frmt = 1
     else:
         init_frmt = 0
 
     modline = 'memory #('
-    modline += '"{}", {}, {}, {}) '.format(f_init, init_frmt, wid_mem, depth_mem)
+    modline += '"{}", {}, {}, {}) '.format(
+        f_init, init_frmt, wid_mem, depth_mem
+    )
     if suffix is not None:
         modline += 'mem{} (\n'.format(suffix)
     else:
@@ -103,7 +122,7 @@ module memory #(
         ram[waddr]<= din; 
     end
 endmodule
-    '''.format(addr_wid-1, addr_wid-1)
+    '''.format(addr_wid - 1, addr_wid - 1)
     f.write(memsv)
 
 

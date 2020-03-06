@@ -1,4 +1,3 @@
-
 import utils.parseutil.parse_mdd as mddutil
 import utils.parseutil.fasmread as fasmutil
 import fasm
@@ -14,7 +13,8 @@ import fasm
 
 def pad(ch, wid, data):
     tmp = str(data)
-    return(ch*(wid-len(tmp)) + tmp)
+    return (ch * (wid - len(tmp)) + tmp)
+
 
 def initfile_to_initlist(infile, mdd):
     width = mddutil.get_width(mdd)
@@ -52,9 +52,9 @@ def initlist_to_edif_celldata(init, fasm_tups, mdd):
         for cell in mdd:
             if bram_addr <= cell.addr_end and bram_addr >= cell.addr_beg:
                 flip_data = data[::-1]
-                data_for_cell = flip_data[cell.slice_beg:cell.slice_end+1]
+                data_for_cell = flip_data[cell.slice_beg:cell.slice_end + 1]
                 data_for_cell = data_for_cell[::-1]
-                assert len(data_for_cell) == cell.pbits+cell.dbits
+                assert len(data_for_cell) == cell.pbits + cell.dbits
                 actual_pbits = actual_dbits = 0
                 if (cell.slice_end - cell.slice_beg) == cell.width:
                     actual_pbits = cell.pbits
@@ -107,8 +107,9 @@ def convert_placement(tileaddr):
 
 def edif_celldata_to_fasm_initlines(mdd):
     def split_into_lines(bigstr):
-        initlines = [''.join(bigstr[x-256:x])
-                     for x in range(len(bigstr), 0, -256)]
+        initlines = [
+            ''.join(bigstr[x - 256:x]) for x in range(len(bigstr), 0, -256)
+        ]
         return initlines
 
     tiles = {}
@@ -119,8 +120,16 @@ def edif_celldata_to_fasm_initlines(mdd):
             y0_init = split_into_lines(cell.INIT[1::2])
             y1_initp = split_into_lines(cell.INITP[0::2])
             y0_initp = split_into_lines(cell.INITP[1::2])
-            tiledata = {'Y0': {'INIT': y0_init, 'INITP': y0_initp},
-                        'Y1': {'INIT': y1_init, 'INITP': y1_initp}}
+            tiledata = {
+                'Y0': {
+                    'INIT': y0_init,
+                    'INITP': y0_initp
+                },
+                'Y1': {
+                    'INIT': y1_init,
+                    'INITP': y1_initp
+                }
+            }
             tileaddr = cell.tile
             tiles[tileaddr] = tiledata
         elif cell.type == 'RAMB18E1':
@@ -132,7 +141,9 @@ def edif_celldata_to_fasm_initlines(mdd):
             tiles[tileaddr] = tiledata
         else:
             print('Oh boy')
-            raise Exception('We don\'t know how to handle {}'.format(cell.type))
+            raise Exception(
+                'We don\'t know how to handle {}'.format(cell.type)
+            )
     return tiles
 
 
@@ -141,7 +152,9 @@ def initlines_to_memfasm(initlines, infile_name):
     for tileaddr, tile in initlines.items():
         for yaddr, inits in tile.items():
             for init_type, data in inits.items():
-                line_header = '{}.RAMB18_{}.{}_'.format(tileaddr, yaddr, init_type)
+                line_header = '{}.RAMB18_{}.{}_'.format(
+                    tileaddr, yaddr, init_type
+                )
                 #line_header2 = f'{tileaddr}.RAMB18_{yaddr}.{init_type}_'
                 #assert(line_header == line_header2)
                 for count, data in enumerate(data):
@@ -153,7 +166,9 @@ def initlines_to_memfasm(initlines, infile_name):
                         #count2 = count
                         count = hex(count)[2:].upper()
                         l = '{}{}[{}:0] = {}\'b{}'.format(
-                            line_header, pad('0', 2, count), datalen-1, datalen, data)
+                            line_header, pad('0', 2, count), datalen - 1,
+                            datalen, data
+                        )
                         fasmlines.append(l)
                         #l2 = f'{line_header}{count2:02X}[{datalen-1}:0] = {datalen}\'b{data}'
                         #print(l)
@@ -169,7 +184,8 @@ def initlines_to_memfasm(initlines, infile_name):
 def initfile_to_memfasm(infile, fasm_tups, memfasm_name, mdd):
     init = initfile_to_initlist(infile, mdd=mdd)
     modified_mdd = initlist_to_edif_celldata(
-        init=init, fasm_tups=fasm_tups, mdd=mdd)
+        init=init, fasm_tups=fasm_tups, mdd=mdd
+    )
     initlines = edif_celldata_to_fasm_initlines(mdd=modified_mdd)
     memfasm = initlines_to_memfasm(initlines, infile)
     # memfasm = [line for line in memfasm]

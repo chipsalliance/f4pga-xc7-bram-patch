@@ -38,7 +38,8 @@ def get_init_data(tups, get_initp_too=True):
     #     r"(BRAM_[LR]_X\d+Y\d+)\.(RAMB\d\d_Y\d+)\.((INIT(P)?_[0-9a-fA-F]{2})(\[\d+(:\d+)?\]))")
     # if not get_initp_too:
     init_boi = re.compile(
-        r"((BRAM_[LR]_X\d+Y\d+)\.(RAMB\d\d_Y\d+)\.((INIT(P)?_)[0-9a-fA-F]{2})(\[\d+(:\d+)?\])?)")
+        r"((BRAM_[LR]_X\d+Y\d+)\.(RAMB\d\d_Y\d+)\.((INIT(P)?_)[0-9a-fA-F]{2})(\[\d+(:\d+)?\])?)"
+    )
     inits = set()
     for tup in tups:
         feature = tup.set_feature.feature
@@ -99,12 +100,14 @@ def get_rw_widths(tiles=None, tups=None):
     if tups:
         tiles = get_sorted_tiledata(tups)
     rw_check = re.compile(
-        r'BRAM_[LR]_X\d+Y\d+\.RAMB18_Y\d\.(?:READ|WRITE)_WIDTH_[AB]_(?P<wid>\d+)')
+        r'BRAM_[LR]_X\d+Y\d+\.RAMB18_Y\d\.(?:READ|WRITE)_WIDTH_[AB]_(?P<wid>\d+)'
+    )
     for tileaddr, tilelines in tiles.items():
         widths = set()
         for line in tilelines:
             widmatch = re.match(
-                pattern=rw_check, string=line.set_feature.feature)
+                pattern=rw_check, string=line.set_feature.feature
+            )
             if widmatch:
                 widths.add(int(widmatch.group('wid')))
         if len(widths) > 1:

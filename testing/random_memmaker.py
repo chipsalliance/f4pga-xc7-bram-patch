@@ -4,10 +4,12 @@ FNAME = 'designs/init/init.txt'
 WIDTH = 16
 DEPTH = 1024
 
+
 def pad(ch, wid, data):
     data = str(data)
-    return(ch*(wid-len(data)) + data)
-    
+    return (ch * (wid - len(data)) + data)
+
+
 def main():
     fname = sys.argv[1]
     width = sys.argv[2]
@@ -18,15 +20,13 @@ def main():
     if type(depth) is str:
         depth = int(depth)
 
-    make_mem(fname=fname,
-             width=width,
-             depth=depth)
+    make_mem(fname=fname, width=width, depth=depth)
 
 
 def make_mem(fname=FNAME, width=WIDTH, depth=DEPTH):
     vals = []
-    max_data_val = (2 ** width) - 1
-    w = int(width/4)+1
+    max_data_val = (2**width) - 1
+    w = int(width / 4) + 1
     vals = []
     for i in range(depth):
         v = hex(r.randint(0, max_data_val))[2:]
@@ -52,12 +52,15 @@ def make_mem(fname=FNAME, width=WIDTH, depth=DEPTH):
     else:
         perline = 1
     with open(fname, 'w+') as f:
-        vals = [vals[x:x+perline] for x in range(0, depth, perline)]
+        vals = [vals[x:x + perline] for x in range(0, depth, perline)]
         for val in vals:
             f.write(' '.join(val))
             f.write('\n')
             # print(' '.join(val))
-    print('Randomized memory initialization complete - printed to {}'.format(fname))
+    print(
+        'Randomized memory initialization complete - printed to {}'.
+        format(fname)
+    )
 
 
 if __name__ == "__main__":

@@ -24,6 +24,7 @@ alt_fasmpath = PurePath('alt.fasm')
 patched_fasmpath = PurePath('patched.fasm')
 real_fasmpath = PurePath('real.fasm')
 
+
 def clear_reports():
     try:
         # passed.touch()
@@ -47,6 +48,7 @@ def clear_reports():
     except:
         print('Unable to clear incomplete.txt')
 
+
 def doTest(design, depthname, depth, wid):
     batchdir = topdir / 'master' / design
     mdd = batchdir / mddpath
@@ -57,28 +59,39 @@ def doTest(design, depthname, depth, wid):
     #print(mdd)
     #print(bit)
     #print(real_fasm)
-    
+
     if not mdd.exists() or not bit.exists() or not real_fasm.exists():
         return "INCOMPLETE"
 
     if GENERATE_ALT:
         print("\n###############################################")
-        print("Generating alt fasm: {}".format(batchdir/alt_fasmpath))
-        patch_mem.patch_mem(fasm=real_fasm,
-                                    init=(batchdir/altpath),
-                                    mdd=mdd,
-                                    outfile=(batchdir/alt_fasmpath))
-   
+        print("Generating alt fasm: {}".format(batchdir / alt_fasmpath))
+        patch_mem.patch_mem(
+            fasm=real_fasm,
+            init=(batchdir / altpath),
+            mdd=mdd,
+            outfile=(batchdir / alt_fasmpath)
+        )
+
     print("\n###############################################")
-    print("\nDoing patching of:\n   {}\nusing\n   {}\nto\n   {}".format(batchdir/alt_fasmpath, batchdir/initpath, patched_fasm))
-    patch_mem.patch_mem(fasm=(batchdir/alt_fasmpath),
-                                init=(batchdir/initpath),
-                                mdd=mdd,
-                                outfile=patched_fasm)
+    print(
+        "\nDoing patching of:\n   {}\nusing\n   {}\nto\n   {}".format(
+            batchdir / alt_fasmpath, batchdir / initpath, patched_fasm
+        )
+    )
+    patch_mem.patch_mem(
+        fasm=(batchdir / alt_fasmpath),
+        init=(batchdir / initpath),
+        mdd=mdd,
+        outfile=patched_fasm
+    )
     print("\n###############################################")
     print('\nChecking results...')
-    diff = subprocess.run(['diff', str(real_fasm), str(patched_fasm)],
-                          stdout=subprocess.PIPE, universal_newlines=True)  # , shell=True)
+    diff = subprocess.run(
+        ['diff', str(real_fasm), str(patched_fasm)],
+        stdout=subprocess.PIPE,
+        universal_newlines=True
+    )  # , shell=True)
     diff = diff.stdout
     # print(diff)
 
@@ -101,36 +114,28 @@ def doTest(design, depthname, depth, wid):
             return "FAILURE"
     return "SUCCESS"
 
-        # command = f'./generate/patch_check.sh {wid} {depth_tup[0]} {depth_tup[1]} {move_files}'
-        # os.system(command)
+    # command = f'./generate/patch_check.sh {wid} {depth_tup[0]} {depth_tup[1]} {move_files}'
+    # os.system(command)
+
 
 # LAST_TEST = (4, '128k', 2048*64)
-LAST_TEST = (1, '16k', 2048*8)
+LAST_TEST = (1, '16k', 2048 * 8)
 MOVE_FILES = False
 MAKE_REPORT = True
 CLEAR_REPORTS = False
-GENERATE_ALT = False          # This needs to be set to true to force the creation of the alt.fasm file (only needed once)
+GENERATE_ALT = False  # This needs to be set to true to force the creation of the alt.fasm file (only needed once)
 EXIT_ON_FAILURE = False
 EXIT_ON_INCOMPLETE = False
 ONE_TEST_ONLY = True
 #ONE_TEST = (8, '128k', 2048*64)
-ONE_TEST = (1, '128', 1*128)
+ONE_TEST = (1, '128', 1 * 128)
 SKIP_PASSED = False
-
 
 widths_to_test = [1, 2, 4, 8, 9, 16, 18, 32, 36, 64, 72, 128, 144, 256, 288]
 depths_to_test = [
-    ('128', 128),
-    ('256', 256),
-    ('512', 512),
-    ('1k', 1024),
-    ('2k', 2048),
-    ('4k', 2048*2),
-    ('8k', 2048*4),
-    ('16k', 2048*8),
-    ('32k', 2048*16),
-    ('64k', 2048*32),
-    ('128k', 2048*64)
+    ('128', 128), ('256', 256), ('512', 512), ('1k', 1024), ('2k', 2048),
+    ('4k', 2048 * 2), ('8k', 2048 * 4), ('16k', 2048 * 8), ('32k', 2048 * 16),
+    ('64k', 2048 * 32), ('128k', 2048 * 64)
 ]
 
 weird_widths_to_test = [3, 6, 11, 17, 19, 25, 34, 37, 69, 100, 127, 130, 200]
@@ -139,9 +144,9 @@ weird_depths_to_test = [
     ('5k', 5000),
     ('7k', 7000),
     ('1050', 1050),
-    ('36k', 1024*36),
-    ('36k+20', 1024*36+20),
-    ('72k', 1024*72),
+    ('36k', 1024 * 36),
+    ('36k+20', 1024 * 36 + 20),
+    ('72k', 1024 * 72),
     # do more later
 ]
 
@@ -151,16 +156,12 @@ completed_widths = []
 completed_depths = []
 already_passed = []
 
-
 if SKIP_PASSED:
     with open(passed, 'r') as p:
         for line in p:
             if line.strip() is not '':
                 already_passed.append(line)
                 # print(line)
-
-
-
 
 if MAKE_REPORT and CLEAR_REPORTS:
     clear_reports()
@@ -171,7 +172,9 @@ if ONE_TEST_ONLY:
     design = '{}b{}'.format(depthname, wid)
     status = doTest('{}b{}'.format(depthname, wid), depthname, depth, wid)
     if status == "INCOMPLETE":
-        print('\tUnable to perform check because bitstream and/or mdd file were not found.')
+        print(
+            '\tUnable to perform check because bitstream and/or mdd file were not found.'
+        )
 else:
     for wid in widths_to_test:
         if wid in completed_widths:
@@ -201,7 +204,8 @@ else:
 
             if status == "INCOMPLETE":
                 print(
-                    '\tUnable to perform check because bitstream and/or mdd file were not found.')
+                    '\tUnable to perform check because bitstream and/or mdd file were not found.'
+                )
                 print('\tAdded {} to \"incomplete\" list\n'.format(design))
                 with incomplete.open('r') as f:
                     already_incomplete = f.read()
@@ -216,6 +220,3 @@ else:
             if (wid, depthname, depth) == LAST_TEST:
                 print('Last test executed, stopping batch')
                 sys.exit()
-
-
-
