@@ -1,3 +1,14 @@
+"""
+run_tests.py
+====================================
+The core of the test infrastructure for prjxray-bram-patch.
+
+Runs a series of tests on test designs to ensure patching is operational.
+
+Test designs to be operated on are generated using the "generate_test.py" script and are located in
+testing/tests/master.
+"""
+
 import os
 import os.path
 import subprocess
@@ -5,218 +16,224 @@ import sys
 from os import path
 from pathlib import Path, PurePath
 import patch_mem as patch_mem
-# import utils.patch_readmem as patch_readmem
 
-rootdir = os.environ.get("MEM_PATCH_DIR")
-if rootdir is None:
-    print("ERROR: must set environment variable MEM_PATCH_DIR, exiting.")
-    sys.exit()
-
-topdir = Path(rootdir + "/testing/tests").expanduser()
-stopfile = topdir / 'stop'
-passed = topdir / 'passed.txt'
-failed = topdir / 'failed.txt'
-incomplete = topdir / 'incomplete.txt'
-mddpath = PurePath('mapping.mdd')
-initpath = PurePath('init/init.mem')
-altpath = PurePath('init/alt.mem')
-alt_fasmpath = PurePath('alt.fasm')
-patched_fasmpath = PurePath('patched.fasm')
-real_fasmpath = PurePath('real.fasm')
+# Set all the path and file names
 
 
 def clear_reports():
-    try:
-        # passed.touch()
-        os.remove(passed)
-        passed.touch()
-        print('Cleared passed.txt')
-    except:
-        print('Unable to clear passed.txt')
-    try:
-        # failed.touch()
-        os.remove(failed)
-        failed.touch()
-        print('Cleared failed.txt')
-    except:
-        print('Unable to clear failed.txt')
-    try:
-        # incomplete.touch()
-        os.remove(incomplete)
-        incomplete.touch()
-        print('Cleared incomplete.txt')
-    except:
-        print('Unable to clear incomplete.txt')
+    """
+    Empty out the files associated with the reports files (passed.txt, failed.txt, incomplete.txt), which are located in testing/tests.
+    
+    As tests are conducted by this script, status for each is recorded in the above 3 files.
+    
+    This is used for when you want to clear out those files.
+    """
+    for reportFile in [passed, failed, incomplete]:
+        try:
+            os.remove(reportFile)
+            reportFile.touch()
+            print('Cleared {}'.format(reportFile))
+        except:
+            print('Unable to clear report file: {}'.format(reportFile))
 
 
-def doTest(design, depthname, depth, wid):
-    batchdir = topdir / 'master' / design
-    mdd = batchdir / mddpath
-    bit = batchdir / 'vivado' / '{}.bit'.format(design)
-    real_fasm = batchdir / real_fasmpath
-    patched_fasm = batchdir / patched_fasmpath
+def doTest(fasmToPatch, init, mdd, patchedFasm, origFasm):
+    """
+    Test a specific design and report if it was successful.
 
-    #print(mdd)
-    #print(bit)
-    #print(real_fasm)
+    Parameters
+    ---------
+        fasmToPatch
+            Path to fasm file to be patched
+        init
+            Path to new memory init file
+        mdd
+            Path to MDD file
+        patchedFasm
+            Where to put the patched file (typically in /tmp)
+        origFasm
+            What to compare the patchedFasm to
+    """
 
-    if not mdd.exists() or not bit.exists() or not real_fasm.exists():
-        return "INCOMPLETE"
+    for fil in [fasmToPatch, init, mdd, origFasm]:
+        assert fil.exists(), print("No such file: {}".format(fil))
 
-    if GENERATE_ALT:
-        print("\n###############################################")
-        print("Generating alt fasm: {}".format(batchdir / alt_fasmpath))
-        patch_mem.patch_mem(
-            fasm=real_fasm,
-            init=(batchdir / altpath),
-            mdd=mdd,
-            outfile=(batchdir / alt_fasmpath)
-        )
+#    print("{}\n{}\n{}\n{}\n{}".format(fasmToPatch, init, mdd, patchedFasm, origFasm))
 
-    print("\n###############################################")
-    print(
-        "\nDoing patching of:\n   {}\nusing\n   {}\nto\n   {}".format(
-            batchdir / alt_fasmpath, batchdir / initpath, patched_fasm
-        )
-    )
+#    # Testing requires an 'alt.fasm' file to exist.  This will create it if desired.
+#    if GENERATE_ALT:
+#        print("\n###############################################")
+#        print("Generating alt fasm: {}".format(batchdir/alt_fasmpath))
+#        patch_mem.patch_mem(fasm=real_fasm,#        patch_mem.patch_mem(fasm=real_fasm,
+#                                    init=(batchdir/altpath),
+#                                    mdd=mdd,
+#                                    outfile=(batchdir/alt_fasmpath))
+
     patch_mem.patch_mem(
-        fasm=(batchdir / alt_fasmpath),
-        init=(batchdir / initpath),
-        mdd=mdd,
-        outfile=patched_fasm
+        fasm=fasmToPatch, init=init, mdd=mdd, outfile=patchedFasm
     )
-    print("\n###############################################")
-    print('\nChecking results...')
+    print('Checking results...')
+    print("   {}\n   {}".format(origFasm, patchedFasm))
     diff = subprocess.run(
-        ['diff', str(real_fasm), str(patched_fasm)],
+        ['diff', str(origFasm), str(patchedFasm)],
         stdout=subprocess.PIPE,
         universal_newlines=True
     )  # , shell=True)
-    diff = diff.stdout
-    # print(diff)
 
-    if (diff == ''):
-        print('  Files match, success!\n')
-        if MAKE_REPORT:
-            if design not in str(already_passed):
-                with passed.open('a') as f:
-                    f.write('{}\n'.format(design))
-                # passed.write_text(f'{design}')
+    if (diff.stdout == ''):
+        print('Files match, success!\n')
+        return "SUCCESS"
     else:
         print('ERROR: Files do not match\n')
-        if MAKE_REPORT:
-            with failed.open('r') as f:
-                already_failed = f.read()
-            if design not in str(already_failed):
-                with failed.open('a') as f:
-                    f.write('{}\n'.format(design))
-            # failed.write_text(f'{design}')
-            return "FAILURE"
+        return "FAILURE"
     return "SUCCESS"
 
-    # command = f'./generate/patch_check.sh {wid} {depth_tup[0]} {depth_tup[1]} {move_files}'
-    # os.system(command)
 
+####################################################################################################
+def main():
+    """
+    The main test driver routine.
 
-# LAST_TEST = (4, '128k', 2048*64)
-LAST_TEST = (1, '16k', 2048 * 8)
-MOVE_FILES = False
-MAKE_REPORT = True
-CLEAR_REPORTS = False
-GENERATE_ALT = False  # This needs to be set to true to force the creation of the alt.fasm file (only needed once)
-EXIT_ON_FAILURE = False
-EXIT_ON_INCOMPLETE = False
-ONE_TEST_ONLY = True
-#ONE_TEST = (8, '128k', 2048*64)
-ONE_TEST = (1, '128', 1 * 128)
-SKIP_PASSED = False
+    Parameters
+    ---------
+    """
 
-widths_to_test = [1, 2, 4, 8, 9, 16, 18, 32, 36, 64, 72, 128, 144, 256, 288]
-depths_to_test = [
-    ('128', 128), ('256', 256), ('512', 512), ('1k', 1024), ('2k', 2048),
-    ('4k', 2048 * 2), ('8k', 2048 * 4), ('16k', 2048 * 8), ('32k', 2048 * 16),
-    ('64k', 2048 * 32), ('128k', 2048 * 64)
-]
+    # Terminate early without running all tests?
+    LAST_TEST = (1, '16k', 2048 * 8)
+    MAKE_REPORT = True  # Do you want status updated into passed.txt, failed.txt, incomplete.txt?
+    CLEAR_REPORTS = False  # Do you want status files cleared?
+    GENERATE_ALT = True  # This needs to be set to true to force the creation of the alt.fasm file (only needed once)
+    EXIT_ON_FAILURE = False  # Should you exit on a failure?
+    EXIT_ON_INCOMPLETE = False  # Should you exit on an incomplete test?
+    #ONE_TEST = None
+    ONE_TEST = (1, '128', 1 * 128)
+    SKIP_PASSED = True  # Should you skip over tests that are in the passed.txt file?
 
-weird_widths_to_test = [3, 6, 11, 17, 19, 25, 34, 37, 69, 100, 127, 130, 200]
-weird_depths_to_test = [
-    ('1027', 1027),
-    ('5k', 5000),
-    ('7k', 7000),
-    ('1050', 1050),
-    ('36k', 1024 * 36),
-    ('36k+20', 1024 * 36 + 20),
-    ('72k', 1024 * 72),
-    # do more later
-]
+    widths_to_test = [
+        1, 2, 4, 8, 9, 16, 18, 32, 36, 64, 72, 128, 144, 256, 288
+    ]
+    depths_to_test = [
+        ('128', 128),
+        ('256', 256),
+        ('512', 512),
+        ('1k', 1024),
+        ('2k', 2048),
+        #('4k', 2048 * 2), ('8k', 2048 * 4), ('16k', 2048 * 8),
+        #('32k', 2048 * 16), ('64k', 2048 * 32), ('128k', 2048 * 64)
+    ]
 
-widths = widths_to_test + weird_widths_to_test
-depths = depths_to_test + weird_depths_to_test
-completed_widths = []
-completed_depths = []
-already_passed = []
+    weird_widths_to_test = [
+        3, 6, 11, 17, 19, 25, 34, 37, 69, 100, 127, 130, 200
+    ]
+    weird_depths_to_test = [
+        ('1027', 1027),
+        ('5k', 5000),
+        ('7k', 7000),
+        ('1050', 1050),
+        ('36k', 1024 * 36),
+        ('36k+20', 1024 * 36 + 20),
+        ('72k', 1024 * 72),
+        # do more later
+    ]
 
-if SKIP_PASSED:
-    with open(passed, 'r') as p:
-        for line in p:
-            if line.strip() is not '':
-                already_passed.append(line)
-                # print(line)
+    rootdir = os.environ.get("MEM_PATCH_DIR")
+    assert rootdir is not None
 
-if MAKE_REPORT and CLEAR_REPORTS:
-    clear_reports()
+    testsdir = Path(rootdir + '/testing/tests')
+    stopfile = testsdir / 'stop'
 
-if ONE_TEST_ONLY:
-    # y'all got hijacked
-    wid, depthname, depth = ONE_TEST
-    design = '{}b{}'.format(depthname, wid)
-    status = doTest('{}b{}'.format(depthname, wid), depthname, depth, wid)
-    if status == "INCOMPLETE":
-        print(
-            '\tUnable to perform check because bitstream and/or mdd file were not found.'
+    passed = testsdir / 'passed.txt'
+    failed = testsdir / 'failed.txt'
+    incomplete = testsdir / 'incomplete.txt'
+
+    widths = widths_to_test + weird_widths_to_test
+    depths = depths_to_test + weird_depths_to_test
+
+    already_passed = []
+
+    # Do we want to skip tests that have already passed or not?
+    # If so, build the already_passed list from the passed.txt file
+    if SKIP_PASSED:
+        with open(str(passed), 'r') as p:
+            for line in p:
+                if line.strip() is not '':
+                    already_passed.append(line.strip())
+
+    if CLEAR_REPORTS:
+        clear_reports()
+
+    if ONE_TEST is not None:
+        wid, depthname, depth = ONE_TEST
+
+        design = '{}b{}'.format(depthname, wid)
+        designdir = testsdir / 'master' / design
+        status = doTest(
+            fasmToPatch=designdir / 'alt.fasm',
+            init=designdir / 'init/init.mem',
+            mdd=designdir / 'mapping.mdd',
+            patchedFasm=designdir / 'patched.fasm',
+            origFasm=designdir / 'real.fasm'
         )
-else:
-    for wid in widths_to_test:
-        if wid in completed_widths:
-            continue
-        for depth_tup in depths_to_test:
-            if depth_tup[0] in completed_depths:
-                continue
+    else:  # Perform a whole collection of tests
+        for wid in widths_to_test:
+            for depth_tup in depths_to_test:
+                depthname = depth_tup[0]
+                depth = depth_tup[1]
 
-            depthname = depth_tup[0]
-            depth = depth_tup[1]
+                design = '{}b{}'.format(depthname, wid)
+                designdir = testsdir / 'master' / design
+                if design in already_passed:
+                    print(
+                        'Skipping {} because it already passed'.format(design)
+                    )
+                    continue
 
-            design = '{}b{}'.format(depthname, wid)
-            print(design)
-            if design in str(already_passed):
-                print('Skipping {} because it already passed'.format(design))
-                continue
-
-            if stopfile.is_file():
-                print('Stop file detected, stopping batch')
-                sys.exit()
-
-            status = doTest(design, depthname, depth, wid)
-            if status == "FAILURE":
-                if EXIT_ON_FAILURE:
-                    print('Failure detected, exiting')
+                if stopfile.is_file():
+                    print('Stop file detected, stopping batch')
                     sys.exit()
 
-            if status == "INCOMPLETE":
-                print(
-                    '\tUnable to perform check because bitstream and/or mdd file were not found.'
+                status = doTest(
+                    fasmToPatch=designdir / 'alt.fasm',
+                    init=designdir / 'init/init.mem',
+                    mdd=designdir / 'mapping.mdd',
+                    patchedFasm=designdir / 'patched.fasm',
+                    origFasm=designdir / 'real.fasm'
                 )
-                print('\tAdded {} to \"incomplete\" list\n'.format(design))
-                with incomplete.open('r') as f:
-                    already_incomplete = f.read()
-                if design not in str(already_incomplete):
-                    with incomplete.open('a') as f:
-                        f.write('{}\n'.format(design))
 
-                if EXIT_ON_INCOMPLETE:
-                    print('Incomplete test detected, exiting')
+                print(already_passed)
+                if status == "SUCCESS":
+                    if MAKE_REPORT:
+                        if design not in already_passed:
+                            already_passed.append(design)
+                            with passed.open('a') as f:
+                                f.write('{}\n'.format(design))
+
+                if status == "FAILURE":
+                    if MAKE_REPORT:
+                        with failed.open('r') as f:
+                            already_failed = f.read()
+                        if design not in already_failed:
+                            with failed.open('a') as f:
+                                f.write('{}\n'.format(design))
+                    if EXIT_ON_FAILURE:
+                        print('Failure detected, exiting')
+                        sys.exit()
+
+                if status == "INCOMPLETE":
+                    with incomplete.open('r') as f:
+                        already_incomplete = f.read()
+                    if design not in already_incomplete:
+                        with incomplete.open('a') as f:
+                            f.write('{}\n'.format(design))
+
+                    if EXIT_ON_INCOMPLETE:
+                        print('Incomplete test detected, exiting')
+                        sys.exit()
+
+                if (wid, depthname, depth) == LAST_TEST:
+                    print('Last test executed, stopping batch')
                     sys.exit()
 
-            if (wid, depthname, depth) == LAST_TEST:
-                print('Last test executed, stopping batch')
-                sys.exit()
+
+if __name__ == "__main__":
+    main()  # TODO: add command line parsing
