@@ -15,6 +15,7 @@ install: pip install yapf
 
 script:
   - make format
+  - git update-index --refresh
   - git diff-index --ignore-submodules --quiet HEAD
 
 after_failure:
