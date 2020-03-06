@@ -1,4 +1,3 @@
-
 import sys
 from pathlib import Path
 import pathlib
@@ -71,7 +70,7 @@ def read_mdd(mddfile):
     # print(type(mddfile))
     get_width(cell_list)
     if WIDTH_MISMATCH_FLAG and type(mddfile) == pathlib.PosixPath:
-        (mddfile.parent/'WIDTH_MISMATCH').touch()
+        (mddfile.parent / 'WIDTH_MISMATCH').touch()
 
     return cell_list
 
@@ -82,7 +81,7 @@ def get_width(mdd):
         end = cell.slice_end
         if end > last_pos:
             last_pos = end
-    slicewid = last_pos+1
+    slicewid = last_pos + 1
     readwid = mdd[0].width
     if readwid > slicewid:
         return readwid
