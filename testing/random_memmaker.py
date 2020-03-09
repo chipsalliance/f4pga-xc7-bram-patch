@@ -1,8 +1,5 @@
 import sys
 import random as r
-FNAME = 'designs/init/init.txt'
-WIDTH = 16
-DEPTH = 1024
 
 
 def pad(ch, wid, data):
@@ -10,10 +7,7 @@ def pad(ch, wid, data):
     return (ch * (wid - len(data)) + data)
 
 
-def main():
-    fname = sys.argv[1]
-    width = sys.argv[2]
-    depth = sys.argv[3]
+def main(fname, width, depth):
 
     if type(width) is str:
         width = int(width)
@@ -23,7 +17,7 @@ def main():
     make_mem(fname=fname, width=width, depth=depth)
 
 
-def make_mem(fname=FNAME, width=WIDTH, depth=DEPTH):
+def make_mem(fname, width, depth):
     vals = []
     max_data_val = (2**width) - 1
     w = int(width / 4) + 1
@@ -64,4 +58,10 @@ def make_mem(fname=FNAME, width=WIDTH, depth=DEPTH):
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) != 4:
+        print(
+            "Usage: python  random_memmaker.py fileToCreate width(in bits) depth(in words)"
+        )
+        exit(1)
+    else:
+        main(sys.argv[1], sys.argv[2], sys.argv[3])

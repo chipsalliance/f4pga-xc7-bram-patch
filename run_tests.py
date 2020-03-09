@@ -37,17 +37,6 @@ def doTest(fasmToPatch, init, mdd, patchedFasm, origFasm):
     for fil in [fasmToPatch, init, mdd, origFasm]:
         assert os.path.isfile(fil), print("No such file: {}".format(fil))
 
-#    print("{}\n{}\n{}\n{}\n{}".format(fasmToPatch, init, mdd, patchedFasm, origFasm))
-
-#    # Testing requires an 'alt.fasm' file to exist.  This will create it if desired.
-#    if GENERATE_ALT:
-#        print("\n###############################################")
-#        print("Generating alt fasm: {}".format(batchdir/alt_fasmpath))
-#        patch_mem.patch_mem(fasm=real_fasm,#        patch_mem.patch_mem(fasm=real_fasm,
-#                                    init=(batchdir/altpath),
-#                                    mdd=mdd,
-#                                    outfile=(batchdir/alt_fasmpath))
-
     patch_mem.patch_mem(
         fasm=fasmToPatch, init=init, mdd=mdd, outfile=patchedFasm
     )
