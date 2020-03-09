@@ -13,28 +13,7 @@ import os
 import os.path
 import subprocess
 import sys
-from os import path
-from pathlib import Path, PurePath
 import patch_mem as patch_mem
-
-# Set all the path and file names
-
-
-def clear_reports():
-    """
-    Empty out the files associated with the reports files (passed.txt, failed.txt, incomplete.txt), which are located in testing/tests.
-    
-    As tests are conducted by this script, status for each is recorded in the above 3 files.
-    
-    This is used for when you want to clear out those files.
-    """
-    for reportFile in [passed, failed, incomplete]:
-        try:
-            os.remove(reportFile)
-            reportFile.touch()
-            print('Cleared {}'.format(reportFile))
-        except:
-            print('Unable to clear report file: {}'.format(reportFile))
 
 
 def doTest(fasmToPatch, init, mdd, patchedFasm, origFasm):
@@ -56,7 +35,7 @@ def doTest(fasmToPatch, init, mdd, patchedFasm, origFasm):
     """
 
     for fil in [fasmToPatch, init, mdd, origFasm]:
-        assert fil.exists(), print("No such file: {}".format(fil))
+        assert os.path.isfile(fil), print("No such file: {}".format(fil))
 
 #    print("{}\n{}\n{}\n{}\n{}".format(fasmToPatch, init, mdd, patchedFasm, origFasm))
 
@@ -75,7 +54,7 @@ def doTest(fasmToPatch, init, mdd, patchedFasm, origFasm):
     print('Checking results...')
     print("   {}\n   {}".format(origFasm, patchedFasm))
     diff = subprocess.run(
-        ['diff', str(origFasm), str(patchedFasm)],
+        ['diff', origFasm, patchedFasm],
         stdout=subprocess.PIPE,
         universal_newlines=True
     )  # , shell=True)
@@ -101,23 +80,24 @@ def main():
     # Terminate early without running all tests?
     LAST_TEST = (1, '16k', 2048 * 8)
     MAKE_REPORT = True  # Do you want status updated into passed.txt, failed.txt, incomplete.txt?
-    CLEAR_REPORTS = False  # Do you want status files cleared?
+    CLEAR_REPORTS = True  # Do you want status files cleared?
     GENERATE_ALT = True  # This needs to be set to true to force the creation of the alt.fasm file (only needed once)
     EXIT_ON_FAILURE = False  # Should you exit on a failure?
     EXIT_ON_INCOMPLETE = False  # Should you exit on an incomplete test?
-    #ONE_TEST = None
-    ONE_TEST = (1, '128', 1 * 128)
+    ONE_TEST = None
+    #ONE_TEST = (1, '128', 1 * 128)
     SKIP_PASSED = True  # Should you skip over tests that are in the passed.txt file?
 
     widths_to_test = [
-        1, 2, 4, 8, 9, 16, 18, 32, 36, 64, 72, 128, 144, 256, 288
+        1,
+        2,  #4, 8, 9, 16, 18, 32, 36, 64, 72, 128, 144, 256, 288
     ]
     depths_to_test = [
         ('128', 128),
-        ('256', 256),
-        ('512', 512),
-        ('1k', 1024),
-        ('2k', 2048),
+        #('256', 256),
+        #('512', 512),
+        #('1k', 1024),
+        #('2k', 2048),
         #('4k', 2048 * 2), ('8k', 2048 * 4), ('16k', 2048 * 8),
         #('32k', 2048 * 16), ('64k', 2048 * 32), ('128k', 2048 * 64)
     ]
@@ -139,40 +119,51 @@ def main():
     rootdir = os.environ.get("MEM_PATCH_DIR")
     assert rootdir is not None
 
-    testsdir = Path(rootdir + '/testing/tests')
-    stopfile = testsdir / 'stop'
+    testsdir = os.path.join(rootdir, 'testing', 'tests')
+    stopfile = os.path.join(testsdir, 'stop')
 
-    passed = testsdir / 'passed.txt'
-    failed = testsdir / 'failed.txt'
-    incomplete = testsdir / 'incomplete.txt'
+    passed = os.path.join(testsdir, 'passed.txt')
+    failed = os.path.join(testsdir, 'failed.txt')
+    incomplete = os.path.join(testsdir, 'incomplete.txt')
 
     widths = widths_to_test + weird_widths_to_test
     depths = depths_to_test + weird_depths_to_test
 
     already_passed = []
 
+    if CLEAR_REPORTS:
+        print("Clearing 'passed.txt', 'failed,txt', 'incomplete.txt'")
+        for reportFile in [passed, failed, incomplete]:
+            if os.path.isfile(reportFile):
+                try:
+                    os.remove(reportFile)
+                    with open(reportFile, mode='w') as r:
+                        pass
+                except:
+                    print('Unable to clear report file: {}'.format(reportFile))
+            else:
+                with open(reportFile, mode='w') as r:
+                    pass
+
     # Do we want to skip tests that have already passed or not?
     # If so, build the already_passed list from the passed.txt file
     if SKIP_PASSED:
-        with open(str(passed), 'r') as p:
+        with open(passed) as p:
             for line in p:
                 if line.strip() is not '':
                     already_passed.append(line.strip())
-
-    if CLEAR_REPORTS:
-        clear_reports()
 
     if ONE_TEST is not None:
         wid, depthname, depth = ONE_TEST
 
         design = '{}b{}'.format(depthname, wid)
-        designdir = testsdir / 'master' / design
+        designdir = os.path.join(testsdir, 'master', design)
         status = doTest(
-            fasmToPatch=designdir / 'alt.fasm',
-            init=designdir / 'init/init.mem',
-            mdd=designdir / 'mapping.mdd',
-            patchedFasm=designdir / 'patched.fasm',
-            origFasm=designdir / 'real.fasm'
+            fasmToPatch=os.path.join(designdir, 'alt.fasm'),
+            init=os.path.join(designdir, 'init', 'init.mem'),
+            mdd=os.path.join(designdir, 'mapping.mdd'),
+            patchedFasm=os.path.join(designdir, 'patched.fasm'),
+            origFasm=os.path.join(designdir, 'real.fasm')
         )
     else:  # Perform a whole collection of tests
         for wid in widths_to_test:
@@ -181,49 +172,48 @@ def main():
                 depth = depth_tup[1]
 
                 design = '{}b{}'.format(depthname, wid)
-                designdir = testsdir / 'master' / design
+                designdir = os.path.join(testsdir, 'master', design)
                 if design in already_passed:
                     print(
                         'Skipping {} because it already passed'.format(design)
                     )
                     continue
 
-                if stopfile.is_file():
+                if os.path.isfile(stopfile):
                     print('Stop file detected, stopping batch')
                     sys.exit()
 
                 status = doTest(
-                    fasmToPatch=designdir / 'alt.fasm',
-                    init=designdir / 'init/init.mem',
-                    mdd=designdir / 'mapping.mdd',
-                    patchedFasm=designdir / 'patched.fasm',
-                    origFasm=designdir / 'real.fasm'
+                    fasmToPatch=os.path.join(designdir, 'alt.fasm'),
+                    init=os.path.join(designdir, 'init', 'init.mem'),
+                    mdd=os.path.join(designdir, 'mapping.mdd'),
+                    patchedFasm=os.path.join(designdir, 'patched.fasm'),
+                    origFasm=os.path.join(designdir, 'real.fasm')
                 )
 
-                print(already_passed)
                 if status == "SUCCESS":
                     if MAKE_REPORT:
                         if design not in already_passed:
                             already_passed.append(design)
-                            with passed.open('a') as f:
+                            with open(passed, mode='a') as f:
                                 f.write('{}\n'.format(design))
 
                 if status == "FAILURE":
                     if MAKE_REPORT:
-                        with failed.open('r') as f:
+                        with open(failed) as f:
                             already_failed = f.read()
                         if design not in already_failed:
-                            with failed.open('a') as f:
+                            with open(failed, mode='a') as f:
                                 f.write('{}\n'.format(design))
                     if EXIT_ON_FAILURE:
                         print('Failure detected, exiting')
                         sys.exit()
 
                 if status == "INCOMPLETE":
-                    with incomplete.open('r') as f:
+                    with open(incomplete) as f:
                         already_incomplete = f.read()
                     if design not in already_incomplete:
-                        with incomplete.open('a') as f:
+                        with open(incomplete, mode='a') as f:
                             f.write('{}\n'.format(design))
 
                     if EXIT_ON_INCOMPLETE:
@@ -236,4 +226,22 @@ def main():
 
 
 if __name__ == "__main__":
-    main()  # TODO: add command line parsing
+    # Run a series of tests
+    if (len(sys.argv) == 1):
+        main()
+    # Run a single directed test
+    elif (len(sys.argv) == 6):
+        assert os.path.isfile(sys.argv[1])
+        doTest(
+            fasmToPatch=sys.argv[1],
+            init=sys.argv[2],
+            mdd=sys.argv[3],
+            patchedFasm=sys.argv[4],
+            origFasm=sys.argv[5]
+        )
+    else:
+        print(
+            "Usage:\n   python run_tests.py   #To run series of tests\nOR\n   python run_tests.py fasmToPatch, init, mdd, patchedFasm, origFasm  # To run a directed test",
+            file=sys.stderr
+        )
+        exit(1)
