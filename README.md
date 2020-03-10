@@ -40,8 +40,10 @@ In .bashrc, put in the following lines:
     
 When the above executes, if you don't have Vivado installed, you will get errors.  But, that is OK - you can still run the patch tools without Vivado (you only need Vivado to originally create the design).
 
-## 2.4 The Test Database
-A large collection of sample designs have been created and typically live in $MEM_PATCH_DIR/testing/tests/master.  
+## 2.4 Sample Designs and the Test Database
+There are a few sample designs in the "samples" directory.
+
+Additionally, a large collection of sample designs have been created and typically live in $MEM_PATCH_DIR/testing/tests/master.  
 They are not needed for just doing patching but are used for testing of the patcher.  And, they are large and so are not included here but can be made available if desired.
 
 # 3. Doing a Simple Patch
