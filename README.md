@@ -100,9 +100,9 @@ In order to verify that the patcher works for all size/shapes/configurations of 
 This entails generating Verilog code which gets synthesized and implemented to a bitstream for each size of memory desired. 
 
 ### File: generate_tests.py
-At the top level of the testing directory, this is the main driver.  It simply generates needed designs for all sizes by calling the program **generate_tests_script.sh**.  The size of memories to generate designs for are given in a series of lists at the top of the code.  Or, you can specify a memory size on the command line and generate just that.
+At the top level of the project directory, this is the main driver.  It simply generates needed designs for all sizes by calling the program **testing/generate_tests_script.sh**.  The size of memories to generate designs for are given in a series of lists at the top of the code.  Or, you can specify a memory size on the command line and generate just that.
 
-### File: generate_tests_script.sh
+### File: testing/generate_tests_script.sh
 This script creates a single memory test case of ${DEPTHNAME} words by ${WIDTH} bits wide.   The test case is placed into the location: "tests/master/${DEPTHNAME}b$WIDTH".
 
 1. It first creates the needed directory (referred to as _DIR_ in the discussion below).
