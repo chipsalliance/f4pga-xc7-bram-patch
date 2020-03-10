@@ -229,6 +229,10 @@ if __name__ == "__main__":
             origFasm=sys.argv[5]
         )
         print("Test status = {}".format(status))
+        if (status == "SUCCESS"):
+            exit(0)
+        else:
+            exit(1)
     else:
         print(
             "Usage:\n   python run_tests.py   #To run series of tests\nOR\n   python run_tests.py fasmToPatch, init, mdd, patchedFasm, origFasm  # To run a directed test",
