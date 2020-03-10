@@ -100,7 +100,7 @@ In order to verify that the patcher works for all size/shapes/configurations of 
 This entails generating Verilog code which gets synthesized and implemented to a bitstream for each size of memory desired. 
 
 ### File: generate_tests.py
-At the top level of the testing directory, this is the main driver.  It simply generates needed designs for all sizes by calling the program **generate_tests_script.sh**.  The size of memories to generate designs for are given in a series of lists at the top of the code.
+At the top level of the testing directory, this is the main driver.  It simply generates needed designs for all sizes by calling the program **generate_tests_script.sh**.  The size of memories to generate designs for are given in a series of lists at the top of the code.  Or, you can specify a memory size on the command line and generate just that.
 
 ### File: generate_tests_script.sh
 This script creates a single memory test case of ${DEPTHNAME} words by ${WIDTH} bits wide.   The test case is placed into the location: "tests/master/${DEPTHNAME}b$WIDTH".
@@ -112,16 +112,16 @@ This script creates a single memory test case of ${DEPTHNAME} words by ${WIDTH} 
 1. Finally the bitstream is converted to a fasm file called: DIR/real.fasm
 
 ## 5.2 Testing
-The program **test_patch_check.py** is used to actually do the testing.  The basic flow is as follows:
+The program **run_tests.py** is used to actually do the testing.  The basic flow is as follows:
 1. It keeps lists of tests that have (a) passed, (b) failed, or were (c) incomplete.
 1. There is lots of flexibility provided to control which designs are tested:
   * There are lists to specify sizes and shapes of memories to test.
   * If the SKIP_PASSED flag is set to true, only those that have not yet passed will be tested).  
   * There is also a ONE_TEST_ONLY variable which makes it easy to do a single test.  It overrides both the SKIP_PASSED flag setting as well as the lists of sizes to test. In short, if it is set then that one test will simply be run.
+  * Finally, you can specify a single test to be run on the command line.
 
 The bitstream for a given test is originally created in the generation step using the DIR/init/init.mem file contents.  A FASM file for that bitstream is then created (DIR/real.fasm).  
 
 Then, in the testing step, the file DIR/alt.fasm is patched with the contents of the DIR/init/init.mem file.  
-and the resulting DIR/patched.fasm file is then compared to the real.fasm file.  If their contents match, this indicates that the patcher successfully was able to patch an arbitrary FASM file with the contents of DIR/init/init.mem.
+and the resulting DIR/patched.fasm file is then compared to the DIR/real.fasm file.  If their contents match, this indicates that the patcher successfully was able to patch an arbitrary FASM file with the contents of DIR/init/init.mem.
 
-When running the **run_test.py** script, the variable ''GENERATE_ALT'' can be set to True to cause the DIR/alt.fasm file to be generated.  This only needs to be done once for each design and can then be reset after it is done for a given design.
