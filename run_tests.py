@@ -221,13 +221,18 @@ if __name__ == "__main__":
     # Run a single directed test
     elif (len(sys.argv) == 6):
         assert os.path.isfile(sys.argv[1])
-        doTest(
+        status = doTest(
             fasmToPatch=sys.argv[1],
             init=sys.argv[2],
             mdd=sys.argv[3],
             patchedFasm=sys.argv[4],
             origFasm=sys.argv[5]
         )
+        print("Test status = {}".format(status))
+        if (status == "SUCCESS"):
+            exit(0)
+        else:
+            exit(1)
     else:
         print(
             "Usage:\n   python run_tests.py   #To run series of tests\nOR\n   python run_tests.py fasmToPatch, init, mdd, patchedFasm, origFasm  # To run a directed test",
