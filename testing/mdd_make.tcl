@@ -1,7 +1,7 @@
 proc mddMake {fname} {
     set props [list \
                    [list CELLTYPE REF_NAME] \
-                   [list CELLPLACEMENT LOC] \
+                   [list LOC LOC] \
                    [list MEM.PORTA.DATA_BIT_LAYOUT MEM.PORTA.DATA_BIT_LAYOUT] \
                    [list RTL_RAM_NAME RTL_RAM_NAME] \
                    [list RAM_EXTENSION_A RAM_EXTENSION_A] \
@@ -34,7 +34,7 @@ proc mddMake {fname} {
 
 
 
-    foreach c [get_cells -filter {REF_NAME == "RAMB18E1" || REF_NAME == "RAMB36E1"}] {
+    foreach c [get_cells * -hier -filter {REF_NAME == "RAMB18E1" || REF_NAME == "RAMB36E1"}] {
         puts "\nCELL $c"
         puts $fp "\nCELL $c"
         set tileaddr [get_tiles -of [get_bels -of $c]]
