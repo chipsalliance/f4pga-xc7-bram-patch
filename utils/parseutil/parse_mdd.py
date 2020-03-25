@@ -7,6 +7,7 @@ WIDTH_MISMATCH_FLAG = False
 
 class Cell:
     def __init__(self, cell):
+        self.cell_name = cell['CELL']
         self.type = cell['CELLTYPE']
         self.tile = cell['TILE']
         self.placement = cell['CELLPLACEMENT'].split('_')[1]
@@ -36,6 +37,10 @@ class Cell:
         self.INITP = []
         # print(f'{self.type} p{self.pbits}_d{self.dbits}')
 
+    def toString(self):
+        s = self.cell_name + ' ' + self.type + ' ' + self.tile + ' ' + self.placement + ' ' + self.ram_name
+        return s
+
 
 def main():
     mdd_name = sys.argv[1]
@@ -53,6 +58,7 @@ def read_mdd(mddfile):
             if ln[0] == 'CELL':
                 addr = ln[1]
                 cells[addr] = {}
+                cells[addr]['CELL'] = addr
             elif ln[0] == 'ENDCELL':
                 addr = ''
                 continue
