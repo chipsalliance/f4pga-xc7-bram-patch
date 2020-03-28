@@ -36,6 +36,5 @@ echo "Done with Vivado"
 
 # Convert its bitfile 
 $XRAY_BIT2FASM $BATCHDIR/vivado/$DESIGN.bit > $BATCHDIR/real.fasm
-echo "Done with bit2fasm"
 
 

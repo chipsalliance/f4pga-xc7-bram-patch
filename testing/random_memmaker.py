@@ -24,10 +24,8 @@ def make_mem(fname, width, depth):
     vals = []
     for i in range(depth):
         v = hex(r.randint(0, max_data_val))[2:]
-        vals.append(v)
-
-
-#    print('Width = {} vals = {}'.format(width, vals))
+        vals.append(pad(' ', w, v))
+    print('Width = {} vals = {}'.format(width, vals))
     perline = 0
     if width == 1:
         perline = 256
@@ -57,6 +55,7 @@ def make_mem(fname, width, depth):
         'Randomized memory initialization complete - printed to {}'.
         format(fname)
     )
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:

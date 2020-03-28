@@ -34,7 +34,7 @@ proc mddMake {fname} {
 
 
 
-    foreach c [get_cells * -hier -filter {REF_NAME == "RAMB18E1" || REF_NAME == "RAMB36E1"}] {
+    foreach c [get_cells -filter {REF_NAME == "RAMB18E1" || REF_NAME == "RAMB36E1"}] {
         puts "\nCELL $c"
         puts $fp "\nCELL $c"
         set tileaddr [get_tiles -of [get_bels -of $c]]
