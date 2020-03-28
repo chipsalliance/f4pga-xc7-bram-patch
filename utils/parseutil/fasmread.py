@@ -33,21 +33,7 @@ def get_fasm_tups(fname):
     return fasm_tuples
 
 
-def memShouldBeIncluded(tile, memType, half, mdd_data):
-    for m in mdd_data:
-        row = int(m.placement.split("Y")[1])
-        if m.tile == tile:
-            if half == "Y0" and row % 2 == 0:
-                #print("True Y0: {} {} {} {}".format(tile, memType, half, row))
-                return True
-            elif half == "Y1" and row % 2 == 1:
-                #print("True Y1: {} {} {} {}".format(tile, memType, half, row))
-                return True
-    return False
-
-
-# Get all the INIT for BRAM tuples that map to the MDD memory to patch
-def get_init_data(tups, mdd_data, get_initp_too=True):
+def get_init_data(tups, get_initp_too=True):
     # init_boi = re.compile(
     #     r"(BRAM_[LR]_X\d+Y\d+)\.(RAMB\d\d_Y\d+)\.((INIT(P)?_[0-9a-fA-F]{2})(\[\d+(:\d+)?\]))")
     # if not get_initp_too:
@@ -58,17 +44,12 @@ def get_init_data(tups, mdd_data, get_initp_too=True):
     for tup in tups:
         feature = tup.set_feature.feature
         if re.match(pattern=init_boi, string=feature):
-            tile = feature.split(".")[0]
-            memType = feature.split(".")[1].split("_")[0]
-            half = feature.split(".")[1].split("_")[1]
-            if memShouldBeIncluded(tile, memType, half, mdd_data):
-                inits.add(tup)
+            inits.add(tup)
     return inits
 
 
-# Get everything but the INIT for BRAM tuples
-def clear_init(tups, mdd_data):
-    init = get_init_data(tups, mdd_data)
+def clear_init(tups):
+    init = get_init_data(tups)
     cleared_tups = {tup for tup in tups if tup not in init}
     return fasm.output.merge_and_sort(cleared_tups)
 

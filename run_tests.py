@@ -16,7 +16,7 @@ import sys
 import patch_mem as patch_mem
 
 
-def doTest(fasmToPatch, init, mdd, patchedFasm, origFasm, selectedMemToPatch):
+def doTest(fasmToPatch, init, mdd, patchedFasm, origFasm):
     """
     Test a specific design and report if it was successful.
 
@@ -34,21 +34,11 @@ def doTest(fasmToPatch, init, mdd, patchedFasm, origFasm, selectedMemToPatch):
             What to compare the patchedFasm to
     """
 
-    print(
-        "====================\nRunning test: \n  fasmToPatch={}\n  init={}\n  mdd={}\n  patchedFasm={}\n  origFasm={}\n  selectedMemtoPatch={}\n"
-        .format(
-            fasmToPatch, init, mdd, patchedFasm, origFasm, selectedMemToPatch
-        )
-    )
     for fil in [fasmToPatch, init, mdd, origFasm]:
         assert os.path.isfile(fil), print("No such file: {}".format(fil))
 
     patch_mem.patch_mem(
-        fasm=fasmToPatch,
-        init=init,
-        mdd=mdd,
-        outfile=patchedFasm,
-        selectedMemToPatch=selectedMemToPatch
+        fasm=fasmToPatch, init=init, mdd=mdd, outfile=patchedFasm
     )
     print('Checking results...')
     print("   {}\n   {}".format(origFasm, patchedFasm))
@@ -59,10 +49,10 @@ def doTest(fasmToPatch, init, mdd, patchedFasm, origFasm, selectedMemToPatch):
     )  # , shell=True)
 
     if (diff.stdout == ''):
-        print('RESULT: Files match, success!')
+        print('Files match, success!\n')
         return "SUCCESS"
     else:
-        print('RESULT: ERROR - Files do not match')
+        print('ERROR: Files do not match\n')
         return "FAILURE"
     return "SUCCESS"
 
@@ -89,22 +79,16 @@ def main():
 
     widths_to_test = [
         1,
-        2,
-        4,
-        8  #, 9, 16, 18, 32, 36, 64, 72, 128, 144, 256, 288
+        2,  #4, 8, 9, 16, 18, 32, 36, 64, 72, 128, 144, 256, 288
     ]
     depths_to_test = [
         ('128', 128),
-        # ('256', 256),
-        # ('512', 512),
-        # ('1k', 1024),
-        # ('2k', 2048),
-        # ('4k', 2048 * 2),
-        # ('8k', 2048 * 4),
-        # ('16k', 2048 * 8),
-        ('32k', 2048 * 16),
-        ('64k', 2048 * 32)
-        # ('128k', 2048 * 64)
+        #('256', 256),
+        #('512', 512),
+        #('1k', 1024),
+        #('2k', 2048),
+        #('4k', 2048 * 2), ('8k', 2048 * 4), ('16k', 2048 * 8),
+        #('32k', 2048 * 16), ('64k', 2048 * 32), ('128k', 2048 * 64)
     ]
 
     weird_widths_to_test = [
@@ -168,8 +152,7 @@ def main():
             init=os.path.join(designdir, 'init', 'init.mem'),
             mdd=os.path.join(designdir, 'mapping.mdd'),
             patchedFasm=os.path.join(designdir, 'patched.fasm'),
-            origFasm=os.path.join(designdir, 'real.fasm'),
-            selectedMemToPatch='mem/ram'
+            origFasm=os.path.join(designdir, 'real.fasm')
         )
     else:  # Perform a whole collection of tests
         for wid in widths_to_test:
@@ -194,8 +177,7 @@ def main():
                     init=os.path.join(designdir, 'init', 'init.mem'),
                     mdd=os.path.join(designdir, 'mapping.mdd'),
                     patchedFasm=os.path.join(designdir, 'patched.fasm'),
-                    origFasm=os.path.join(designdir, 'real.fasm'),
-                    selectedMemToPatch='mem/ram'
+                    origFasm=os.path.join(designdir, 'real.fasm')
                 )
 
                 if status == "SUCCESS":
@@ -237,15 +219,14 @@ if __name__ == "__main__":
     if (len(sys.argv) == 1):
         main()
     # Run a single directed test
-    elif len(sys.argv) == 7:
+    elif (len(sys.argv) == 6):
         assert os.path.isfile(sys.argv[1])
         status = doTest(
             fasmToPatch=sys.argv[1],
             init=sys.argv[2],
             mdd=sys.argv[3],
             patchedFasm=sys.argv[4],
-            origFasm=sys.argv[5],
-            selectedMemToPatch=sys.argv[6]
+            origFasm=sys.argv[5]
         )
         print("Test status = {}".format(status))
         if (status == "SUCCESS"):
@@ -254,7 +235,7 @@ if __name__ == "__main__":
             exit(1)
     else:
         print(
-            "Usage:\n   python run_tests.py   #To run series of tests\nOR\n   python run_tests.py fasmToPatch, init, mdd, patchedFasm, origFasm hdlMemToPatch # To run a directed test",
+            "Usage:\n   python run_tests.py   #To run series of tests\nOR\n   python run_tests.py fasmToPatch, init, mdd, patchedFasm, origFasm  # To run a directed test",
             file=sys.stderr
         )
         exit(1)

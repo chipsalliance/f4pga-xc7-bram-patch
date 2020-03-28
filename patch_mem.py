@@ -11,50 +11,23 @@ from prjxray.db import Database
 from prjxray import fasm_disassembler
 
 
-def patch_mem(
-    fasm=None, init=None, mdd=None, outfile=None, selectedMemToPatch=None
-):
+def patch_mem(fasm=None, init=None, mdd=None, outfile=None):
     assert fasm is not None
     assert init is not None
     assert mdd is not None
-    assert selectedMemToPatch is not None
 
-    # Read and filter the MDD file contents based on selectedMemToPatch
-    tmp_mdd_data = mddutil.read_mdd(mdd)
-    mdd_data = [
-        m for m in tmp_mdd_data
-        # Reassemble RAM name by removing the ram_reg_*_* part from it.
-        # The user wants to specify 'mem/ram' instead of mem/ram_reg_0_0/ram
-        if '/'.join(m.cell_name.split('/')[:-1]) + '/' +
-        m.ram_name == selectedMemToPatch
-    ]
-    if len(mdd_data) == 0:
-        print(
-            "No memories found in MDD file corresponding to {}, aborting.".
-            format(selectedMemToPatch)
-        )
-        exit(1)
-
-    print("Memories to be patched:")
-    for l in mdd_data:
-        print("  " + l.toString())
-    print("")
-
-    # Get all the FASM tuples
     fasm_tups = read_fasm(fasm)
-
-    # Get everything BUT the INIT ones selected for patching
-    cleared_tups = fasmutil.clear_init(fasm_tups, mdd_data)
-
+    cleared_tups = fasmutil.clear_init(fasm_tups)
+    mdd_data = mddutil.read_mdd(mdd)
     memfasm = initutil.initfile_to_memfasm(
         infile=init,
         fasm_tups=fasm_tups,
         memfasm_name='temp_mem.fasm',
         mdd=mdd_data
     )
-
-    # Merge the non-INIT tuples (cleared_tups) in with the new memory tuples
-    # to create a new complete FASM file
+    # print("Running cProfile merge_tuples")
+    # cProfile.run("merge_tuples(cleared_tups=cleared_tups, mem_tups=memfasm)")
+    # print("Running normal merge_tuples")
     merged = merge_tuples(cleared_tups=cleared_tups, mem_tups=memfasm)
     write_fasm(outfile, merged)
     print("Patching done...")
@@ -89,6 +62,6 @@ def read_fasm(fname):
 
 
 if __name__ == "__main__":
-    assert len(sys.argv) == 6, \
+    assert len(sys.argv) == 5, \
            "Usage: patch_mem fasmFile newMemContents mddFile patchedFasmFile"
-    patch_mem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+    patch_mem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
