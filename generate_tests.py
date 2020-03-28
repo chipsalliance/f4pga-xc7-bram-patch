@@ -10,14 +10,15 @@ def genAlt(batchdir):
         fasm=os.path.join(batchdir, 'real.fasm'),
         init=os.path.join(batchdir, 'init', 'alt.mem'),
         mdd=os.path.join(batchdir, 'mapping.mdd'),
-        outfile=os.path.join(batchdir, 'alt.fasm')
+        outfile=os.path.join(batchdir, 'alt.fasm'),
+        selectedMemToPatch='mem/ram'
     )
 
 
 def main():
     widths_to_test = [
-        1,
-        2  #, 4, 8, 9, 16, 18, 32, 36, 64, 72, 128, 144, 256
+        1, 2, 4, 8
+        #9, 16, 18, 32, 36, 64, 72, 128, 144, 256
     ]  #, 288]
     depths_to_test = [
         ('128', 128)
@@ -62,7 +63,7 @@ def main():
             design = '{}b{}'.format(depthname, wid)
             batchdir = os.path.join(master, design)
             batchbit = os.path.join(batchdir, 'vivado/{}.bit'.format(design))
-            print("\nDoing: " + batchbit)
+            print("\n=============================\nDoing: " + batchbit)
             #            if not os.path.isfile(batchdir) or not os.path.isfile(batchbit):
             if FORCE or not os.path.isfile(batchbit):
                 command = './testing/generate_tests_script.sh {} {} {}'.format(
@@ -70,6 +71,7 @@ def main():
                 )
                 print("Generating" + command)
                 os.system(command)
+                print("Calling genAlt({})".format(batchdir))
                 genAlt(batchdir)
             else:
                 print(
@@ -96,6 +98,7 @@ if __name__ == "__main__":
         batchdir = os.path.join(
             "./testing/tests", 'master', '{}b{}'.format(depthname, wid)
         )
+        print("Calling genAlt({})".format(batchdir))
         genAlt(batchdir)
     else:
         print(
