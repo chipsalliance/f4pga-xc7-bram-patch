@@ -11,8 +11,7 @@ def genAlt(batchdir):
         fasm=os.path.join(batchdir, 'real.fasm'),
         init=os.path.join(batchdir, 'init', 'alt.mem'),
         mdd=os.path.join(batchdir, 'mapping.mdd'),
-        outfile=os.path.join(batchdir, 'alt.fasm'),
-        selectedMemToPatch='mem/ram'
+        outfile=os.path.join(batchdir, 'alt.fasm')
     )
 
 
@@ -99,6 +98,7 @@ def main():
                 print(stdout, flush=True)
                 if stderr is not None:
                     print(stderr, flush=True)
+
                 print("Calling genAlt({})".format(batchdir), flush=True)
                 genAlt(batchdir)
             else:
@@ -126,7 +126,6 @@ if __name__ == "__main__":
         batchdir = os.path.join(
             "./testing/tests", 'master', '{}b{}'.format(depthname, wid)
         )
-        print("Calling genAlt({})".format(batchdir))
         genAlt(batchdir)
     # Just do the genAlt() step
     elif len(sys.argv) == 2:

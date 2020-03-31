@@ -63,17 +63,12 @@ def get_init_data(tups, mdd_data, get_initp_too=True):
     for tup in tups:
         feature = tup.set_feature.feature
         if re.match(pattern=init_boi, string=feature):
-            tile = feature.split(".")[0]
-            memType = feature.split(".")[1].split("_")[0]
-            half = feature.split(".")[1].split("_")[1]
-            if memShouldBeIncluded(tile, memType, half, mdd_data):
-                inits.add(tup)
+            inits.add(tup)
     return inits
 
 
-# Get everything but the INIT for BRAM tuples
-def clear_init(tups, mdd_data):
-    init = get_init_data(tups, mdd_data)
+def clear_init(tups):
+    init = get_init_data(tups)
     cleared_tups = {tup for tup in tups if tup not in init}
     return fasm.output.merge_and_sort(cleared_tups)
 
