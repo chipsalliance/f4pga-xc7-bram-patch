@@ -115,7 +115,10 @@ def edif_celldata_to_fasm_initlines(mdd):
 
     tiles = {}
     for cell in mdd:
+        # This is the routine that splits a RAMB36E1's data into Y0 and Y1 sections
         if cell.type == 'RAMB36E1':
+            # This is the code that splits a RAMB36E1's data into Y0 and Y1 sections
+            # Even elements go into Y1, odd elements go into Y0
             # print(f'{cell.type} IS a 36')
             y1_init = split_into_lines(cell.INIT[0::2])
             y0_init = split_into_lines(cell.INIT[1::2])
@@ -134,10 +137,23 @@ def edif_celldata_to_fasm_initlines(mdd):
             tileaddr = cell.tile
             tiles[tileaddr] = tiledata
         elif cell.type == 'RAMB18E1':
+            # For a single-memory design (like .../master/128b1) the RAMB18E1 will always be in an even placement row,
+            # which means it will be the Y0 data.
+            # But, for multi-memory designs (like samples/128b1_dual), it may place one RAMB18E1 in an even placement row (Y0)
+            # and a different (unrelated) one in an odd placement row (Y1).
+            # Since we are only patching one memory at a time, we don't need to handle the case where both are being patched.
+            # So, it is either Y0 or it is Y1, but not both.
+
             # print(f'{cell.type} isn\'t a RAMB36E1 apparently')
-            y0_init = split_into_lines(cell.INIT)
-            y0_initp = split_into_lines(cell.INITP)
-            tiledata = {'Y0': {'INIT': y0_init, 'INITP': y0_initp}}
+            y_init = split_into_lines(cell.INIT)
+            y_initp = split_into_lines(cell.INITP)
+            # Determine whether you are a Y0 or a Y1 memory
+            row = int(cell.placement.split("Y")[1])
+            if row % 2 == 0:
+                half = 'Y0'
+            else:
+                half = 'Y1'
+            tiledata = {half: {'INIT': y_init, 'INITP': y_initp}}
             tileaddr = cell.tile
             tiles[tileaddr] = tiledata
         else:

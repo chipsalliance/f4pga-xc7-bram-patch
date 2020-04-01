@@ -7,25 +7,30 @@ def pad(ch, wid, data):
     return (ch * (wid - len(data)) + data)
 
 
-def main(fname, width, depth):
+def main(fname, width, depth, allOnes=False):
 
     if type(width) is str:
         width = int(width)
     if type(depth) is str:
         depth = int(depth)
 
-    make_mem(fname=fname, width=width, depth=depth)
+    make_mem(fname=fname, width=width, depth=depth, allOnes=allOnes)
 
 
-def make_mem(fname, width, depth):
+def make_mem(fname, width, depth, allOnes):
     vals = []
     max_data_val = (2**width) - 1
     w = int(width / 4) + 1
     vals = []
     for i in range(depth):
-        v = hex(r.randint(0, max_data_val))[2:]
-        vals.append(pad(' ', w, v))
-    print('Width = {} vals = {}'.format(width, vals))
+        if allOnes is False:
+            v = hex(r.randint(0, max_data_val))[2:]
+        else:
+            v = hex(max_data_val)[2:]
+        vals.append(v)
+
+
+#    print('Width = {} vals = {}'.format(width, vals))
     perline = 0
     if width == 1:
         perline = 256
@@ -56,12 +61,13 @@ def make_mem(fname, width, depth):
         format(fname)
     )
 
-
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
+    if len(sys.argv) == 4:
+        main(sys.argv[1], sys.argv[2], sys.argv[3])
+    elif len(sys.argv) == 5:
+        main(sys.argv[1], sys.argv[2], sys.argv[3], True)
+    else:
         print(
             "Usage: python  random_memmaker.py fileToCreate width(in bits) depth(in words)"
         )
         exit(1)
-    else:
-        main(sys.argv[1], sys.argv[2], sys.argv[3])
