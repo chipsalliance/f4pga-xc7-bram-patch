@@ -122,6 +122,12 @@ def main():
     failed = os.path.join(testsdir, 'failed.txt')
     incomplete = os.path.join(testsdir, 'incomplete.txt')
 
+    # Create report files if they don't exist
+    for reportFile in [passed, failed, incomplete]:
+        if not os.path.isfile(reportFile):
+            with open(reportFile, mode='w') as r:
+                pass
+
     widths = widths_to_test + weird_widths_to_test
     depths = depths_to_test + weird_depths_to_test
 
