@@ -25,12 +25,7 @@ memory to be patched.  The tool supports either hierarchical or flattened design
 
 ## 2.1 Linux, Python, and Vivado Versions
 * At the current time, symbiflow/prjxray requires Vivado version 2017.2.  
-* This Vivado version supports Ubuntu 16.04. Recent attempts to install it on an Ubuntu 18.04 system caused some problems.
-* Ubuntu 16.04 has python 3.5 natively installed.  While we have successfully upgraded that to python 3.6 or later, that has caused issues with prjxray installation.
-
-Thus, the recommended system consists of:
-* Ubuntu 16.04 with its native python 3.5
-* Vivado 2017.2
+* This tool was developed and has been tested on Ubuntu 16.04 with its native Python 3.5.
 
 ## 2.2 Installing prjxray and prjxray-bram-patch
 After cloning both projects, follow the instructions on the prjxray github site for fully installing and configuring prjxray.  
