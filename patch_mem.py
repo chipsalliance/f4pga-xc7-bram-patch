@@ -91,5 +91,5 @@ def read_fasm(fname):
 
 if __name__ == "__main__":
     assert len(sys.argv) == 6, \
-           "Usage: patch_mem fasmFile newMemContents mddFile patchedFasmFile"
+           "Usage: patch_mem fasmFile newMemContents mddFile patchedFasmFile memName"
     patch_mem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
