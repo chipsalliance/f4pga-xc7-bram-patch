@@ -30,23 +30,30 @@ memory to be patched.  The tool supports either hierarchical or flattened design
 ## 2.2 Installing prjxray and prjxray-bram-patch
 After cloning both projects, follow the instructions on the prjxray github site for fully installing and configuring prjxray.  
 
-There is nothing needed to be done to prjxray-bram-patch project once it is cloned.
+There is nothing needed to be done to prjxray-bram-patch project once prjxray has been installed.
 
 ## 2.3 Startup Scripts
-In .bashrc, put in the following lines:
+For running with Vivado, put in the following lines in your .bashrc file:
 
     # Adjust paths below as necessary
     export XRAY_VIVADO_SETTINGS=${HOME}/Xilinx_2017.2/Vivado/2017.2/settings64.sh
-    export MEM_PATCH_DIR=${HOME}/prjxray-bram-patch
     source ${HOME}/prjxray/settings/artix7.sh
     
-When the above executes, if you don't have Vivado installed, you will get errors.  But, that is OK - you can still run the patch tools without Vivado (you only need Vivado to originally create the design).
+    export MEM_PATCH_DIR=${HOME}/prjxray-bram-patch
+
+The first two lines are part of the prjxray installation.  The third line is required for prjxray-bram-patch and tells the tools where you installed it.   Note that you can run prjxray-bram-patch with Vivado installed --- the above is only included to be able to use Vivado to originally create designs.
 
 ## 2.4 Sample Designs and the Test Database
 There are a few sample designs in the "samples" directory.
 
 Additionally, a large collection of sample designs have been created and typically live in $MEM_PATCH_DIR/testing/tests/master.  
-They are not needed for just doing patching but are used for testing of the patcher.  And, they are large and so are not included here but can be made available if desired.
+They are not needed for just doing patching but are used for testing of the patcher.  And, they are large and so are not included in the repo but can be recreated by running:
+
+    python generate_tests.py
+
+which will run through a series of memory sizes and generate test cases using Vivado and other scripts.  You can modify the contents of "generate_tests.py" to alter which memory sizes are generated.
+
+In fact, generate_tests.py and the scripts it calls is instructive to show how a design is generate, along with its .mdd file.
 
 # 3. Doing a Simple Patch
 
@@ -60,7 +67,7 @@ While still in Vivado, source the Tcl script "testing/mdd_make.tcl".  Then, call
 from within it to generate a .mdd file.  This file will contain the metadata needed to describe how the memory in the original design was broken up across a collection of BRAM cells.  
 
 #### Step 2: Create New Memory Initialization File 
-Based on the format of the original **$readmemb()** or **$readmemh()** file you used in your original Verilog, create a new memory initialization file.
+Based on the format of the original **$readmemb()** or **$readmemh()** file you used in your original Verilog, create a new memory initialization file to represent what you want the memory contents to be changed to.
 
 At this point you should have the following files available (your filenames will be different):
     
@@ -76,7 +83,66 @@ Next, you convert your .bit file to a .fasm file using the following:
 #### Step 4: Patch the .fasm File
 To replace the old memory contents in the bitstream with new contents, run the patch program using the following:
 
-    python patch_mem orig.fasm newMemContents.init original.mdd patched.fasm
+    python patch_mem orig.fasm newMemContents.init original.mdd patched.fasm memoryName
+
+In the above, the last parameter is the name of the memory to be patched.  This name can be derived from a .mdd file.  For example, here is an .mdd file for a memory that is 128 bits deep by 16 bits wide:
+
+    DESIGN design_1
+    PART xc7a50tfgg484-1
+    
+    CELL mem/ram_reg
+      TILE BRAM_L_X6Y20
+      CELLTYPE RAMB18E1
+      CELLPLACEMENT RAMB18_X0Y8
+      MEM.PORTA.DATA_BIT_LAYOUT p0_d16
+      RTL_RAM_NAME ram
+      RAM_EXTENSION_A NONE
+      RAM_MODE TDP
+      READ_WIDTH_A 18
+      READ_WIDTH_B 18
+      WRITE_WIDTH_A 18
+      WRITE_WIDTH_B 18
+      RAM_OFFSET NONE
+      BRAM_ADDR_BEGIN 0
+      BRAM_ADDR_END 1023
+      BRAM_SLICE_BEGIN 0
+      BRAM_SLICE_END 15
+      RAM_ADDR_BEGIN NONE
+      RAM_ADDR_END NONE
+      RAM_SLICE_BEGIN NONE
+      RAM_SLICE_END NONE
+    ENDCELL
+
+The "memoryName" to provide when patching the design would be "mem/ram".  This is a combination of part of the CELL name (1st line) and the RTL_RAM_NAME (6th line).  In a large design, there 
+
+In contrast, here is the top portion of a .mdd file for a hierarchical design containing multiple memories where the possible "memoryName" values to use would be either "mem1/ram" or "mem2/mem2a/ram".  
+
+DESIGN design_1
+PART xc7a50tfgg484-1
+
+```
+CELL mem1/ram_reg
+  TILE BRAM_L_X6Y5
+  CELLTYPE RAMB18E1
+  CELLPLACEMENT RAMB18_X0Y2
+  MEM.PORTA.DATA_BIT_LAYOUT p0_d1
+  RTL_RAM_NAME ram
+  RAM_EXTENSION_A NONE
+
+  ...
+  
+ENDCELL
+
+CELL mem2/mem2a/ram_reg
+  TILE BRAM_L_X6Y5
+  CELLTYPE RAMB18E1
+  CELLPLACEMENT RAMB18_X0Y3
+  MEM.PORTA.DATA_BIT_LAYOUT p0_d1
+  RTL_RAM_NAME ram
+  RAM_EXTENSION_A NONE
+  RAM_MODE TDP
+  READ_WIDTH_A 18
+```
 
 #### Step 5: Generate New .fasm File to New .bit File
 Finally, you convert the new .fasm file to a .bit file using:
