@@ -47,8 +47,8 @@ def main():
         # do more later
     ]
 
-    widths = widths_to_test  # + weird_widths_to_test
-    depths = depths_to_test  # + weird_depths_to_test
+    widths = weird_widths_to_test + widths_to_test
+    depths = weird_depths_to_test + depths_to_test
 
     topdir = "./testing/tests"
     master = os.path.join(topdir, 'master')
@@ -99,8 +99,15 @@ def main():
                 print(stdout, flush=True)
                 if stderr is not None:
                     print(stderr, flush=True)
-                print("Calling genAlt({})".format(batchdir), flush=True)
-                genAlt(batchdir)
+
+                if not os.path.isfile(batchbit):
+                    print(
+                        "No bit file found: {}, skipping rest of generation..."
+                        .format(batchbit)
+                    )
+                else:
+                    print("Calling genAlt({})".format(batchdir), flush=True)
+                    genAlt(batchdir)
             else:
                 print(
                     '    Design {} already generated, skipping...'.
