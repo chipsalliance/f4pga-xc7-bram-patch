@@ -159,7 +159,7 @@ CELL mem/ram_reg_0_0
   RAM_EXTENSION_A LOWER
   ...
 ```
-Because the memory has been broken up into many BRAM primitives the CELL values will have the form "mem;ram_reg_x_y" where the x and y values signify the primitive's position in the 2D tiling of BRAMs required to make up the large memory.
+Because the memory has been broken up into many BRAM primitives the CELL values will have the form "mem/ram_reg_x_y" where the x and y values signify the primitive's position in the 2D tiling of BRAMs required to make up the large memory.
 
 In this case the correct "memoryName" would be _mem/ram_.
 
