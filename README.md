@@ -144,6 +144,27 @@ CELL mem2/mem2a/ram_reg
   READ_WIDTH_A 18
 ```
 
+Finally, here is a fragment from a file containing a large memory which has been broken up into a large array BRAM cells (it is from a 128K by 8 bit memory which was divided by Vivado into an array of 4 x 8  RAMB36E1 cells):
+
+```
+DESIGN design_1
+PART xc7a50tfgg484-1
+
+CELL mem/ram_reg_0_0
+  TILE BRAM_L_X6Y30
+  CELLTYPE RAMB36E1
+  LOC RAMB36_X0Y6
+  MEM.PORTA.DATA_BIT_LAYOUT p0_d1
+  RTL_RAM_NAME ram
+  RAM_EXTENSION_A LOWER
+  ...
+```
+Because the memory has been broken up into many BRAM primitives the CELL values will have the form "mem;ram_reg_x_y" where the x and y values signify the primitive's position in the 2D tiling of BRAMs required to make up the large memory.
+
+In this case the correct "memoryName" would be _mem/ram_.
+
+From the above, it should be clear that the form of the name to use is the CELL value (minus the last component) concatenated with the RTL_RAM_NAME.
+
 #### Step 5: Generate New .fasm File to New .bit File
 Finally, you convert the new .fasm file to a .bit file using:
 
