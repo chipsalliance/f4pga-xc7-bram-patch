@@ -8,11 +8,18 @@ It works on designs that have come from Vivado and relies on a Tcl script to ext
 metadata to understand which memory primitives in the bitstream correspond to which "chunks" 
 of the original Verilog-specified memory.
 
-As written, the tool expects that the design was originally described in HDL and 
-compiled using Vivado. Typically, the memory contents in Verilog are included using $readmemb() 
+Typically, the memory contents in Verilog are included using $readmemb() 
 $readmemh() call in Verilog to read the memory initialization contents from a text file. 
 This flow expects that and will allow you to supply a different memory contents file. 
 It will then patch that file contents into the BRAM primitives in the bitstream.
+
+The tools relies on having a .mdd file to describe the contents of the memories in the 
+compiled designs.  In a Vivado flow, the .mdd file can be created using the 
+_testing/gen.tcl_ script.  For other flows, a mechanism will be needed to generate such files
+from the tools in that other flow.
+
+Since designs will typically have multiple BRAM-based memories, the tools expect the name of the 
+memory to be patched.  The tool supports either hierarchical or flattened designs.
 
 # 2. Installation
 
