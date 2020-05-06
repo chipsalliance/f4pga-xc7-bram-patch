@@ -168,12 +168,12 @@ From the above, it should be clear that the form of the name to use is the CELL 
 #### Step 5: Generate New .fasm File to New .bit File
 Finally, you convert the new .fasm file to a .bit file using:
 
-    $XRAY_FASM2FRAMES patched.fasm patched.frm
-    $XRAY_TOOLS_DIR/xc7frames2bit \
-        --part_name $XRAY_PART \
-        --part_file $XRAY_PART_YAML \
-        --frm_file patched.frm \
-        --output_file patched.bit
+    $XRAY_FASM2FRAMES patched.fasm patched.frm \
+      $XRAY_TOOLS_DIR/xc7frames2bit \
+          --part_name $XRAY_PART \
+          --part_file $XRAY_PART_YAML \
+          --frm_file patched.frm \
+          --output_file patched.bit
 
 # 4. What Are MDD Files?
 When large memories are created by the Vivado tools, they are chopped up and mapped onto a collection of BRAM primitives on the FPGA.  The patching tool requires information on how that mapping was done so that memory initialization file contents can be appropriately divided up for patching to the bitstream.  
