@@ -113,9 +113,9 @@ In the above, the last parameter is the name of the memory to be patched.  This 
       RAM_SLICE_END NONE
     ENDCELL
 
-The "memoryName" to provide when patching the design would be "mem/ram".  This is a combination of part of the CELL name (1st line) and the RTL_RAM_NAME (6th line).  In a large design, there 
+The "memoryName" to provide when patching the design would be "mem/ram".  This is a combination of part of the CELL name (1st line) and the RTL_RAM_NAME (6th line).  In particular, from "mem/ram_reg" you take all but the last item and combine it with the name on the 6th line.
 
-In contrast, here is the top portion of a .mdd file for a hierarchical design containing multiple memories where the possible "memoryName" values to use would be either "mem1/ram" or "mem2/mem2a/ram".  
+In contrast, here is the top portion of a .mdd file for a hierarchical design containing multiple memories where the possible "memoryName" values to use would be either "mem1/ram" or "mem2/mem2a/ram".  As above you take all but the last component of the CELL value plus all of the RTL_RAM_NAME to create this.
 
 DESIGN design_1
 PART xc7a50tfgg484-1
