@@ -61,12 +61,12 @@ def write_top_hdr(f, addr_wid, wid_mem=WID_MEM, dout_count=COUNT):
 
 
 def write_module(
-        f,
-        f_init=F_INIT,
-        init_frmt=INIT_FRMT,
-        wid_mem=WID_MEM,
-        depth_mem=DEPTH_MEM,
-        suffix=None
+    f,
+    f_init=F_INIT,
+    init_frmt=INIT_FRMT,
+    wid_mem=WID_MEM,
+    depth_mem=DEPTH_MEM,
+    suffix=None
 ):
     if init_frmt == "hex":
         init_frmt = 1
