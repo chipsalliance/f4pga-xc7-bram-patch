@@ -113,9 +113,9 @@ In the above, the last parameter is the name of the memory to be patched.  This 
       RAM_SLICE_END NONE
     ENDCELL
 
-The "memoryName" to provide when patching the design would be "mem/ram".  This is a combination of part of the CELL name (1st line) and the RTL_RAM_NAME (6th line).  In a large design, there 
+The "memoryName" to provide when patching the design would be "mem/ram".  This is a combination of part of the CELL name (1st line) and the RTL_RAM_NAME (6th line).
 
-In contrast, here is the top portion of a .mdd file for a hierarchical design containing multiple memories where the possible "memoryName" values to use would be either "mem1/ram" or "mem2/mem2a/ram".  
+In contrast, here is the top portion of a .mdd file for a hierarchical design containing multiple memories where the possible "memoryName" values to use would be either "mem1/ram" or "mem2/mem2a/ram".  As above you take all but the last component of the CELL value plus all of the RTL_RAM_NAME to create this.
 
 DESIGN design_1
 PART xc7a50tfgg484-1
@@ -168,12 +168,12 @@ From the above, it should be clear that the form of the name to use is the CELL 
 #### Step 5: Generate New .fasm File to New .bit File
 Finally, you convert the new .fasm file to a .bit file using:
 
-    $XRAY_FASM2FRAMES patched.fasm patched.frm
-    $XRAY_TOOLS_DIR/xc7frames2bit \
-        --part_name $XRAY_PART \
-        --part_file $XRAY_PART_YAML \
-        --frm_file patched.frm \
-        --output_file patched.bit
+    $XRAY_FASM2FRAMES patched.fasm patched.frm \
+      $XRAY_TOOLS_DIR/xc7frames2bit \
+          --part_name $XRAY_PART \
+          --part_file $XRAY_PART_YAML \
+          --frm_file patched.frm \
+          --output_file patched.bit
 
 # 4. What Are MDD Files?
 When large memories are created by the Vivado tools, they are chopped up and mapped onto a collection of BRAM primitives on the FPGA.  The patching tool requires information on how that mapping was done so that memory initialization file contents can be appropriately divided up for patching to the bitstream.  
