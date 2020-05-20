@@ -17,7 +17,7 @@ script:
   - make format
   - git update-index --refresh
   - git diff-index --ignore-submodules --quiet HEAD
-  #- python run_tests.py samples/128b1/alt.fasm samples/128b1/init/init.mem samples/128b1/mapping.mdd samples/128b1/patched.fasm samples/128b1/real.fasm mem/ram
+  - python run_tests.py samples/128b1/alt.fasm samples/128b1/init/init.mem samples/128b1/mapping.mdd samples/128b1/patched.fasm samples/128b1/real.fasm mem/ram
   #- python run_tests.py samples/8kb1/alt.fasm samples/8kb1/init/init.mem samples/8kb1/mapping.mdd samples/8kb1/patched.fasm samples/8kb1/real.fasm
   #- python run_tests.py samples/2kb72/alt.fasm samples/2kb72/init/init.mem samples/2kb72/mapping.mdd samples/2kb72/patched.fasm samples/2kb72/real.fasm
 
