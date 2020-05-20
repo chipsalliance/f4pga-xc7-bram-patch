@@ -253,12 +253,12 @@ if __name__ == "__main__":
         )
         print("Test status = {}".format(status))
         if (status == "SUCCESS"):
-            exit(0)
-        else:
             exit(1)
+        else:
+            exit(0)
     else:
         print(
             "Usage:\n   python run_tests.py   #To run series of tests\nOR\n   python run_tests.py fasmToPatch, init, mdd, patchedFasm, origFasm hdlMemToPatch # To run a directed test",
             file=sys.stderr
         )
-        exit(1)
+        exit(0)
