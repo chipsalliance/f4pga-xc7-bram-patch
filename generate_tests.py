@@ -47,8 +47,8 @@ def main():
         # do more later
     ]
 
-    widths = weird_widths_to_test + widths_to_test
-    depths = weird_depths_to_test + depths_to_test
+    widths = widths_to_test
+    depths = depths_to_test
 
     topdir = "./testing/tests"
     master = os.path.join(topdir, 'master')
