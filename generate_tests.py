@@ -5,6 +5,9 @@ from pathlib import Path, PurePath
 import patch_mem as patch_mem
 import math
 
+topdir = "./testing/tests"
+master = os.path.join(topdir, 'master')
+
 
 def genAlt(batchdir):
     patch_mem.patch_mem(
@@ -47,11 +50,8 @@ def main():
         # do more later
     ]
 
-    widths = weird_widths_to_test + widths_to_test
-    depths = weird_depths_to_test + depths_to_test
-
-    topdir = "./testing/tests"
-    master = os.path.join(topdir, 'master')
+    widths = widths_to_test
+    depths = depths_to_test
 
     FORCE = False  # Force generation of new design
     ALT_ONLY = False  # Just generate alt.fasm files (no need to re-run Vivado)
@@ -84,10 +84,10 @@ def main():
                 print("Calling genAlt({})".format(batchdir), flush=True)
                 genAlt(batchdir)
             elif FORCE or not os.path.isfile(altfasm):
-                command = r'./testing/generate_tests_script.sh {} {} {}'.format(
-                    wid, depthname, depth
+                command = r'./testing/generate_tests_script.sh {} {} {} {}'.format(
+                    master, wid, depthname, depth
                 )
-                print("Generating: " + command, flush=True)
+                print("Generating by calling: " + command, flush=True)
                 v = subprocess.Popen(
                     command,
                     stdout=subprocess.PIPE,
@@ -124,10 +124,10 @@ if __name__ == "__main__":
         wid = sys.argv[1]
         depthname = sys.argv[2]
         depth = sys.argv[3]
-        command = './testing/generate_tests_script.sh {} {} {}'.format(
-            wid, depthname, depth
+        command = './testing/generate_tests_script.sh {} {} {} {}'.format(
+            master, wid, depthname, depth
         )
-        print("Generating" + command)
+        print("Generating by calling: " + command)
         os.system(command)
 
         batchdir = os.path.join(

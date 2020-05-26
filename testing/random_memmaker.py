@@ -68,6 +68,6 @@ if __name__ == "__main__":
         main(sys.argv[1], sys.argv[2], sys.argv[3], True)
     else:
         print(
-            "Usage: python  random_memmaker.py fileToCreate width(in bits) depth(in words)"
+            "Usage: python  random_memmaker.py fileToCreate width(in bits) depth(in words) allones(optional)"
         )
         exit(1)

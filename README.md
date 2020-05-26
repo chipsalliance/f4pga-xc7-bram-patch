@@ -53,7 +53,9 @@ They are not needed for just doing patching but are used for testing of the patc
 
 which will run through a series of memory sizes and generate test cases using Vivado and other scripts.  You can modify the contents of "generate_tests.py" to alter which memory sizes are generated.
 
-In fact, generate_tests.py and the scripts it calls is instructive to show how a design is generate, along with its .mdd file.
+In fact, generate_tests.py and the scripts it calls are instructive to show how a design is generated, along with its .mdd file.
+
+NOTE: the above script will run for a LONG time.  But, you can go into the script and modify the list of the memory sizes it will generate test circuits.
 
 # 3. Doing a Simple Patch
 
@@ -62,7 +64,7 @@ Imagine that a design has been synthesized and implemented in Vivado.  The steps
 #### Step 1: Generate .mdd File
 While still in Vivado, source the Tcl script "testing/mdd_make.tcl".  Then, call: 
 
-    mddMake("original.mdd")
+    mddMake "original.mdd"
 
 from within it to generate a .mdd file.  This file will contain the metadata needed to describe how the memory in the original design was broken up across a collection of BRAM cells.  
 

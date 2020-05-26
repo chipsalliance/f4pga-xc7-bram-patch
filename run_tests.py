@@ -113,7 +113,7 @@ def main():
     ]
 
     rootdir = os.environ.get("MEM_PATCH_DIR")
-    assert rootdir is not None
+    assert rootdir is not None, "Must set 'MEM_PATCH_DIR' environment variable to run tests."
 
     testsdir = os.path.join(rootdir, 'testing', 'tests')
     stopfile = os.path.join(testsdir, 'stop')
@@ -240,6 +240,23 @@ if __name__ == "__main__":
     # Run a series of tests
     if (len(sys.argv) == 1):
         main()
+    # Run a test for a specific directory created by generate_tests.py program
+    elif (len(sys.argv) == 2):
+        d = sys.argv[1]
+        assert os.path.isdir(d)
+        status = doTest(
+            fasmToPatch="{}/alt.fasm".format(d),
+            init="{}/init/init.mem".format(d),
+            mdd="{}/mapping.mdd".format(d),
+            patchedFasm="{}/patched.fasm".format(d),
+            origFasm="{}/real.fasm".format(d),
+            selectedMemToPatch="mem/ram"
+        )
+        print("Test status = {}".format(status))
+        if (status == "SUCCESS"):
+            exit(0)
+        else:
+            exit(1)
     # Run a single directed test
     elif len(sys.argv) == 7:
         assert os.path.isfile(sys.argv[1])
