@@ -64,7 +64,7 @@ Imagine that a design has been synthesized and implemented in Vivado.  The steps
 #### Step 1: Generate .mdd File
 While still in Vivado, source the Tcl script "testing/mdd_make.tcl".  Then, call: 
 
-    mddMake("original.mdd")
+    mddMake "original.mdd"
 
 from within it to generate a .mdd file.  This file will contain the metadata needed to describe how the memory in the original design was broken up across a collection of BRAM cells.  
 
