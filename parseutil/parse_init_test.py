@@ -1,5 +1,5 @@
-import xbputils.parseutil.parse_mdd as mddutil
-import xbputils.parseutil.fasmread as fasmutil
+import parseutil.parse_mdd as mddutil
+import parseutil.fasmread as fasmutil
 import fasm
 
 # from collections import recordclass

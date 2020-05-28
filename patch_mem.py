@@ -2,9 +2,9 @@ import sys
 import os
 import fasm
 import fasm.output
-import xbputils.parseutil.parse_mdd as mddutil
-import xbputils.parseutil.fasmread as fasmutil
-import xbputils.parseutil.parse_init_test as initutil
+import parseutil.parse_mdd as mddutil
+import parseutil.fasmread as fasmutil
+import parseutil.parse_init_test as initutil
 import cProfile
 
 from prjxray.db import Database
@@ -12,7 +12,7 @@ from prjxray import fasm_disassembler
 
 
 def patch_mem(
-    fasm=None, init=None, mdd=None, outfile=None, selectedMemToPatch=None
+        fasm=None, init=None, mdd=None, outfile=None, selectedMemToPatch=None
 ):
     assert fasm is not None
     assert init is not None
