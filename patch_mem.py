@@ -2,9 +2,9 @@ import sys
 import os
 import fasm
 import fasm.output
-import utils.parseutil.parse_mdd as mddutil
-import utils.parseutil.fasmread as fasmutil
-import utils.parseutil.parse_init_test as initutil
+import parseutil.parse_mdd as mddutil
+import parseutil.fasmread as fasmutil
+import parseutil.parse_init_test as initutil
 import cProfile
 
 from prjxray.db import Database

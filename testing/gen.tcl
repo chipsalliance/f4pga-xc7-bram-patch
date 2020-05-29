@@ -13,10 +13,6 @@ set_property BITSTREAM.GENERAL.PERFRAMECRC YES [current_design]
 # set_param tcl.collectionResultDisplayLimit 0
 set_property BITSTREAM.General.UnconstrainedPins {Allow} [current_design]
 
-foreach site [get_sites -of [get_tiles -filter {TYPE == BRAM_R}]] {
-  set_property PROHIBIT true $site
-}
-
 place_design
 route_design
 

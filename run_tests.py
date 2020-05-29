@@ -113,7 +113,7 @@ def main():
     ]
 
     rootdir = os.environ.get("MEM_PATCH_DIR")
-    assert rootdir is not None
+    assert rootdir is not None, "Must set 'MEM_PATCH_DIR' environment variable to run tests."
 
     testsdir = os.path.join(rootdir, 'testing', 'tests')
     stopfile = os.path.join(testsdir, 'stop')
