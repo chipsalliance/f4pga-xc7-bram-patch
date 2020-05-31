@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ $# -ne 4 ] && [ $# -ne 5 ]; then 
+    echo ""
+    echo "      Usage: generate_tests_script.sh baseDir width depthName depth [ allones ]"
+    echo ""
+    exit 1
+fi
+
 BASE_DIR=($1)
 WIDTH=($2)
 DEPTHNAME=($3)
@@ -41,6 +48,8 @@ echo "Done with Vivado"
 
 # Convert its bitfile 
 $XRAY_BIT2FASM $BATCH_DIR/vivado/$DESIGN.bit > $BATCH_DIR/real.fasm
-echo "Done with bit2fasm"
+echo "Done generating real.fasm"
 
-
+# Do the alt.fasm file as well
+python3 ${MEM_PATCH_DIR}/patch_mem.py $BATCH_DIR/real.fasm $BATCH_DIR/init/alt.mem $BATCH_DIR/mapping.mdd $BATCH_DIR/alt.fasm mem/ram
+echo "Done generating alt.fasm"
