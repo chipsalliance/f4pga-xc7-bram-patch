@@ -71,30 +71,25 @@ This script creates a single memory test case of ${DEPTH} words by ${WIDTH} bits
 1. It then creates two randomly-filled memory initialization files called DIR/init/init.mem and DIR/init/alt.mem
 1. Next, it creates a customized SystemVerilog design in DIR/vivado which implements the memory and a top level design and which reads the memory's contents from DIR/init/init.mem.
 1. Vivado is then called and the design is compiled through to bitstream.
-1. Finally the bitstream is converted to a fasm file called: DIR/real.fasm
+1. The resulting bitstream is converted to a fasm file called: DIR/real.fasm
+1. Finally DIR/real.fasm is patched with random data and written to DIR/alt.fasm (to be used in the testing later)
 
 The above script can be called in a stand-alone fashion as:
 ```
 generate_tests_script.sh someDirName 16 128k 131072 
 ```
-and the results will be placed into `someDirName/128kb16`.  The results will consist of some memory initialization files, a .sv design and associated bit file, a .mdd file, and a real.fasm file (fasm equivalent of the bitfile).
+and the results will be placed into `someDirName/128kb16`.  The results will consist of some memory initialization files, a .sv design and associated bit file, a .mdd file, and real.fasm and alt.fasm.
 
 ### File: generate_tests.py
-This program is intended to generate and manage a large set of test designs which it will place into `testing/tests/master`.  It simply generates needed designs for all sizes by calling the program **testing/generate_tests_script.sh**.  The size of memories to generate designs for are given in a series of lists at the top of the code.  
-
-If a particular design already exists then it will not re-generate it.
-
-Once it has called `generate_tests_script.sh` it then calls `patch_mem.py` to patch the real.fasm file with randomized memory contents and write the results to and alt.fasm file.
-
-If you want it to generate just one particular test case rather than a whole collection of tests you can call it with the proper parameters (see code).
-
+This program is intended to generate and manage a large set of test designs (which it will place into `testing/tests/master`).  To do so it simply generates needed designs for all sizes by calling the program **testing/generate_tests_script.sh**.  The size of memories to generate designs for are given in a series of lists at the top of the code.  If a particular design already exists, then it will not re-generate it.
+  
 ## 3.2 Testing
 The program **run_tests.py** is used to actually do the testing.  The basic flow is as follows:
 1. It keeps lists of tests that have (a) passed, (b) failed, or were (c) incomplete.
 1. There is lots of flexibility provided to control which designs are tested:
-  * There are lists to specify sizes and shapes of memories to test.
-  * If the SKIP_PASSED flag is set to true, only those that have not yet passed will be tested).  
-  * You can supply command line parameters to specify the files to patch and test or just the directory where they are located.  Otherwise, it will run tests on all designs in testing/tests/master that are not in its `testing/tests/passed.txt` file.  
+   * There are lists to specify sizes and shapes of memories to test.
+   * If the SKIP_PASSED flag is set to true, only those that have not yet passed will be tested.  
+   * You can supply command line parameters to specify the files to patch and test or just the directory where they are located.  Otherwise, it will run tests on all designs in testing/tests/master that are not in its `testing/tests/passed.txt` file.  
 
 Its basic operation is to patch the alt.fasm file with the contents of the init/init.mem file, writing the results into a patched.fasm file.  If the contents of patched.fasm match those of real.fasm the test is declared a success.
 
