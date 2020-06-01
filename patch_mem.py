@@ -12,12 +12,13 @@ from prjxray import fasm_disassembler
 
 
 def patch_mem(
-    fasm=None, init=None, mdd=None, outfile=None, selectedMemToPatch=None
+    fasm=None, init=None, mdd=None, outfile=None, selectedMemToPatch=None, wantPartialFASM=False
 ):
     assert fasm is not None
     assert init is not None
     assert mdd is not None
     assert selectedMemToPatch is not None
+
 
     # Read and filter the MDD file contents based on selectedMemToPatch
     tmp_mdd_data = mddutil.read_mdd(mdd)
@@ -53,6 +54,10 @@ def patch_mem(
         memfasm_name='temp_mem.fasm',
         mdd=mdd_data
     )
+    if wantPartialFASM == True:
+        print("Success!")
+    else:
+        print("Failure")
 
     # Merge the non-INIT tuples (cleared_tups) in with the new memory tuples
     # to create a new complete FASM file
@@ -90,6 +95,13 @@ def read_fasm(fname):
 
 
 if __name__ == "__main__":
-    assert len(sys.argv) == 6, \
-           "Usage: patch_mem fasmFile newMemContents mddFile patchedFasmFile memName"
-    patch_mem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+    if len(sys.argv) == 6:
+        patch_mem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+    elif len(sys.argv) == 7:
+        if sys.argv[6] == "partial":
+            patch_mem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], True)
+        else:
+            print("wantPartialFASM must be specified as 'partial', or left blank to get a full file")
+    else:
+        print("Usage: patch_mem fasmFile newMemContents mddFile patchedFasmFile memName [wantPartialFASM]{partial}")
+    exit(1)    
