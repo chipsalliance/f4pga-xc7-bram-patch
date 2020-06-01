@@ -60,10 +60,10 @@ def doTest(fasmToPatch, init, mdd, patchedFasm, origFasm, selectedMemToPatch):
     )  # , shell=True)
 
     if (diff.stdout == ''):
-        print('RESULT: Files match, success!')
+        print('RESULT: Files match, success!\n')
         return "SUCCESS"
     else:
-        print('RESULT: ERROR - Files do not match')
+        print('RESULT: ERROR - Files do not match\n')
         return "FAILURE"
     return "SUCCESS"
 
