@@ -1,3 +1,2 @@
-D="128kb16"
-python $MEM_PATCH_DIR/run_tests.py $D/alt.fasm $D/init/init.mem $D/mapping.mdd $D/patched.fasm $D/real.fasm mem/ram
-diff $D/patched.fasm $D/real.fasm
+python $MEM_PATCH_DIR/run_tests.py 128kb16
+diff 128kb16/patched.fasm 128kb16/real.fasm
