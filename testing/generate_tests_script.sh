@@ -2,7 +2,7 @@
 
 if [ $# -ne 4 ] && [ $# -ne 5 ]; then 
     echo ""
-    echo "      Usage: generate_tests_script.sh baseDir width depthName depth [ allones ]"
+    echo "    Usage: generate_tests_script.sh baseDir width depthName depth [ allones ]"
     echo ""
     exit 1
 fi
