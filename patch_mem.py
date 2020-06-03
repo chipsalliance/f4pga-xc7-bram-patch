@@ -54,15 +54,28 @@ def patch_mem(
         memfasm_name='temp_mem.fasm',
         mdd=mdd_data
     )
+    
     if wantPartialFASM == True:
-        print("Success!")
+        # Find any and all non-INIT tuples located at the patched BRAM
+        for data in mdd_data:
+            tile = data.tile
+            frame_tups = []
+            for tup in cleared_tups:
+                if tup[0] != None:
+                    if tup[0].feature.find(tile) != -1:
+                        frame_tups.append(tup)
+        # Merge the newly found non_INIT tuples with the new memory tuples
+        # to create a partial FASM file
+        merged = merge_tuples(cleared_tups=frame_tups, mem_tups=memfasm)
+        write_fasm(outfile, merged)
+        print(len(frame_tups))
     else:
-        print("Failure")
+        # Merge all non-INIT tuples (cleared_tups) in with the new memory tuples
+        # to create a new complete FASM file
+        merged = merge_tuples(cleared_tups=cleared_tups, mem_tups=memfasm)
+        write_fasm(outfile, merged)
 
-    # Merge the non-INIT tuples (cleared_tups) in with the new memory tuples
-    # to create a new complete FASM file
-    merged = merge_tuples(cleared_tups=cleared_tups, mem_tups=memfasm)
-    write_fasm(outfile, merged)
+    
     print("Patching done...")
 
 
