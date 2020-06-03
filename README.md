@@ -5,11 +5,11 @@ More correctly, it will patch a .fasm file representing a bitstream to create a 
 It relies on prjxray to actually convert between .bit and .fasm representations.
 
 It works on designs that have come from Vivado and relies on a Tcl script to extract the needed 
-metadata to understand which memory primitives in the bitstream correspond to which "chunks" 
+metadata (placed into a .mdd file) to understand which memory primitives in the bitstream correspond to which "chunks" 
 of the original Verilog-specified memory.
 
-Typically, the memory contents in Verilog are included using $readmemb() 
-$readmemh() call in Verilog to read the memory initialization contents from a text file. 
+Typically, the memory contents in Verilog are included using $readmemb() or
+$readmemh() calls in Verilog to read the memory initialization contents from a text file. 
 This flow expects that and will allow you to supply a different memory contents file. 
 It will then patch that file contents into the BRAM primitives in the bitstream.
 
@@ -19,7 +19,7 @@ _testing/gen.tcl_ script.  For other flows, a mechanism will be needed to genera
 from the tools in that other flow.
 
 Since designs will typically have multiple BRAM-based memories, the tools expect the name of the 
-memory to be patched.  The tool supports either hierarchical or flattened designs.
+memory to be patched to be specified.  The tool supports either hierarchical or flattened designs.
 
 # 2. Installation
 
@@ -41,7 +41,7 @@ For running with Vivado, put in the following lines in your .bashrc file:
     
     export MEM_PATCH_DIR=${HOME}/prjxray-bram-patch
 
-The first two lines are part of the prjxray installation.  The third line is required for prjxray-bram-patch and tells the tools where you installed it.   Note that you can run prjxray-bram-patch with Vivado installed --- the above is only included to be able to use Vivado to originally create designs.
+The first two lines are part of the prjxray installation.  The third line is required for prjxray-bram-patch and tells the tools where you installed it.   Note that you can run prjxray-bram-patch without Vivado installed --- the above is only included to be able to use Vivado to originally create designs.
 
 ## 2.4 Sample Designs and the Test Database
 There are a few sample designs in the "samples" directory.
@@ -55,18 +55,57 @@ which will run through a series of memory sizes and generate test cases using Vi
 
 In fact, generate_tests.py and the scripts it calls are instructive to show how a design is generated, along with its .mdd file.
 
-NOTE: the above script will run for a LONG time.  But, you can go into the script and modify the list of the memory sizes it will generate test circuits.
+NOTE: the above script will run for a LONG time.  But, you can go into the script and modify the list of the memory sizes it will generate test circuits for.
 
-# 3. Doing a Simple Patch
 
+# 3. Test infrastructure
+In order to verify that the patcher works for all size/shapes/configurations of memories, a test infrastructure is included.  The main two steps for this are (1) generation of tests and (2) the actual running of the tests.
+
+## 3.1 Generation
+This entails generating Verilog code which gets synthesized and implemented to a bitstream for each size of memory desired. 
+
+### File: testing/generate_tests_script.sh
+This script creates a single memory test case of ${DEPTH} words by ${WIDTH} bits wide.   The test case is placed into a directory: with the name ${DEPTH}b$WIDTH" and that directory is placed into a location specified by a parameter to this script.
+
+1. It first creates the needed directory (referred to as _DIR_ in the discussion below).
+1. It then creates two randomly-filled memory initialization files called DIR/init/init.mem and DIR/init/alt.mem
+1. Next, it creates a customized SystemVerilog design in DIR/vivado which implements the memory and a top level design and which reads the memory's contents from DIR/init/init.mem.
+1. Vivado is then called and the design is compiled through to bitstream.
+1. The resulting bitstream is converted to a fasm file called: DIR/real.fasm
+1. Finally DIR/real.fasm is patched with random data and written to DIR/alt.fasm (to be used in the testing later)
+
+The above script can be called in a stand-alone fashion as:
+```
+generate_tests_script.sh someDirName 16 128k 131072 
+```
+and the results will be placed into `someDirName/128kb16`.  The results will consist of some memory initialization files, a .sv design and associated bit file, a .mdd file, and real.fasm and alt.fasm.
+
+### File: generate_tests.py
+This program is intended to generate and manage a large set of test designs (which it will place into `testing/tests/master`).  To do so it simply generates needed designs for all sizes by calling the program **testing/generate_tests_script.sh**.  The size of memories to generate designs for are given in a series of lists at the top of the code.  If a particular design already exists, then it will not re-generate it.
+  
+## 3.2 Testing
+The program **run_tests.py** is used to actually do the testing.  The basic flow is as follows:
+1. It keeps lists of tests that have (a) passed, (b) failed, or were (c) incomplete.
+1. There is lots of flexibility provided to control which designs are tested:
+   * There are lists to specify sizes and shapes of memories to test.
+   * If the SKIP_PASSED flag is set to true, only those that have not yet passed will be tested.  
+   * You can supply command line parameters to specify the files to patch and test or just the directory where they are located.  Otherwise, it will run tests on all designs in testing/tests/master that are not in its `testing/tests/passed.txt` file.  
+
+Its basic operation is to patch the alt.fasm file with the contents of the init/init.mem file, writing the results into a patched.fasm file.  If the contents of patched.fasm match those of real.fasm the test is declared a success.
+
+# 4. Doing a Simple Patch
+You need not use the above test framework to do a simple patch.  The directory `singletests/simple` contains an example of a stand-alone test that creates a specific memory design and then tests whether it can re-patch it without error.  You might try running the `prepTest.sh` script followed by the `runTest.sh` script to see how this is done.  
+
+## 4.1 Doing a Patch By Hand
 Imagine that a design has been synthesized and implemented in Vivado.  The steps to patch its memory include the following:
 
 #### Step 1: Generate .mdd File
-While still in Vivado, source the Tcl script "testing/mdd_make.tcl".  Then, call: 
-
-    mddMake "original.mdd"
-
-from within it to generate a .mdd file.  This file will contain the metadata needed to describe how the memory in the original design was broken up across a collection of BRAM cells.  
+While still in Vivado, do the following at the Tcl console:
+```
+source testing/mdd_make.tcl   # May need to adjust path
+mddMake "original.mdd"
+```
+This will generate a .mdd file.  This file will contain the metadata needed to describe how the memory in the original design was broken up across a collection of BRAM cells.  
 
 #### Step 2: Create New Memory Initialization File 
 Based on the format of the original **$readmemb()** or **$readmemh()** file you used in your original Verilog, create a new memory initialization file to represent what you want the memory contents to be changed to.
@@ -115,7 +154,7 @@ In the above, the last parameter is the name of the memory to be patched.  This 
       RAM_SLICE_END NONE
     ENDCELL
 
-The "memoryName" to provide when patching the design would be "mem/ram".  This is a combination of part of the CELL name (1st line) and the RTL_RAM_NAME (6th line).
+The "memoryName" to provide when patching the design would be "mem/ram".  This is a combination of part of the CELL name (from the 1st line) and the RTL_RAM_NAME (from the 6th line).
 
 In contrast, here is the top portion of a .mdd file for a hierarchical design containing multiple memories where the possible "memoryName" values to use would be either "mem1/ram" or "mem2/mem2a/ram".  As above you take all but the last component of the CELL value plus all of the RTL_RAM_NAME to create this.
 
@@ -177,42 +216,9 @@ Finally, you convert the new .fasm file to a .bit file using:
           --frm_file patched.frm \
           --output_file patched.bit
 
-# 4. What Are MDD Files?
+# 5. What Are MDD Files?
 When large memories are created by the Vivado tools, they are chopped up and mapped onto a collection of BRAM primitives on the FPGA.  The patching tool requires information on how that mapping was done so that memory initialization file contents can be appropriately divided up for patching to the bitstream.  
 
 The MDD file contains the information needed to do that mapping.  It is generated by the Tcl script: **testing/mdd_make.tcl**.  If you are not using Vivado, you will need to create such an MDD file some other way.
 
 The current MDD file contains information on mapped BRAM primitives. It contains a number of BRAM properties that are not currently used and thus could possibly be reduced in the future.
-
-# 5. Test infrastructure
-In order to verify that the patcher works for all size/shapes/configurations of memories, a test infrastructure is included in the _"testing"_ directory.  The main two steps for this are (1) generation of tests and (2) the actual running of the tests.
-
-## 5.1 Generation
-This entails generating Verilog code which gets synthesized and implemented to a bitstream for each size of memory desired. 
-
-### File: generate_tests.py
-At the top level of the project directory, this is the main driver.  It simply generates needed designs for all sizes by calling the program **testing/generate_tests_script.sh**.  The size of memories to generate designs for are given in a series of lists at the top of the code.  Or, you can specify a memory size on the command line and generate just that.
-
-### File: testing/generate_tests_script.sh
-This script creates a single memory test case of ${DEPTHNAME} words by ${WIDTH} bits wide.   The test case is placed into the location: "tests/master/${DEPTHNAME}b$WIDTH".
-
-1. It first creates the needed directory (referred to as _DIR_ in the discussion below).
-1. It then creates two randomly-filled memory initialization files called DIR/init/init.mem and DIR/init/alt.mem
-1. Next, it creates a customized SystemVerilog design in DIR/vivado which implements the memory and a top level design and which reads the memory's contents from DIR/init/init.mem.
-1. Vivado is then called and the design is compiled through to bitstream.
-1. Finally the bitstream is converted to a fasm file called: DIR/real.fasm
-
-## 5.2 Testing
-The program **run_tests.py** is used to actually do the testing.  The basic flow is as follows:
-1. It keeps lists of tests that have (a) passed, (b) failed, or were (c) incomplete.
-1. There is lots of flexibility provided to control which designs are tested:
-  * There are lists to specify sizes and shapes of memories to test.
-  * If the SKIP_PASSED flag is set to true, only those that have not yet passed will be tested).  
-  * There is also a ONE_TEST_ONLY variable which makes it easy to do a single test.  It overrides both the SKIP_PASSED flag setting as well as the lists of sizes to test. In short, if it is set then that one test will simply be run.
-  * Finally, you can specify a single test to be run on the command line.
-
-The bitstream for a given test is originally created in the generation step using the DIR/init/init.mem file contents.  A FASM file for that bitstream is then created (DIR/real.fasm).  
-
-Then, in the testing step, the file DIR/alt.fasm is patched with the contents of the DIR/init/init.mem file.  
-and the resulting DIR/patched.fasm file is then compared to the DIR/real.fasm file.  If their contents match, this indicates that the patcher successfully was able to patch an arbitrary FASM file with the contents of DIR/init/init.mem.
-
