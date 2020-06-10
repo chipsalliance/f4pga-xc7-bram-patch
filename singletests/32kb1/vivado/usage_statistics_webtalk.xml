@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<webTalkData  fileName='usage_statistics_webtalk.xml'  majorVersion='1' minorVersion='0' timeStamp='Fri Jun  5 18:16:02 2020'>
+<section name="__ROOT__" level="0" order="1" description="">
+ <section name="software_version_and_target_device" level="1" order="1" description="">
+  <keyValuePair key="beta" value="FALSE" description="" />
+  <keyValuePair key="build_version" value="1909853" description="" />
+  <keyValuePair key="date_generated" value="Fri Jun  5 18:16:02 2020" description="" />
+  <keyValuePair key="os_platform" value="LIN64" description="" />
+  <keyValuePair key="product_version" value="Vivado v2017.2 (64-bit)" description="" />
+  <keyValuePair key="project_id" value="b13e70dc13f94e419b60c71465e6cb2d" description="" />
+  <keyValuePair key="project_iteration" value="1" description="" />
+  <keyValuePair key="random_id" value="f35efdfc-6535-4324-a180-3d9be0530e81" description="" />
+  <keyValuePair key="registration_id" value="f35efdfc-6535-4324-a180-3d9be0530e81" description="" />
+  <keyValuePair key="route_design" value="TRUE" description="" />
+  <keyValuePair key="target_device" value="xc7a50t" description="" />
+  <keyValuePair key="target_family" value="artix7" description="" />
+  <keyValuePair key="target_package" value="fgg484" description="" />
+  <keyValuePair key="target_speed" value="-1" description="" />
+  <keyValuePair key="tool_flow" value="Vivado" description="" />
+ </section>
+ <section name="user_environment" level="1" order="2" description="">
+  <keyValuePair key="cpu_name" value="Intel(R) Core(TM) i5-4590 CPU @ 3.30GHz" description="" />
+  <keyValuePair key="cpu_speed" value="2600.186 MHz" description="" />
+  <keyValuePair key="os_name" value="Ubuntu" description="" />
+  <keyValuePair key="os_release" value="Ubuntu 16.04.6 LTS" description="" />
+  <keyValuePair key="system_ram" value="8.000 GB" description="" />
+  <keyValuePair key="total_processors" value="1" description="" />
+ </section>
+ <section name="router" level="1" order="3" description="">
+  <section name="usage" level="2" order="1" description="">
+   <keyValuePair key="actual_expansions" value="342217" description="" />
+   <keyValuePair key="bogomips" value="5807" description="" />
+   <keyValuePair key="bram18" value="0" description="" />
+   <keyValuePair key="bram36" value="1" description="" />
+   <keyValuePair key="bufg" value="0" description="" />
+   <keyValuePair key="bufr" value="0" description="" />
+   <keyValuePair key="ctrls" value="0" description="" />
+   <keyValuePair key="dsp" value="0" description="" />
+   <keyValuePair key="effort" value="2" description="" />
+   <keyValuePair key="estimated_expansions" value="52530" description="" />
+   <keyValuePair key="ff" value="0" description="" />
+   <keyValuePair key="global_clocks" value="1" description="" />
+   <keyValuePair key="high_fanout_nets" value="0" description="" />
+   <keyValuePair key="iob" value="33" description="" />
+   <keyValuePair key="lut" value="0" description="" />
+   <keyValuePair key="movable_instances" value="37" description="" />
+   <keyValuePair key="nets" value="69" description="" />
+   <keyValuePair key="pins" value="293" description="" />
+   <keyValuePair key="pll" value="0" description="" />
+   <keyValuePair key="router_runtime" value="0.000000" description="" />
+   <keyValuePair key="router_timing_driven" value="1" description="" />
+   <keyValuePair key="threads" value="4" description="" />
+   <keyValuePair key="timing_constraints_exist" value="1" description="" />
+  </section>
+ </section>
+ <section name="unisim_transformation" level="1" order="4" description="">
+  <section name="post_unisim_transformation" level="2" order="1" description="">
+   <keyValuePair key="bufg" value="1" description="" />
+   <keyValuePair key="gnd" value="1" description="" />
+   <keyValuePair key="ibuf" value="32" description="" />
+   <keyValuePair key="obuf" value="1" description="" />
+   <keyValuePair key="ramb36e1" value="1" description="" />
+   <keyValuePair key="vcc" value="1" description="" />
+  </section>
+  <section name="pre_unisim_transformation" level="2" order="2" description="">
+   <keyValuePair key="bufg" value="1" description="" />
+   <keyValuePair key="gnd" value="1" description="" />
+   <keyValuePair key="ibuf" value="32" description="" />
+   <keyValuePair key="obuf" value="1" description="" />
+   <keyValuePair key="ramb36e1" value="1" description="" />
+   <keyValuePair key="vcc" value="1" description="" />
+  </section>
+ </section>
+ <section name="vivado_usage" level="1" order="5" description="">
+  <section name="project_data" level="2" order="1" description="">
+   <keyValuePair key="constraintsetcount" value="0" description="" />
+   <keyValuePair key="core_container" value="false" description="" />
+   <keyValuePair key="currentimplrun" value="impl_1" description="" />
+   <keyValuePair key="currentsynthesisrun" value="[unknown]" description="" />
+   <keyValuePair key="default_library" value="xil_defaultlib" description="" />
+   <keyValuePair key="designmode" value="GateLvl" description="" />
+   <keyValuePair key="export_simulation_activehdl" value="0" description="" />
+   <keyValuePair key="export_simulation_ies" value="0" description="" />
+   <keyValuePair key="export_simulation_modelsim" value="0" description="" />
+   <keyValuePair key="export_simulation_questa" value="0" description="" />
+   <keyValuePair key="export_simulation_riviera" value="0" description="" />
+   <keyValuePair key="export_simulation_vcs" value="0" description="" />
+   <keyValuePair key="export_simulation_xsim" value="0" description="" />
+   <keyValuePair key="implstrategy" value="Vivado Implementation Defaults" description="" />
+   <keyValuePair key="launch_simulation_activehdl" value="0" description="" />
+   <keyValuePair key="launch_simulation_ies" value="0" description="" />
+   <keyValuePair key="launch_simulation_modelsim" value="0" description="" />
+   <keyValuePair key="launch_simulation_questa" value="0" description="" />
+   <keyValuePair key="launch_simulation_riviera" value="0" description="" />
+   <keyValuePair key="launch_simulation_vcs" value="0" description="" />
+   <keyValuePair key="launch_simulation_xsim" value="0" description="" />
+   <keyValuePair key="simulator_language" value="Mixed" description="" />
+   <keyValuePair key="srcsetcount" value="0" description="" />
+   <keyValuePair key="synthesisstrategy" value="[unknown]" description="" />
+   <keyValuePair key="target_language" value="Verilog" description="" />
+   <keyValuePair key="target_simulator" value="XSim" description="" />
+   <keyValuePair key="totalimplruns" value="1" description="" />
+   <keyValuePair key="totalsynthesisruns" value="0" description="" />
+  </section>
+ </section>
+</section>
+</webTalkData>

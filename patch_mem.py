@@ -12,7 +12,12 @@ from prjxray import fasm_disassembler
 
 
 def patch_mem(
-    fasm=None, init=None, mdd=None, outfile=None, selectedMemToPatch=None
+    fasm=None,
+    init=None,
+    mdd=None,
+    outfile=None,
+    selectedMemToPatch=None,
+    wantPartialFASM=False
 ):
     assert fasm is not None
     assert init is not None
@@ -54,10 +59,25 @@ def patch_mem(
         mdd=mdd_data
     )
 
-    # Merge the non-INIT tuples (cleared_tups) in with the new memory tuples
-    # to create a new complete FASM file
-    merged = merge_tuples(cleared_tups=cleared_tups, mem_tups=memfasm)
-    write_fasm(outfile, merged)
+    if wantPartialFASM == True:
+        # Find any and all non-INIT tuples located at the patched BRAM
+        for data in mdd_data:
+            tile = data.tile
+            frame_tups = []
+            for tup in cleared_tups:
+                if tup[0] != None:
+                    if tup[0].feature.find(tile) != -1:
+                        frame_tups.append(tup)
+        # Merge the newly found non_INIT tuples with the new memory tuples
+        # to create a partial FASM file
+        merged = merge_tuples(cleared_tups=frame_tups, mem_tups=memfasm)
+        write_fasm(outfile, merged)
+    else:
+        # Merge all non-INIT tuples (cleared_tups) in with the new memory tuples
+        # to create a new complete FASM file
+        merged = merge_tuples(cleared_tups=cleared_tups, mem_tups=memfasm)
+        write_fasm(outfile, merged)
+
     print("Patching done...")
 
 
@@ -90,6 +110,22 @@ def read_fasm(fname):
 
 
 if __name__ == "__main__":
-    assert len(sys.argv) == 6, \
-           "Usage: patch_mem fasmFile newMemContents mddFile patchedFasmFile memName"
-    patch_mem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+    if len(sys.argv) == 6:
+        patch_mem(
+            sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
+        )
+    elif len(sys.argv) == 7:
+        if sys.argv[6] == "partial":
+            patch_mem(
+                sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4],
+                sys.argv[5], True
+            )
+        else:
+            print(
+                "wantPartialFASM must be specified as 'partial', or left blank to get a full file"
+            )
+    else:
+        print(
+            "Usage: patch_mem fasmFile newMemContents mddFile patchedFasmFile memName [wantPartialFASM]{partial}"
+        )
+    exit(1)
