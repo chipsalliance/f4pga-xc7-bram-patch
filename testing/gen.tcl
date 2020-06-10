@@ -21,5 +21,5 @@ mddMake ${::env(BATCH_DIR)}/mapping
 
 write_edif -force ${::env(BATCH_DIR)}/vivado/${::env(DESIGN_NAME)}.edif
 write_checkpoint -force ${::env(BATCH_DIR)}/vivado/${::env(DESIGN_NAME)}.dcp
-write_bitstream -force ${::env(BATCH_DIR)}/vivado/${::env(DESIGN_NAME)}.bit
+write_bitstream -raw_bitfile -logic_location_file -readback_file  -bin_file -force ${::env(BATCH_DIR)}/vivado/${::env(DESIGN_NAME)}.bit
 
