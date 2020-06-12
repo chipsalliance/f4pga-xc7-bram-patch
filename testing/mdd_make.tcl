@@ -27,8 +27,8 @@ proc mddMake {fname} {
         set fp [open "$fname.mdd" w]
     }
 
-    puts "DESIGN [current_design]"
-    puts $fp "DESIGN [current_design]"
+    puts "DESIGN $::env(DESIGN_NAME)"
+    puts $fp "DESIGN $::env(DESIGN_NAME)"
     puts "PART [get_parts -of  [current_design]]"
     puts $fp "PART [get_parts -of  [current_design]]"
 

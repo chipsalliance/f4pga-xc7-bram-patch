@@ -16,8 +16,10 @@ set_property BITSTREAM.General.UnconstrainedPins {Allow} [current_design]
 place_design
 route_design
 
+source ${::env(MEM_PATCH_DIR)}/testing/mdd_json.tcl
+mddMake ${::env(BATCH_DIR)}/$::env(DESIGN_NAME)
 source ${::env(MEM_PATCH_DIR)}/testing/mdd_make.tcl
-mddMake ${::env(BATCH_DIR)}/mapping
+mddMake ${::env(BATCH_DIR)}/$::env(DESIGN_NAME)
 
 write_edif -force ${::env(BATCH_DIR)}/vivado/${::env(DESIGN_NAME)}.edif
 write_checkpoint -force ${::env(BATCH_DIR)}/vivado/${::env(DESIGN_NAME)}.dcp

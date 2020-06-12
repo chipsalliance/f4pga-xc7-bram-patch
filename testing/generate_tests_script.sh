@@ -51,5 +51,5 @@ $XRAY_BIT2FASM $BATCH_DIR/vivado/$DESIGN.bit > $BATCH_DIR/real.fasm
 echo "Done generating real.fasm"
 
 # Do the alt.fasm file as well
-python3 ${MEM_PATCH_DIR}/patch_mem.py $BATCH_DIR/real.fasm $BATCH_DIR/init/alt.mem $BATCH_DIR/mapping.mdd $BATCH_DIR/alt.fasm mem/ram
+python3 ${MEM_PATCH_DIR}/patch_mem.py $BATCH_DIR/real.fasm $BATCH_DIR/init/alt.mem $BATCH_DIR/$DESIGN.mdd $BATCH_DIR/alt.fasm mem/ram
 echo "Done generating alt.fasm"
