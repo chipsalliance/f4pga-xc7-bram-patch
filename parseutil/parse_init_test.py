@@ -49,31 +49,46 @@ def initfile_to_initlist(infile, mdd):
 
 
 def initlist_to_edif_celldata(init, fasm_tups, mdd):
+    # Foreach word of data in the mem.init file
     for bram_addr, data in enumerate(init):
+        # Foreach cell in this memory
         for cell in mdd:
+            # Is the word # within this cell's range?
             if bram_addr <= cell.addr_end and bram_addr >= cell.addr_beg:
+                # Flip the data end for end (LSB on left)
                 flip_data = data[::-1]
+                # Get the bits for this word based on slice range
                 data_for_cell = flip_data[cell.slice_beg:cell.slice_end + 1]
+                # Flip those bits around
                 data_for_cell = data_for_cell[::-1]
+                # Did we get enough data?
                 assert len(data_for_cell) == cell.pbits + cell.dbits
                 actual_pbits = actual_dbits = 0
+                # Is what we have just the right width for the word?
                 if (cell.slice_end - cell.slice_beg) == cell.width:
                     actual_pbits = cell.pbits
                     actual_dbits = cell.dbits
                 else:  # (cell.slice_end - cell.slice_beg) < cell.width:
+                    # Need to pad on the left until we get the right width of word
                     wid = cell.width
                     data_for_cell = pad('0', wid, data_for_cell)
                     #data_for_cell2 = f'{data_for_cell:>0{wid}}'
                     #assert(data_for_cell == data_for_cell2)
+                    # Here is the math to figure out how to break up the bits
+                    #print("Cell.width = {}".format(wid))
                     if wid >= 9:
+                        # Parity bits are what is left over from multiples of 8
                         actual_pbits = wid % 8
                         if wid >= 36:
                             actual_pbits = wid % 32
+                            #print("Wid of {} is >= 36 so actual pbits is % 32".format(wid, actual_pbits))
                         actual_dbits = wid - actual_pbits
-                        # print(f'{actual_pbits}_{actual_dbits}')
+                        #print('Wid of {} is >=9 memories, actual_pbits = {} and actual_dbits = {}'.format(wid, actual_pbits, actual_dbits))
                     else:
                         actual_pbits = 0
                         actual_dbits = wid
+                        #print('Wid of {} <9 memories so actual_pbits = {} and actual_dbits = {}'.format(wid, actual_pbits, actual_dbits))
+
                 pbits = data_for_cell[0:actual_pbits]
                 cell.INITP_LIST.append(pbits)
                 # dbits = data_for_cell[actual_pbits:]
@@ -165,6 +180,9 @@ def edif_celldata_to_fasm_initlines(mdd):
 
 
 def initlines_to_memfasm(initlines, infile_name):
+    print(initlines)
+    print("###")
+    print(infile_name)
     fasmlines = []
     for tileaddr, tile in initlines.items():
         for yaddr, inits in tile.items():
@@ -174,6 +192,7 @@ def initlines_to_memfasm(initlines, infile_name):
                 )
                 #line_header2 = f'{tileaddr}.RAMB18_{yaddr}.{init_type}_'
                 #assert(line_header == line_header2)
+                #print(str(len(data)) + "...")
                 for count, data in enumerate(data):
                     if int(data) > 0:
                         # print(data)
@@ -198,12 +217,18 @@ def initlines_to_memfasm(initlines, infile_name):
     return memfasm
 
 
+# This will create the new tuples needed from the infile
 def initfile_to_memfasm(infile, fasm_tups, memfasm_name, mdd):
+    # Read the init.mem file contents.  
     init = initfile_to_initlist(infile, mdd=mdd)
+
+    # Put the data for each BRAM into INIT data structures in each Cell record
     modified_mdd = initlist_to_edif_celldata(
         init=init, fasm_tups=fasm_tups, mdd=mdd
     )
+
     initlines = edif_celldata_to_fasm_initlines(mdd=modified_mdd)
+
     memfasm = initlines_to_memfasm(initlines, infile)
     # memfasm = [line for line in memfasm]
     # for line in memfasm:
