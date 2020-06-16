@@ -24,7 +24,8 @@ def pad(ch, wid, data):
 
 
 def findAllBitsInDir(dr, verbose, mappings):
-    print("\nFinding bits in directory: ".format(str(dr)), flush=True)
+    print("")
+    print("Finding bits in directory: ".format(str(dr)), flush=True)
     fname = dr.name
     # Read the MDD data and filter out the ones we want for this memory
     mdd_data = patch_mem.readAndFilterMDDData(

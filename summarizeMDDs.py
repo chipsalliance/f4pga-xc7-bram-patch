@@ -13,7 +13,8 @@ def main(dirs, verbose):
     for dr in dirs:
         fname = dr.split("/")[-1]
         if verbose:
-            print("\nDesign is in: {}".format(dr))
+            print("")
+            print("Design is in: {}".format(dr))
 
         # Read the MDD data and filter out the ones we want for this memory
         mdd = dr + "/{}.mdd".format(fname)
