@@ -18,6 +18,7 @@ import parseutil
 import parseutil.parse_mdd as mddutil
 import parseutil.fasmread as fasmutil
 import fasm
+import argparse
 
 def isInMem(w, b, cell):
     if b < cell.slice_beg or b > cell.slice_end:
@@ -54,7 +55,7 @@ def findAllBitsInDirs(dirs, verbose = True):
         mdd_data = patch_mem.readAndFilterMDDData(dr + "/{}.mdd".format(fname), "mem/ram")
         for cell in mdd_data:
             if cell.type != "RAMB18E1":
-                print("Skipping design because it has RAMB36E1 primitive(s): {}".format(dr))
+                print("Skipping Cell: {} - it has RAMB36E1 primitive(s)".format(dr))
                 skip = True
                 break
         if skip:
@@ -194,7 +195,7 @@ def findAllBitsInDirs(dirs, verbose = True):
                             else:
                                 print("{} init.mem[{}][{}] -> {}.{}_Y0.INIT_{}[{:03}] -> {}".format(fname, w, b, cell.tile[0:6], cell.type[:-2], initRow, bitOffset, segoffset))
         # Must have worked if we got here
-        print("Cell: {} {} {} all checked out...".format(fname, cell.tile, cell.type))
+        print("Cell: {} {} {} all checked out...".format(fname, cell.tile, cell.type), flush=True)
 
 def findSegOffset(segs, segfeature):
     for line in segs:
@@ -205,13 +206,14 @@ def findSegOffset(segs, segfeature):
 
 
 if __name__ == "__main__":
-    dirs = ["1027b11","1050b11","1027b16","1050b16","128b16","1027b17","1050b17","1027b18","1050b18","128b18","16kb1","1027b1","1027b37","1050b1","1050b37","128b1","128b25","1027b2","1050b2","128b2","128b32","128b34","128b36","1027b3","1050b3","128b3","1027b4","1050b4","128b4","1027b6","1050b6","128b6","1027b8","1050b8","128b8","1027b9","1050b9","128b9"]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("baseDir")
+    parser.add_argument("--verbose", action='store_true')
+    args = parser.parse_args()
+
     dirs = []
-#    dirs = ["128b1"]
-    dirs.append(sys.argv[1])
-    dirs = ["./testing/tests/master/" + d for d in dirs]
-    findAllBitsInDirs(dirs, len(sys.argv)>2)
-    #segname = os.environ["XRAY_DIR"] + "/database/" + os.environ["XRAY_DATABASE"] + "/segbits_bram_l.block_ram.db"
-    #print(segname)
-    #findSegOffset(segname, "abc")
+    dirs.append(args.baseDir)
+
+    # Works for a single design given its directory
+    findAllBitsInDirs(dirs, args.verbose)
 
