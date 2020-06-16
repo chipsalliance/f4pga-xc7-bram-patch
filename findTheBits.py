@@ -15,6 +15,7 @@ import parseutil
 import argparse
 import findTheBits_36
 import findTheBits_18
+import findTheBits_xx
 import pathlib
 
 
@@ -25,7 +26,7 @@ def pad(ch, wid, data):
 
 def findAllBitsInDir(dr, verbose, mappings):
     print("")
-    print("Finding bits in directory: ".format(str(dr)), flush=True)
+    print("Finding bits in directory: {}".format(str(dr)), flush=True)
     fname = dr.name
     # Read the MDD data and filter out the ones we want for this memory
     mdd_data = patch_mem.readAndFilterMDDData(
@@ -39,9 +40,9 @@ def findAllBitsInDir(dr, verbose, mappings):
             flush=True
         )
         if cell.type == "RAMB36E1":
-            findTheBits_36.findAllBits(dr, mdd_data, cell, verbose, mappings)
+            findTheBits_xx.findAllBits(dr.name, mdd_data, cell, str(dr / "init/init.mem"), str(dr / "real.fasm"), verbose, mappings)
         elif cell.type == "RAMB18E1":
-            findTheBits_18.findAllBits(dr, mdd_data, cell, verbose, mappings)
+            findTheBits_xx.findAllBits(dr.name, mdd_data, cell, str(dr / "init/init.mem"), str(dr / "real.fasm"), verbose, mappings)
 
 
 def findAllBitsInDirs(dirs, verbose, mappings):
@@ -65,12 +66,10 @@ if __name__ == "__main__":
 
     baseDir = pathlib.Path(args.baseDir)
     baseDir = baseDir.resolve()
-    print(baseDir)
 
     if args.design is not None:
         findAllBitsInDir(baseDir / args.design, args.verbose, args.mappings)
     else:
-        print(list(baseDir.glob('*')))
         dirs = baseDir.glob("*")
         findAllBitsInDirs(dirs, args.verbose, args.mappings)
     print("")
