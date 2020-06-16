@@ -1,0 +1,859 @@
+testing/tests/master/
+False
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y5 X0Y2 ram
+
+Cell: 128b1 BRAM_L_X6Y5 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y20 X0Y8 ram
+
+Cell: 128b16 BRAM_L_X6Y20 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y25 X0Y10 ram
+
+Cell: 128b18 BRAM_L_X6Y25 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 128b2 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y40 X0Y16 ram
+
+Cell: 128b32 BRAM_L_X6Y40 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y40 X0Y16 ram
+
+Cell: 128b36 BRAM_L_X6Y40 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 128b4 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+
+Skipping Cell: testing/tests/master/128b64 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+
+Skipping Cell: testing/tests/master/128b72 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 128b8 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 128b9 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 16kb1 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (8):
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_5 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_4 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_7 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_6 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+
+Skipping Cell: testing/tests/master/16kb16 - it has RAMB36E1 primitive(s)
+Memories to be patched (9):
+  mem/ram_reg_8 RAMB36E1 BRAM_L_X30Y45 X1Y9 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_5 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_4 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_7 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_6 RAMB36E1 BRAM_L_X30Y40 X1Y8 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X30Y35 X1Y7 ram
+
+Skipping Cell: testing/tests/master/16kb18 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+
+Skipping Cell: testing/tests/master/16kb2 - it has RAMB36E1 primitive(s)
+Memories to be patched (16):
+  mem/ram_reg_13 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_4 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_9 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_11 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_7 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_6 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_8 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_14 RAMB36E1 BRAM_L_X6Y90 X0Y18 ram
+  mem/ram_reg_5 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_15 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_12 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_10 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+
+Skipping Cell: testing/tests/master/16kb32 - it has RAMB36E1 primitive(s)
+Memories to be patched (18):
+  mem/ram_reg_4 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_13 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y5 X0Y1 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y10 X0Y2 ram
+  mem/ram_reg_5 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_11 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_7 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_9 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_6 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_8 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_14 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+  mem/ram_reg_17 RAMB36E1 BRAM_L_X6Y90 X0Y18 ram
+  mem/ram_reg_15 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_12 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_16 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_10 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+
+Skipping Cell: testing/tests/master/16kb36 - it has RAMB36E1 primitive(s)
+Memories to be patched (2):
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+
+Skipping Cell: testing/tests/master/16kb4 - it has RAMB36E1 primitive(s)
+Memories to be patched (32):
+  mem/ram_reg_28 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_13 RAMB36E1 BRAM_L_X6Y120 X0Y24 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y90 X0Y18 ram
+  mem/ram_reg_26 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_17 RAMB36E1 BRAM_L_X6Y125 X0Y25 ram
+  mem/ram_reg_15 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_12 RAMB36E1 BRAM_L_X6Y115 X0Y23 ram
+  mem/ram_reg_22 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+  mem/ram_reg_20 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_10 RAMB36E1 BRAM_L_X6Y5 X0Y1 ram
+  mem/ram_reg_23 RAMB36E1 BRAM_L_X6Y140 X0Y28 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y95 X0Y19 ram
+  mem/ram_reg_8 RAMB36E1 BRAM_L_X30Y30 X1Y6 ram
+  mem/ram_reg_29 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_4 RAMB36E1 BRAM_L_X6Y100 X0Y20 ram
+  mem/ram_reg_24 RAMB36E1 BRAM_L_X6Y135 X0Y27 ram
+  mem/ram_reg_25 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_11 RAMB36E1 BRAM_L_X6Y10 X0Y2 ram
+  mem/ram_reg_7 RAMB36E1 BRAM_L_X6Y0 X0Y0 ram
+  mem/ram_reg_31 RAMB36E1 BRAM_L_X30Y50 X1Y10 ram
+  mem/ram_reg_6 RAMB36E1 BRAM_L_X6Y110 X0Y22 ram
+  mem/ram_reg_30 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_14 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_5 RAMB36E1 BRAM_L_X6Y105 X0Y21 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_18 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_16 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_21 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_27 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_19 RAMB36E1 BRAM_L_X6Y130 X0Y26 ram
+  mem/ram_reg_9 RAMB36E1 BRAM_L_X30Y35 X1Y7 ram
+
+Skipping Cell: testing/tests/master/16kb64 - it has RAMB36E1 primitive(s)
+Memories to be patched (36):
+  mem/ram_reg_28 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_13 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_34 RAMB36E1 BRAM_L_X30Y65 X1Y13 ram
+  mem/ram_reg_26 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_8 RAMB36E1 BRAM_L_X6Y110 X0Y22 ram
+  mem/ram_reg_17 RAMB36E1 BRAM_L_X6Y125 X0Y25 ram
+  mem/ram_reg_15 RAMB36E1 BRAM_L_X6Y10 X0Y2 ram
+  mem/ram_reg_12 RAMB36E1 BRAM_L_X6Y5 X0Y1 ram
+  mem/ram_reg_22 RAMB36E1 BRAM_L_X6Y135 X0Y27 ram
+  mem/ram_reg_35 RAMB36E1 BRAM_L_X30Y55 X1Y11 ram
+  mem/ram_reg_20 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_10 RAMB36E1 BRAM_L_X6Y120 X0Y24 ram
+  mem/ram_reg_23 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y90 X0Y18 ram
+  mem/ram_reg_33 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_29 RAMB36E1 BRAM_L_X30Y40 X1Y8 ram
+  mem/ram_reg_4 RAMB36E1 BRAM_L_X6Y95 X0Y19 ram
+  mem/ram_reg_24 RAMB36E1 BRAM_L_X6Y145 X0Y29 ram
+  mem/ram_reg_25 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_11 RAMB36E1 BRAM_L_X6Y0 X0Y0 ram
+  mem/ram_reg_7 RAMB36E1 BRAM_L_X30Y95 X1Y19 ram
+  mem/ram_reg_31 RAMB36E1 BRAM_L_X30Y60 X1Y12 ram
+  mem/ram_reg_6 RAMB36E1 BRAM_L_X6Y105 X0Y21 ram
+  mem/ram_reg_32 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_30 RAMB36E1 BRAM_L_X30Y50 X1Y10 ram
+  mem/ram_reg_14 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_5 RAMB36E1 BRAM_L_X6Y100 X0Y20 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_18 RAMB36E1 BRAM_L_X6Y130 X0Y26 ram
+  mem/ram_reg_16 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_21 RAMB36E1 BRAM_L_X6Y140 X0Y28 ram
+  mem/ram_reg_27 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_19 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_9 RAMB36E1 BRAM_L_X6Y115 X0Y23 ram
+
+Skipping Cell: testing/tests/master/16kb72 - it has RAMB36E1 primitive(s)
+Memories to be patched (4):
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+
+Skipping Cell: testing/tests/master/16kb8 - it has RAMB36E1 primitive(s)
+Memories to be patched (5):
+  mem/ram_reg_4 RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+
+Skipping Cell: testing/tests/master/16kb9 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 1kb1 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y25 X0Y10 ram
+
+Cell: 1kb16 BRAM_L_X6Y25 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y25 X0Y10 ram
+
+Cell: 1kb18 BRAM_L_X6Y25 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 1kb2 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+
+Skipping Cell: testing/tests/master/1kb32 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+
+Skipping Cell: testing/tests/master/1kb36 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 1kb4 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (2):
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+
+Skipping Cell: testing/tests/master/1kb64 - it has RAMB36E1 primitive(s)
+Memories to be patched (2):
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+
+Skipping Cell: testing/tests/master/1kb72 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 1kb8 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y20 X0Y8 ram
+
+Cell: 1kb9 BRAM_L_X6Y20 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 256b1 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y25 X0Y10 ram
+
+Cell: 256b16 BRAM_L_X6Y25 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y25 X0Y10 ram
+
+Cell: 256b18 BRAM_L_X6Y25 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 256b2 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y40 X0Y16 ram
+
+Cell: 256b32 BRAM_L_X6Y40 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y45 X0Y18 ram
+
+Cell: 256b36 BRAM_L_X6Y45 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 256b4 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+
+Skipping Cell: testing/tests/master/256b64 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+
+Skipping Cell: testing/tests/master/256b72 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 256b8 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 256b9 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 2kb1 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+
+Skipping Cell: testing/tests/master/2kb16 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+
+Skipping Cell: testing/tests/master/2kb18 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 2kb2 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (2):
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+
+Skipping Cell: testing/tests/master/2kb32 - it has RAMB36E1 primitive(s)
+Memories to be patched (2):
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+
+Skipping Cell: testing/tests/master/2kb36 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 2kb4 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (4):
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+
+Skipping Cell: testing/tests/master/2kb64 - it has RAMB36E1 primitive(s)
+Memories to be patched (4):
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+
+Skipping Cell: testing/tests/master/2kb72 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y20 X0Y8 ram
+
+Cell: 2kb8 BRAM_L_X6Y20 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y20 X0Y8 ram
+
+Cell: 2kb9 BRAM_L_X6Y20 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+
+Skipping Cell: testing/tests/master/32kb1 - it has RAMB36E1 primitive(s)
+Memories to be patched (16):
+  mem/ram_reg_0_0 RAMB36E1 BRAM_L_X6Y0 X0Y0 ram
+  mem/ram_reg_0_4 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_0_15 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_0_12 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_0_1 RAMB36E1 BRAM_L_X6Y5 X0Y1 ram
+  mem/ram_reg_0_8 RAMB36E1 BRAM_L_X30Y35 X1Y7 ram
+  mem/ram_reg_0_13 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_0_5 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_0_6 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_0_11 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_0_7 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_0_14 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_0_2 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_0_10 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_0_9 RAMB36E1 BRAM_L_X30Y40 X1Y8 ram
+  mem/ram_reg_0_3 RAMB36E1 BRAM_L_X6Y10 X0Y2 ram
+
+Skipping Cell: testing/tests/master/32kb16 - it has RAMB36E1 primitive(s)
+Memories to be patched (18):
+  mem/ram_reg_0_0 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_0_4 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_0_15 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_0_12 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_0_1 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_0_8 RAMB36E1 BRAM_L_X30Y45 X1Y9 ram
+  mem/ram_reg_0_13 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_0_5 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_0_3 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_0_11 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_0_7 RAMB36E1 BRAM_L_X30Y40 X1Y8 ram
+  mem/ram_reg_0_9 RAMB36E1 BRAM_L_X30Y55 X1Y11 ram
+  mem/ram_reg_0_6 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_0_16 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_0_10 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_0_2 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_0_14 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_0_17 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+
+Skipping Cell: testing/tests/master/32kb18 - it has RAMB36E1 primitive(s)
+Memories to be patched (2):
+  mem/ram_reg_0_0 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_0_1 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+
+Skipping Cell: testing/tests/master/32kb2 - it has RAMB36E1 primitive(s)
+Memories to be patched (32):
+  mem/ram_reg_0_26 RAMB36E1 BRAM_L_X6Y95 X0Y19 ram
+  mem/ram_reg_0_19 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_0_29 RAMB36E1 BRAM_L_X30Y30 X1Y6 ram
+  mem/ram_reg_0_8 RAMB36E1 BRAM_L_X6Y5 X0Y1 ram
+  mem/ram_reg_0_5 RAMB36E1 BRAM_L_X30Y15 X1Y3 ram
+  mem/ram_reg_0_6 RAMB36E1 BRAM_L_X30Y10 X1Y2 ram
+  mem/ram_reg_0_7 RAMB36E1 BRAM_L_X30Y25 X1Y5 ram
+  mem/ram_reg_0_25 RAMB36E1 BRAM_L_X6Y90 X0Y18 ram
+  mem/ram_reg_0_16 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_0_30 RAMB36E1 BRAM_L_X30Y35 X1Y7 ram
+  mem/ram_reg_0_3 RAMB36E1 BRAM_L_X30Y20 X1Y4 ram
+  mem/ram_reg_0_27 RAMB36E1 BRAM_L_X30Y55 X1Y11 ram
+  mem/ram_reg_0_0 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_0_4 RAMB36E1 BRAM_L_X30Y5 X1Y1 ram
+  mem/ram_reg_0_15 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_0_23 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_0_24 RAMB36E1 BRAM_L_X6Y100 X0Y20 ram
+  mem/ram_reg_0_28 RAMB36E1 BRAM_L_X6Y110 X0Y22 ram
+  mem/ram_reg_0_21 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_0_12 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_0_31 RAMB36E1 BRAM_L_X6Y105 X0Y21 ram
+  mem/ram_reg_0_1 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_0_22 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_0_13 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_0_18 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_0_11 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_0_9 RAMB36E1 BRAM_L_X30Y40 X1Y8 ram
+  mem/ram_reg_0_2 RAMB36E1 BRAM_L_X6Y0 X0Y0 ram
+  mem/ram_reg_0_17 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_0_10 RAMB36E1 BRAM_L_X6Y10 X0Y2 ram
+  mem/ram_reg_0_20 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_0_14 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+
+Skipping Cell: testing/tests/master/32kb32 - it has RAMB36E1 primitive(s)
+Memories to be patched (36):
+  mem/ram_reg_0_26 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_0_7 RAMB36E1 BRAM_L_X30Y65 X1Y13 ram
+  mem/ram_reg_0_34 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_0_19 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_0_29 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_0_8 RAMB36E1 BRAM_L_X30Y35 X1Y7 ram
+  mem/ram_reg_0_4 RAMB36E1 BRAM_L_X30Y60 X1Y12 ram
+  mem/ram_reg_0_6 RAMB36E1 BRAM_L_X30Y40 X1Y8 ram
+  mem/ram_reg_0_32 RAMB36E1 BRAM_L_X6Y135 X0Y27 ram
+  mem/ram_reg_0_25 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_0_16 RAMB36E1 BRAM_L_X6Y100 X0Y20 ram
+  mem/ram_reg_0_30 RAMB36E1 BRAM_L_X6Y145 X0Y29 ram
+  mem/ram_reg_0_3 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_0_27 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_0_0 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_0_5 RAMB36E1 BRAM_L_X30Y55 X1Y11 ram
+  mem/ram_reg_0_33 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_0_15 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_0_23 RAMB36E1 BRAM_L_X6Y90 X0Y18 ram
+  mem/ram_reg_0_24 RAMB36E1 BRAM_L_X6Y125 X0Y25 ram
+  mem/ram_reg_0_28 RAMB36E1 BRAM_L_X6Y130 X0Y26 ram
+  mem/ram_reg_0_21 RAMB36E1 BRAM_L_X6Y115 X0Y23 ram
+  mem/ram_reg_0_12 RAMB36E1 BRAM_L_X6Y10 X0Y2 ram
+  mem/ram_reg_0_31 RAMB36E1 BRAM_L_X6Y140 X0Y28 ram
+  mem/ram_reg_0_1 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_0_9 RAMB36E1 BRAM_L_X30Y50 X1Y10 ram
+  mem/ram_reg_0_22 RAMB36E1 BRAM_L_X6Y120 X0Y24 ram
+  mem/ram_reg_0_13 RAMB36E1 BRAM_L_X6Y5 X0Y1 ram
+  mem/ram_reg_0_18 RAMB36E1 BRAM_L_X6Y110 X0Y22 ram
+  mem/ram_reg_0_11 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_0_35 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_0_2 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+  mem/ram_reg_0_17 RAMB36E1 BRAM_L_X6Y95 X0Y19 ram
+  mem/ram_reg_0_10 RAMB36E1 BRAM_L_X6Y0 X0Y0 ram
+  mem/ram_reg_0_20 RAMB36E1 BRAM_L_X6Y105 X0Y21 ram
+  mem/ram_reg_0_14 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+
+Skipping Cell: testing/tests/master/32kb36 - it has RAMB36E1 primitive(s)
+Memories to be patched (4):
+  mem/ram_reg_0_0 RAMB36E1 BRAM_L_X6Y10 X0Y2 ram
+  mem/ram_reg_0_2 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_0_3 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_0_1 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+
+Skipping Cell: testing/tests/master/32kb4 - it has RAMB36E1 primitive(s)
+Memories to be patched (64):
+  mem/ram_reg_0_26 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_0_49 RAMB36E1 BRAM_R_X37Y85 X2Y17 ram
+  mem/ram_reg_0_32 RAMB36E1 BRAM_L_X30Y25 X1Y5 ram
+  mem/ram_reg_0_19 RAMB36E1 BRAM_L_X30Y15 X1Y3 ram
+  mem/ram_reg_0_56 RAMB36E1 BRAM_R_X37Y45 X2Y9 ram
+  mem/ram_reg_0_36 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+  mem/ram_reg_0_7 RAMB36E1 BRAM_L_X6Y105 X0Y21 ram
+  mem/ram_reg_0_16 RAMB36E1 BRAM_L_X30Y0 X1Y0 ram
+  mem/ram_reg_0_3 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_0_9 RAMB36E1 BRAM_L_X30Y95 X1Y19 ram
+  mem/ram_reg_0_0 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_0_63 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_0_4 RAMB36E1 BRAM_L_X30Y85 X1Y17 ram
+  mem/ram_reg_0_23 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_0_58 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_0_12 RAMB36E1 BRAM_L_X6Y100 X0Y20 ram
+  mem/ram_reg_0_46 RAMB36E1 BRAM_L_X30Y75 X1Y15 ram
+  mem/ram_reg_0_54 RAMB36E1 BRAM_L_X30Y40 X1Y8 ram
+  mem/ram_reg_0_37 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_0_51 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_0_28 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_0_61 RAMB36E1 BRAM_L_X30Y60 X1Y12 ram
+  mem/ram_reg_0_52 RAMB36E1 BRAM_R_X37Y35 X2Y7 ram
+  mem/ram_reg_0_45 RAMB36E1 BRAM_R_X37Y80 X2Y16 ram
+  mem/ram_reg_0_57 RAMB36E1 BRAM_L_X30Y45 X1Y9 ram
+  mem/ram_reg_0_47 RAMB36E1 BRAM_R_X37Y65 X2Y13 ram
+  mem/ram_reg_0_2 RAMB36E1 BRAM_L_X30Y80 X1Y16 ram
+  mem/ram_reg_0_17 RAMB36E1 BRAM_L_X6Y5 X0Y1 ram
+  mem/ram_reg_0_59 RAMB36E1 BRAM_R_X37Y60 X2Y12 ram
+  mem/ram_reg_0_44 RAMB36E1 BRAM_R_X37Y75 X2Y15 ram
+  mem/ram_reg_0_38 RAMB36E1 BRAM_L_X6Y135 X0Y27 ram
+  mem/ram_reg_0_34 RAMB36E1 BRAM_L_X6Y125 X0Y25 ram
+  mem/ram_reg_0_39 RAMB36E1 BRAM_L_X6Y140 X0Y28 ram
+  mem/ram_reg_0_41 RAMB36E1 BRAM_L_X6Y145 X0Y29 ram
+  mem/ram_reg_0_29 RAMB36E1 BRAM_R_X37Y15 X2Y3 ram
+  mem/ram_reg_0_55 RAMB36E1 BRAM_R_X37Y50 X2Y10 ram
+  mem/ram_reg_0_60 RAMB36E1 BRAM_R_X37Y55 X2Y11 ram
+  mem/ram_reg_0_8 RAMB36E1 BRAM_L_X30Y90 X1Y18 ram
+  mem/ram_reg_0_6 RAMB36E1 BRAM_R_X37Y90 X2Y18 ram
+  mem/ram_reg_0_42 RAMB36E1 BRAM_L_X30Y50 X1Y10 ram
+  mem/ram_reg_0_25 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_0_30 RAMB36E1 BRAM_L_X30Y35 X1Y7 ram
+  mem/ram_reg_0_27 RAMB36E1 BRAM_L_X6Y120 X0Y24 ram
+  mem/ram_reg_0_5 RAMB36E1 BRAM_R_X37Y95 X2Y19 ram
+  mem/ram_reg_0_15 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_0_50 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_0_24 RAMB36E1 BRAM_L_X30Y20 X1Y4 ram
+  mem/ram_reg_0_21 RAMB36E1 BRAM_L_X30Y10 X1Y2 ram
+  mem/ram_reg_0_31 RAMB36E1 BRAM_L_X30Y65 X1Y13 ram
+  mem/ram_reg_0_53 RAMB36E1 BRAM_R_X37Y40 X2Y8 ram
+  mem/ram_reg_0_40 RAMB36E1 BRAM_L_X30Y30 X1Y6 ram
+  mem/ram_reg_0_1 RAMB36E1 BRAM_L_X6Y95 X0Y19 ram
+  mem/ram_reg_0_22 RAMB36E1 BRAM_L_X6Y10 X0Y2 ram
+  mem/ram_reg_0_13 RAMB36E1 BRAM_L_X6Y115 X0Y23 ram
+  mem/ram_reg_0_18 RAMB36E1 BRAM_L_X30Y5 X1Y1 ram
+  mem/ram_reg_0_11 RAMB36E1 BRAM_L_X6Y110 X0Y22 ram
+  mem/ram_reg_0_48 RAMB36E1 BRAM_R_X37Y70 X2Y14 ram
+  mem/ram_reg_0_35 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_0_62 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_0_43 RAMB36E1 BRAM_L_X30Y55 X1Y11 ram
+  mem/ram_reg_0_33 RAMB36E1 BRAM_L_X6Y130 X0Y26 ram
+  mem/ram_reg_0_10 RAMB36E1 BRAM_L_X6Y90 X0Y18 ram
+  mem/ram_reg_0_20 RAMB36E1 BRAM_L_X30Y70 X1Y14 ram
+  mem/ram_reg_0_14 RAMB36E1 BRAM_L_X6Y0 X0Y0 ram
+
+Skipping Cell: testing/tests/master/32kb64 - it has RAMB36E1 primitive(s)
+Memories to be patched (72):
+  mem/ram_reg_0_69 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_0_26 RAMB36E1 BRAM_L_X6Y125 X0Y25 ram
+  mem/ram_reg_0_49 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_0_32 RAMB36E1 BRAM_L_X30Y15 X1Y3 ram
+  mem/ram_reg_0_19 RAMB36E1 BRAM_L_X30Y130 X1Y26 ram
+  mem/ram_reg_0_56 RAMB36E1 BRAM_R_X37Y35 X2Y7 ram
+  mem/ram_reg_0_68 RAMB36E1 BRAM_R_X37Y60 X2Y12 ram
+  mem/ram_reg_0_36 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_0_7 RAMB36E1 BRAM_R_X37Y80 X2Y16 ram
+  mem/ram_reg_0_16 RAMB36E1 BRAM_L_X30Y125 X1Y25 ram
+  mem/ram_reg_0_3 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_0_9 RAMB36E1 BRAM_R_X37Y85 X2Y17 ram
+  mem/ram_reg_0_0 RAMB36E1 BRAM_L_X30Y75 X1Y15 ram
+  mem/ram_reg_0_63 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_0_4 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_0_23 RAMB36E1 BRAM_L_X6Y0 X0Y0 ram
+  mem/ram_reg_0_58 RAMB36E1 BRAM_L_X30Y40 X1Y8 ram
+  mem/ram_reg_0_12 RAMB36E1 BRAM_L_X6Y105 X0Y21 ram
+  mem/ram_reg_0_46 RAMB36E1 BRAM_R_X37Y55 X2Y11 ram
+  mem/ram_reg_0_54 RAMB36E1 BRAM_R_X37Y20 X2Y4 ram
+  mem/ram_reg_0_65 RAMB36E1 BRAM_L_X30Y65 X1Y13 ram
+  mem/ram_reg_0_37 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_0_51 RAMB36E1 BRAM_L_X30Y30 X1Y6 ram
+  mem/ram_reg_0_67 RAMB36E1 BRAM_R_X37Y65 X2Y13 ram
+  mem/ram_reg_0_28 RAMB36E1 BRAM_L_X6Y10 X0Y2 ram
+  mem/ram_reg_0_61 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_0_52 RAMB36E1 BRAM_R_X37Y15 X2Y3 ram
+  mem/ram_reg_0_45 RAMB36E1 BRAM_L_X30Y70 X1Y14 ram
+  mem/ram_reg_0_57 RAMB36E1 BRAM_L_X30Y50 X1Y10 ram
+  mem/ram_reg_0_47 RAMB36E1 BRAM_R_X37Y75 X2Y15 ram
+  mem/ram_reg_0_2 RAMB36E1 BRAM_L_X30Y85 X1Y17 ram
+  mem/ram_reg_0_17 RAMB36E1 BRAM_L_X6Y100 X0Y20 ram
+  mem/ram_reg_0_59 RAMB36E1 BRAM_R_X37Y40 X2Y8 ram
+  mem/ram_reg_0_44 RAMB36E1 BRAM_L_X30Y140 X1Y28 ram
+  mem/ram_reg_0_71 RAMB36E1 BRAM_R_X37Y70 X2Y14 ram
+  mem/ram_reg_0_38 RAMB36E1 BRAM_L_X6Y135 X0Y27 ram
+  mem/ram_reg_0_34 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_0_39 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_0_64 RAMB36E1 BRAM_L_X30Y45 X1Y9 ram
+  mem/ram_reg_0_41 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_0_29 RAMB36E1 BRAM_L_X30Y5 X1Y1 ram
+  mem/ram_reg_0_55 RAMB36E1 BRAM_R_X37Y25 X2Y5 ram
+  mem/ram_reg_0_60 RAMB36E1 BRAM_R_X37Y45 X2Y9 ram
+  mem/ram_reg_0_8 RAMB36E1 BRAM_R_X37Y90 X2Y18 ram
+  mem/ram_reg_0_6 RAMB36E1 BRAM_L_X30Y80 X1Y16 ram
+  mem/ram_reg_0_42 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_0_25 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_0_30 RAMB36E1 BRAM_L_X30Y10 X1Y2 ram
+  mem/ram_reg_0_27 RAMB36E1 BRAM_L_X6Y130 X0Y26 ram
+  mem/ram_reg_0_66 RAMB36E1 BRAM_R_X37Y50 X2Y10 ram
+  mem/ram_reg_0_5 RAMB36E1 BRAM_L_X30Y90 X1Y18 ram
+  mem/ram_reg_0_15 RAMB36E1 BRAM_L_X6Y95 X0Y19 ram
+  mem/ram_reg_0_50 RAMB36E1 BRAM_L_X30Y35 X1Y7 ram
+  mem/ram_reg_0_24 RAMB36E1 BRAM_L_X6Y5 X0Y1 ram
+  mem/ram_reg_0_21 RAMB36E1 BRAM_L_X30Y135 X1Y27 ram
+  mem/ram_reg_0_31 RAMB36E1 BRAM_R_X37Y10 X2Y2 ram
+  mem/ram_reg_0_53 RAMB36E1 BRAM_R_X37Y30 X2Y6 ram
+  mem/ram_reg_0_40 RAMB36E1 BRAM_L_X6Y140 X0Y28 ram
+  mem/ram_reg_0_70 RAMB36E1 BRAM_L_X30Y55 X1Y11 ram
+  mem/ram_reg_0_1 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+  mem/ram_reg_0_22 RAMB36E1 BRAM_L_X30Y0 X1Y0 ram
+  mem/ram_reg_0_13 RAMB36E1 BRAM_L_X6Y110 X0Y22 ram
+  mem/ram_reg_0_18 RAMB36E1 BRAM_L_X6Y115 X0Y23 ram
+  mem/ram_reg_0_11 RAMB36E1 BRAM_L_X30Y95 X1Y19 ram
+  mem/ram_reg_0_48 RAMB36E1 BRAM_L_X6Y145 X0Y29 ram
+  mem/ram_reg_0_35 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_0_62 RAMB36E1 BRAM_L_X30Y60 X1Y12 ram
+  mem/ram_reg_0_43 RAMB36E1 BRAM_L_X30Y25 X1Y5 ram
+  mem/ram_reg_0_33 RAMB36E1 BRAM_L_X30Y20 X1Y4 ram
+  mem/ram_reg_0_10 RAMB36E1 BRAM_R_X37Y95 X2Y19 ram
+  mem/ram_reg_0_20 RAMB36E1 BRAM_L_X6Y120 X0Y24 ram
+  mem/ram_reg_0_14 RAMB36E1 BRAM_L_X6Y90 X0Y18 ram
+
+Skipping Cell: testing/tests/master/32kb72 - it has RAMB36E1 primitive(s)
+Memories to be patched (8):
+  mem/ram_reg_0_0 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_0_4 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_0_6 RAMB36E1 BRAM_L_X30Y25 X1Y5 ram
+  mem/ram_reg_0_1 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_0_7 RAMB36E1 BRAM_L_X30Y20 X1Y4 ram
+  mem/ram_reg_0_5 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_0_2 RAMB36E1 BRAM_L_X30Y15 X1Y3 ram
+  mem/ram_reg_0_3 RAMB36E1 BRAM_L_X30Y30 X1Y6 ram
+
+Skipping Cell: testing/tests/master/32kb8 - it has RAMB36E1 primitive(s)
+Memories to be patched (9):
+  mem/ram_reg_0_0 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_0_8 RAMB36E1 BRAM_L_X30Y20 X1Y4 ram
+  mem/ram_reg_0_4 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_0_6 RAMB36E1 BRAM_L_X30Y30 X1Y6 ram
+  mem/ram_reg_0_1 RAMB36E1 BRAM_L_X30Y15 X1Y3 ram
+  mem/ram_reg_0_7 RAMB36E1 BRAM_L_X30Y25 X1Y5 ram
+  mem/ram_reg_0_5 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_0_2 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_0_3 RAMB36E1 BRAM_L_X6Y10 X0Y2 ram
+
+Skipping Cell: testing/tests/master/32kb9 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 4kb1 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (2):
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+
+Skipping Cell: testing/tests/master/4kb16 - it has RAMB36E1 primitive(s)
+Memories to be patched (2):
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+
+Skipping Cell: testing/tests/master/4kb18 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 4kb2 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (4):
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+
+Skipping Cell: testing/tests/master/4kb32 - it has RAMB36E1 primitive(s)
+Memories to be patched (4):
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+
+Skipping Cell: testing/tests/master/4kb36 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 4kb4 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (8):
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_5 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_4 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+  mem/ram_reg_7 RAMB18E1 BRAM_L_X6Y60 X0Y24 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_6 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+
+Skipping Cell: testing/tests/master/4kb64 - it has RAMB36E1 primitive(s)
+Memories to be patched (8):
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+  mem/ram_reg_5 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_4 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_7 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_6 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+
+Skipping Cell: testing/tests/master/4kb72 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+
+Skipping Cell: testing/tests/master/4kb8 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+
+Skipping Cell: testing/tests/master/4kb9 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 512b1 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y25 X0Y10 ram
+
+Cell: 512b16 BRAM_L_X6Y25 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y25 X0Y10 ram
+
+Cell: 512b18 BRAM_L_X6Y25 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 512b2 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y40 X0Y16 ram
+
+Cell: 512b32 BRAM_L_X6Y40 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y45 X0Y18 ram
+
+Cell: 512b36 BRAM_L_X6Y45 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y10 X0Y4 ram
+
+Cell: 512b4 BRAM_L_X6Y10 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+
+Skipping Cell: testing/tests/master/512b64 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+
+Skipping Cell: testing/tests/master/512b72 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 512b8 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 512b9 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 8kb1 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (4):
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+
+Skipping Cell: testing/tests/master/8kb16 - it has RAMB36E1 primitive(s)
+Memories to be patched (5):
+  mem/ram_reg_4 RAMB18E1 BRAM_L_X6Y30 X0Y12 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+
+Skipping Cell: testing/tests/master/8kb18 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+
+Cell: 8kb2 BRAM_L_X6Y15 RAMB18E1 all checked out...
+Memories to be patched (8):
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_5 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_4 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_7 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_6 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+
+Skipping Cell: testing/tests/master/8kb32 - it has RAMB36E1 primitive(s)
+Memories to be patched (9):
+  mem/ram_reg_8 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_5 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_4 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_7 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y30 X0Y6 ram
+  mem/ram_reg_6 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+
+Skipping Cell: testing/tests/master/8kb36 - it has RAMB36E1 primitive(s)
+Memories to be patched (1):
+  mem/ram_reg RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+
+Skipping Cell: testing/tests/master/8kb4 - it has RAMB36E1 primitive(s)
+Memories to be patched (16):
+  mem/ram_reg_13 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y100 X0Y20 ram
+  mem/ram_reg_4 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_9 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_11 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_7 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y105 X0Y21 ram
+  mem/ram_reg_6 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_8 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_14 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_5 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_15 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y90 X0Y18 ram
+  mem/ram_reg_12 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_10 RAMB36E1 BRAM_L_X6Y95 X0Y19 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y110 X0Y22 ram
+
+Skipping Cell: testing/tests/master/8kb64 - it has RAMB36E1 primitive(s)
+Memories to be patched (18):
+  mem/ram_reg_4 RAMB36E1 BRAM_L_X6Y105 X0Y21 ram
+  mem/ram_reg_13 RAMB36E1 BRAM_L_X6Y35 X0Y7 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y95 X0Y19 ram
+  mem/ram_reg_2 RAMB36E1 BRAM_L_X6Y100 X0Y20 ram
+  mem/ram_reg_5 RAMB36E1 BRAM_L_X6Y115 X0Y23 ram
+  mem/ram_reg_11 RAMB36E1 BRAM_L_X6Y65 X0Y13 ram
+  mem/ram_reg_7 RAMB36E1 BRAM_L_X6Y70 X0Y14 ram
+  mem/ram_reg_9 RAMB36E1 BRAM_L_X6Y80 X0Y16 ram
+  mem/ram_reg_6 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+  mem/ram_reg_8 RAMB36E1 BRAM_L_X6Y85 X0Y17 ram
+  mem/ram_reg_14 RAMB36E1 BRAM_L_X6Y40 X0Y8 ram
+  mem/ram_reg_17 RAMB36E1 BRAM_L_X6Y55 X0Y11 ram
+  mem/ram_reg_15 RAMB36E1 BRAM_L_X6Y45 X0Y9 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y90 X0Y18 ram
+  mem/ram_reg_12 RAMB36E1 BRAM_L_X6Y50 X0Y10 ram
+  mem/ram_reg_16 RAMB36E1 BRAM_L_X6Y60 X0Y12 ram
+  mem/ram_reg_10 RAMB36E1 BRAM_L_X6Y75 X0Y15 ram
+  mem/ram_reg_3 RAMB36E1 BRAM_L_X6Y110 X0Y22 ram
+
+Skipping Cell: testing/tests/master/8kb72 - it has RAMB36E1 primitive(s)
+Memories to be patched (2):
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y15 X0Y3 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+
+Skipping Cell: testing/tests/master/8kb8 - it has RAMB36E1 primitive(s)
+Memories to be patched (3):
+  mem/ram_reg_2 RAMB18E1 BRAM_L_X6Y15 X0Y6 ram
+  mem/ram_reg_1 RAMB36E1 BRAM_L_X6Y20 X0Y4 ram
+  mem/ram_reg_0 RAMB36E1 BRAM_L_X6Y25 X0Y5 ram
+
+Skipping Cell: testing/tests/master/8kb9 - it has RAMB36E1 primitive(s)
