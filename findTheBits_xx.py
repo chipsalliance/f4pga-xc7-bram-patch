@@ -4,7 +4,7 @@
 # Description:
 #    Will compute bit mappings from init.mem bit locations to FASM INIT/INITP lines/bits
 #    If a bit mismatch is found between a given init.mem file and locations in the FASM file, an assertion will fail.
-#    So, you can run this and if no exceptions are thrown, all bits match
+#    So, you can run this and if no exceptions are thrown because all bits matched.
 
 import os
 import glob
@@ -12,62 +12,23 @@ import parseutil
 import argparse
 
 
-def pad(ch, wid, data):
-    tmp = str(data)
-    return (ch * (wid - len(tmp)) + tmp)
-
-# Read the FASM file and filter out Y0 and Y1 INIT and INITP strings and put into lists to return
-def collectInitStrings(cell, fasmFile):
-        init0lines = []
-        init0plines = []
-        init1lines = []
-        init1plines = []
-        with open(fasmFile) as f:
-            for line in f.readlines():
-                if line.split(".")[0] != cell.tile:
-                    continue
-                if "Y0.INITP" in line:
-                    init0plines.append(line)
-                elif "Y0.INIT" in line:
-                    init0lines.append(line)
-                if "Y1.INITP" in line:
-                    init1plines.append(line)
-                elif "Y1.INIT" in line:
-                    init1lines.append(line)
-        return(init0lines, init0plines, init1lines, init1plines)
-
-# Read the INIT lines one at a time
-# Pad them into 256 character lines and reverse them end to end
-# Return a list of them
-def processInitLines(cell, initlines):
-    inits = []
-    i = 0
-    for line in initlines:
-        if line.split(".")[0] != cell.tile:
-            continue
-        key = line.split(".")[2].split("_")[1][0:2]
-        key = int(key, 16)
-        assert key == i
-        val = line.split("'")[1][1:].rstrip()
-        val = pad('0', 256, val)[::-1]
-        inits.append(val)
-        i += 1
-    return inits
-
-
-def findAllBits(designName, mdd_data, cell, initFile, fasmFile, verbose=False, mappings=True):
+def findAllBits(
+    designName, mdd_data, cell, initFile, fasmFile, verbose, mappings, check
+):
 
     # Flag of whether this is RAMB36E cell or not
-    r36 = cell.type == "RAMB36E1"
+    r36 = (cell.type == "RAMB36E1")
 
     # Step 1: Read the init.mem file for this design
-    init = parseutil.parse_init_test.initfile_to_initlist(
+    initMemContents = parseutil.parse_init_test.initfile_to_initlist(
         initFile, mdd_data
     )
     # Step 2: Read the fasm file for this design and collect the INIT lines, they should be in ascending order
     if r36:
         # Get all the INIT lines
-        init0lines, init0plines, init1lines, init1plines = collectInitStrings(cell, fasmFile)
+        init0lines, init0plines, init1lines, init1plines = collectInitStrings(
+            cell, fasmFile
+        )
 
         # Convert those into the proper format strings
         init0s = processInitLines(cell, init0lines)
@@ -89,18 +50,22 @@ def findAllBits(designName, mdd_data, cell, initFile, fasmFile, verbose=False, m
             for j in range(256):
                 itm = itm + init0ps[i][j] + init1ps[i][j]
             initps.append(itm)
-    else: # !r36
+    else:  # !r36
         # Get all the INIT lines
         # Only the init0 and init0p should have anything since this is a RAMB18E1 primitive
-        init0lines, init0plines, init1lines, init1plines = collectInitStrings(cell, fasmFile)
-        assert len(init1lines) == 0 and len(init1plines) == 0, "{} {}".format(len(init1lines), len(init1plines))
+        init0lines, init0plines, init1lines, init1plines = collectInitStrings(
+            cell, fasmFile
+        )
+        assert len(init1lines) == 0 and len(init1plines) == 0, "{} {}".format(
+            len(init1lines), len(init1plines)
+        )
 
         # Get all the init lines for this cell, pad them with 0's, and reverse them
-        inits =  processInitLines(cell, init0lines)
+        inits = processInitLines(cell, init0lines)
         initps = processInitLines(cell, init0plines)
 
     # Step 3: Now check if we can find all the bits in this cell
-    for w in range(cell.addr_beg, cell.addr_beg + len(init)):
+    for w in range(cell.addr_beg, cell.addr_beg + len(initMemContents)):
         for b in range(cell.slice_beg, cell.slice_end + 1):
             bwid = cell.slice_end - cell.slice_beg + 1
             wdep = cell.addr_end - cell.addr_beg + 1
@@ -167,17 +132,18 @@ def findAllBits(designName, mdd_data, cell, initFile, fasmFile, verbose=False, m
             if verbose:
                 print(
                     "{} {} {} {} {} {}".format(
-                        w, b, cell.width, len(init),
-                        len(init[w]) - 1 - b, init[w]
+                        w, b, cell.width, len(initMemContents),
+                        len(initMemContents[w]) - 1 - b, initMemContents[w]
                     )
                 )
             # Get the bit from the .mem inititalization file array
-            initbit = init[w][len(init[w]) - 1 - b]
+            initbit = initMemContents[w][len(initMemContents[w]) - 1 - b]
 
             # Computer where to find the bit in the INIT strings (after they were combined and reversed above)
             initRow = int(w / numPerInit)
             wordOffset = int(w % numPerInit)
-            bitOffset = wordOffset * bslice + (b - cell.slice_beg - (islice if parity else 0)
+            bitOffset = wordOffset * bslice + (
+                b - cell.slice_beg - (islice if parity else 0)
             )
             if verbose:
                 print(
@@ -192,7 +158,8 @@ def findAllBits(designName, mdd_data, cell, initFile, fasmFile, verbose=False, m
                 print("Bit[{}][{}] = {} vs. {}".format(w, b, initbit, fasmbit))
 
             # Check that the bits match each other, proving that the above algorithm is correct
-            assert initbit == fasmbit
+            if check:
+                assert initbit == fasmbit
 
             # Finally, print out the mapping if requested
             initRow = "{:02x}".format(initRow).upper()
@@ -201,34 +168,82 @@ def findAllBits(designName, mdd_data, cell, initFile, fasmFile, verbose=False, m
                     print(
                         "{} init.mem[{}][{}] -> {}.{}_Y{}.INITP_{}[{:03}] ".
                         format(
-                            designName, 
-                            w, 
-                            b, 
-                            cell.tile[0:6], 
+                            designName,
+                            w,
+                            b,
+                            cell.tile[0:6],
                             cell.type[:-2],
-                            '0' if (r36 is False or bitOffset % 2 == 0) else '1',  # change
-                            initRow, 
-                            int(bitOffset/2) if r36 else bitOffset
+                            '0' if (r36 is False or bitOffset % 2 == 0) else
+                            '1',  # change
+                            initRow,
+                            int(bitOffset / 2) if r36 else bitOffset
                         )
                     )
                 else:
                     print(
                         "{} init.mem[{}][{}] -> {}.{}_Y{}.INIT_{}[{:03}] ".
                         format(
-                            designName, 
-                            w, 
-                            b, 
-                            cell.tile[0:6], 
+                            designName,
+                            w,
+                            b,
+                            cell.tile[0:6],
                             cell.type[:-2],
-                            '0' if (r36 is False or bitOffset % 2 == 0) else '1',  # change
-                            initRow, 
-                            int(bitOffset/2) if r36 else bitOffset
+                            '0' if (r36 is False or bitOffset % 2 == 0) else
+                            '1',  # change
+                            initRow,
+                            int(bitOffset / 2) if r36 else bitOffset
                         )
                     )
     # If we got here, it worked so say so...
-    print(
-        "    Cell: {} {} {} all checked out...".format(
-            designName, cell.tile, cell.type
-        ),
-        flush=True
-    )
+    if check:
+        print(
+            "    Cell: {} {} {} all checked out and correct...".format(
+                designName, cell.tile, cell.type
+            ),
+            flush=True
+        )
+
+
+def pad(ch, wid, data):
+    tmp = str(data)
+    return (ch * (wid - len(tmp)) + tmp)
+
+
+# Read the FASM file and filter out Y0 and Y1 INIT and INITP strings and put into lists to return
+def collectInitStrings(cell, fasmFile):
+    init0lines = []
+    init0plines = []
+    init1lines = []
+    init1plines = []
+    with open(fasmFile) as f:
+        for line in f.readlines():
+            if line.split(".")[0] != cell.tile:
+                continue
+            if "Y0.INITP" in line:
+                init0plines.append(line)
+            elif "Y0.INIT" in line:
+                init0lines.append(line)
+            if "Y1.INITP" in line:
+                init1plines.append(line)
+            elif "Y1.INIT" in line:
+                init1lines.append(line)
+    return (init0lines, init0plines, init1lines, init1plines)
+
+
+# Read the INIT lines one at a time
+# Pad them into 256 character lines and reverse them end to end
+# Return a list of them
+def processInitLines(cell, initlines):
+    inits = []
+    i = 0
+    for line in initlines:
+        if line.split(".")[0] != cell.tile:
+            continue
+        key = line.split(".")[2].split("_")[1][0:2]
+        key = int(key, 16)
+        assert key == i
+        val = line.split("'")[1][1:].rstrip()
+        val = pad('0', 256, val)[::-1]
+        inits.append(val)
+        i += 1
+    return inits
