@@ -219,7 +219,7 @@ def initlines_to_memfasm(initlines, infile_name):
 
 # This will create the new tuples needed from the infile
 def initfile_to_memfasm(infile, fasm_tups, memfasm_name, mdd):
-    # Read the init.mem file contents.  
+    # Read the init.mem file contents.
     init = initfile_to_initlist(infile, mdd=mdd)
 
     # Put the data for each BRAM into INIT data structures in each Cell record

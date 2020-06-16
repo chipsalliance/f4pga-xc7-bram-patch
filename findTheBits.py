@@ -27,37 +27,56 @@ def pad(ch, wid, data):
     tmp = str(data)
     return (ch * (wid - len(tmp)) + tmp)
 
+
 def findAllBitsInDir(dr, verbose, mappings):
-    print("\nFinding bits in directory: "  + dr, flush = True)
+    print("\nFinding bits in directory: " + dr, flush=True)
     fname = dr.split("/")[-1]
     print(dr)
     # Read the MDD data and filter out the ones we want for this memory
-    mdd_data = patch_mem.readAndFilterMDDData(dr + "/{}.mdd".format(fname), "mem/ram")
+    mdd_data = patch_mem.readAndFilterMDDData(
+        dr + "/{}.mdd".format(fname), "mem/ram"
+    )
     for cell in mdd_data:
-        print("  Processing cell: {} {} {}".format(cell.tile, cell.type, cell.placement), flush = True)
+        print(
+            "  Processing cell: {} {} {}".format(
+                cell.tile, cell.type, cell.placement
+            ),
+            flush=True
+        )
         if cell.type == "RAMB36E1":
             findTheBits_36.findAllBits(dr, mdd_data, cell, verbose, mappings)
         elif cell.type == "RAMB18E1":
             findTheBits_18.findAllBits(dr, mdd_data, cell, verbose, mappings)
+
 
 def findAllBitsInDirs(dirs, verbose, mappings):
     dirs.sort()
     for dr in dirs:
         findAllBitsInDir(dr, verbose, mappings)
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("baseDir", help='Directory where design sub-directories are located.')
-    parser.add_argument("--design", help='If provided, specify just which directory to process.  Otherwise, program will process all designs.')
-    parser.add_argument("--verbose", action='store_true')
-    parser.add_argument("--nomappings", action='store_true')
-    
+    parser.add_argument(
+        "baseDir", help='Directory where design sub-directories are located.'
+    )
+    parser.add_argument(
+        "--design",
+        help=
+        'If provided, specify just which directory to process.  Otherwise, program will process all designs.'
+    )
+    parser.add_argument("--verbose", action='store_const', const=False)
+    parser.add_argument("--mappings", action='store_const', const=False)
     args = parser.parse_args()
 
+    print(args.verbose)
+    print(args.mappings, flush=True)
 
     if args.design is not None:
-        findAllBitsInDir(args.baseDir + "/" + args.design, args.verbose, not args.nomappings)
+        findAllBitsInDir(
+            args.baseDir + "/" + args.design, args.verbose, args.mappings
+        )
     else:
         dirs = glob.glob(args.baseDir + "/*")
-        findAllBitsInDirs(dirs, args.verbose, not args.nomappings)
+        findAllBitsInDirs(dirs, args.verbose, args.mappings)
     print("")
