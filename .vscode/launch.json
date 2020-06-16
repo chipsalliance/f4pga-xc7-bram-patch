@@ -12,13 +12,22 @@
             "console": "integratedTerminal"
         },
         {
-          "name": "SingleTest",
-          "type": "python",
-          "request": "launch",
-          "program": "run_tests.py",
-          "console": "integratedTerminal",
-          "args": ["testing/tests/master/128b8"
-          ]
-        }
-    ]
+            "name": "SingleTest",
+            "type": "python",
+            "request": "launch",
+            "program": "run_tests.py",
+            "console": "integratedTerminal",
+            "args": ["testing/tests/master/128b8"
+            ]
+          },
+          {
+            "name": "findTheBits",
+            "type": "python",
+            "request": "launch",
+            "program": "findTheBits.py",
+            "console": "integratedTerminal",
+            "args": ["testing/tests/master", "--design", "8kb18"
+            ]
+          }
+        ]
 }
