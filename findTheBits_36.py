@@ -17,20 +17,18 @@ def pad(ch, wid, data):
     return (ch * (wid - len(tmp)) + tmp)
 
 
-def findAllBits(dr, mdd_data, cell, verbose=False, mappings=True):
-    fname = dr.name
+def findAllBits(designName, mdd_data, cell, initFile, fasmFile, verbose=False, mappings=True):
 
     # Read the init.mem file for this design
     init = parseutil.parse_init_test.initfile_to_initlist(
-        str(dr / "init/init.mem"), mdd_data
+        initFile, mdd_data
     )
     # Read the fasm file for this design and collect the INIT lines, they should be in ascending order
-    fasmName = str(dr / "real.fasm")
     init0lines = []
     init0plines = []
     init1lines = []
     init1plines = []
-    with open(fasmName) as f:
+    with open(fasmFile) as f:
         for line in f.readlines():
             if "Y0.INITP" in line:
                 init0plines.append(line)
@@ -204,7 +202,7 @@ def findAllBits(dr, mdd_data, cell, verbose=False, mappings=True):
                     print(
                         "{} init.mem[{}][{}] -> {}.{}_Y{}.INITP_{}[{:03}]".
                         format(
-                            fname,
+                            designName,
                             w,
                             b,
                             cell.tile[0:6],
@@ -218,7 +216,7 @@ def findAllBits(dr, mdd_data, cell, verbose=False, mappings=True):
                     print(
                         "{} init.mem[{}][{}] -> {}.{}_Y{}.INIT_{}[{:03}]".
                         format(
-                            fname,
+                            designName,
                             w,
                             b,
                             cell.tile[0:6],
@@ -231,7 +229,7 @@ def findAllBits(dr, mdd_data, cell, verbose=False, mappings=True):
     # Must have worked if we got here
     print(
         "Cell: {} {} {} all checked out...".format(
-            fname, cell.tile, cell.type
+            designName, cell.tile, cell.type
         ),
         flush=True
     )
