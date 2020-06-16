@@ -18,14 +18,14 @@ def pad(ch, wid, data):
 
 
 def findAllBits(dr, mdd_data, cell, verbose=False, mappings=True):
-    fname = dr.split("/")[-1]
+    fname = dr.name
 
     # Read the init.mem file for this design
     init = parseutil.parse_init_test.initfile_to_initlist(
-        dr + "/init/init.mem", mdd_data
+        str(dr / "init/init.mem"), mdd_data
     )
     # Read the fasm file for this design and collect the INIT lines, they should be in ascending order
-    fasmName = dr + "/real.fasm"
+    fasmName = str(dr / "real.fasm")
     initlines = []
     initplines = []
     with open(fasmName) as f:

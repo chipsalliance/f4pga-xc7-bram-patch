@@ -9,18 +9,13 @@
 #    If a bit mismatch is found between a given init.mem file and locations in the FASM file, an assertion will fail.
 #    So, you can run this and if no exceptions are thrown, all bits match
 
-import sys
-import os
 import glob
-import json
 import patch_mem
 import parseutil
-import parseutil.parse_mdd as mddutil
-import parseutil.fasmread as fasmutil
-import fasm
 import argparse
 import findTheBits_36
 import findTheBits_18
+import pathlib
 
 
 def pad(ch, wid, data):
@@ -29,12 +24,11 @@ def pad(ch, wid, data):
 
 
 def findAllBitsInDir(dr, verbose, mappings):
-    print("\nFinding bits in directory: " + dr, flush=True)
-    fname = dr.split("/")[-1]
-    print(dr)
+    print("\nFinding bits in directory: ".format(str(dr)), flush=True)
+    fname = dr.name
     # Read the MDD data and filter out the ones we want for this memory
     mdd_data = patch_mem.readAndFilterMDDData(
-        dr + "/{}.mdd".format(fname), "mem/ram"
+        str(dr / "{}.mdd".format(fname)), "mem/ram"
     )
     for cell in mdd_data:
         print(
@@ -50,7 +44,6 @@ def findAllBitsInDir(dr, verbose, mappings):
 
 
 def findAllBitsInDirs(dirs, verbose, mappings):
-    dirs.sort()
     for dr in dirs:
         findAllBitsInDir(dr, verbose, mappings)
 
@@ -69,14 +62,14 @@ if __name__ == "__main__":
     parser.add_argument("--mappings", action='store_const', const=False)
     args = parser.parse_args()
 
-    print(args.verbose)
-    print(args.mappings, flush=True)
+    baseDir = pathlib.Path(args.baseDir)
+    baseDir = baseDir.resolve()
+    print(baseDir)
 
     if args.design is not None:
-        findAllBitsInDir(
-            args.baseDir + "/" + args.design, args.verbose, args.mappings
-        )
+        findAllBitsInDir(baseDir / args.design, args.verbose, args.mappings)
     else:
-        dirs = glob.glob(args.baseDir + "/*")
+        print(list(baseDir.glob('*')))
+        dirs = baseDir.glob("*")
         findAllBitsInDirs(dirs, args.verbose, args.mappings)
     print("")
