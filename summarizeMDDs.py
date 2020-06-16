@@ -16,7 +16,6 @@ def main(dirs, verbose):
             print("\nDesign is in: {}".format(dr))
 
         # Read the MDD data and filter out the ones we want for this memory
-        skip = False
         mdd = dr + "/{}.mdd".format(fname)
         if verbose:
             print("Mdd is: {}".format(mdd))
