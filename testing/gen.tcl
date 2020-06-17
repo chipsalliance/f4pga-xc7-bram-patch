@@ -13,11 +13,17 @@ set_property BITSTREAM.GENERAL.PERFRAMECRC YES [current_design]
 # set_param tcl.collectionResultDisplayLimit 0
 set_property BITSTREAM.General.UnconstrainedPins {Allow} [current_design]
 
+foreach site [get_sites -of [get_tiles -filter {TYPE == BRAM_R}]] {
+  set_property PROHIBIT true $site
+}
+
 place_design
 route_design
 
+source ${::env(MEM_PATCH_DIR)}/testing/mdd_json.tcl
+mddMake ${::env(BATCH_DIR)}/$::env(DESIGN_NAME)
 source ${::env(MEM_PATCH_DIR)}/testing/mdd_make.tcl
-mddMake ${::env(BATCH_DIR)}/mapping
+mddMake ${::env(BATCH_DIR)}/$::env(DESIGN_NAME)
 
 write_edif -force ${::env(BATCH_DIR)}/vivado/${::env(DESIGN_NAME)}.edif
 write_checkpoint -force ${::env(BATCH_DIR)}/vivado/${::env(DESIGN_NAME)}.dcp

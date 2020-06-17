@@ -31,7 +31,13 @@ def main():
 
 
 def write_topfile(fname, wid_mem, f_init, depth_mem, init_frmt):
+
+    # Compute size of addresses needed, incremement up to next size if needed
     addr_wid = int(math.log(depth_mem, 2))
+    assert 2**addr_wid == depth_mem, "Can only handle memories with powers of two depths: {}".format(
+        depth_mem
+    )
+
     # print('{}'.format(addr_wid))
     with open(fname, 'w') as f:
         write_top_hdr(f=f, wid_mem=wid_mem, addr_wid=addr_wid)

@@ -11,14 +11,7 @@ from prjxray.db import Database
 from prjxray import fasm_disassembler
 
 
-def patch_mem(
-    fasm=None, init=None, mdd=None, outfile=None, selectedMemToPatch=None
-):
-    assert fasm is not None
-    assert init is not None
-    assert mdd is not None
-    assert selectedMemToPatch is not None
-
+def readAndFilterMDDData(mdd, selectedMemToPatch, verbose=False):
     # Read and filter the MDD file contents based on selectedMemToPatch
     tmp_mdd_data = mddutil.read_mdd(mdd)
     mdd_data = [
@@ -35,10 +28,29 @@ def patch_mem(
         )
         exit(1)
 
-    print("Memories to be patched ({}):".format(len(mdd_data)))
-    for l in mdd_data:
-        print("  " + l.toString())
-    print("")
+    if verbose:
+        print("Memories to be patched ({}):".format(len(mdd_data)))
+        for l in mdd_data:
+            print("  " + l.toString())
+        print("")
+
+    return mdd_data
+
+
+def patch_mem(
+    fasm=None,
+    init=None,
+    mdd=None,
+    outfile=None,
+    selectedMemToPatch=None,
+    verbose=False
+):
+    assert fasm is not None
+    assert init is not None
+    assert mdd is not None
+    assert selectedMemToPatch is not None
+
+    mdd_data = readAndFilterMDDData(mdd, selectedMemToPatch, verbose)
 
     # Get all the FASM tuples
     fasm_tups = read_fasm(fasm)
