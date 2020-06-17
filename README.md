@@ -261,4 +261,17 @@ python findTheBits.py ./testing/tests/master --design 128b1 --verbose
 python findTheBits.py ./testing/tests/master --check
 ```
 
+# Using the Mappings Produced by findTheBits.py
+As noted above, using `findTheBits.py` you can output the mapping that tells where, in the FASM INIT and INITP strings, each bit from a init.mem file can be found.
+
+You can then further use that information and the prjxray database (the `.../prjxray/database/artix7/segbits_bram_l.block_ram.db` file) to convert those mappings to frame/bitoffset values in the actual bitstream.
+
+## Reversing the Process
+The mapping information from above can be used to map FASM INIT/INITP bits to init.mem values, meaning it can be _directly_ used to reconstruct an init.mem file from a bitstream (going through FASM as an intermediate step).
+
+Or, the prjxray database information could be used to directly extract the bits from a bitstream, allowing you to bypass the FASM file step.
+
+## More Info on findTheBits.py
+Read the `The_Algorithm.md` file in this repo for more information on how memories are mapped to BRAMs and how the `findTheBits.py` program operates.
+
 

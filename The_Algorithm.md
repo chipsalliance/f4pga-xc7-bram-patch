@@ -38,23 +38,32 @@ BRAM_L_X6Y5.RAMB18_Y0.INIT_01[240:0] = 241'b100000000000...
 There are 256 bits in each INIT line.  Similarly, there are INITP lines that are 256 bits each.  They represent the parity bits contents.
 A RAMB18 will have 64 INIT lines and 8 INITP lines giving a total of 18Kb of data while a  RAMB36 will have twice as many of each.
 
-In an INIT line the leftmost bit is the **least significant** bit.  So, you need to mirror the bits left-to-right within INIT and INITP lines.  Once you do so the rightmost bit of an INIT_00 line is the LSB of the least significant word of the memory.
+An INIT line is a string and so the leftmost bit has index 0 in the string.  However, the nomenclature is like with Verilog: `...INIT_00[208:0]`, meaning that when read into a string, the MSB of the INIT data is on the left end.  So, the INIT strings must be swapped end for end so that the LSB of the initialization data is at index 0 in the INIT string.
 
 The `MEM.PORTA.DATA_BIT_LAYOUT` entry tells how the data is spread between regular and parity bits.  Above for the 128b1 bit memory the entry is `p0_d1`, meaning that no bits are in the parity bits and 1 bit is in the data.  
 
-There is also a READ_WIDTH_A value of 18.  This means that the initialization data is broken up into 18 bit chunks (slices).  When a request is made to the memory 18 bits will be read and the rightmost bit will be used as the requested data (this is for a 128x1 bit memory after all) and returned.  That means if you go into the INIT and INITP strings you will see the following:
-* The bits contained in the INITP lines are the top bits computed as `wid % 9`, so for example if readwidth is 18, the top two bits would be in INITP. And, in the case of 128b1 - the parity bits would always be 0 (and so wouldn't even be included in the FASM file)
-* The INIT strings will contain 16 bit chunks (readwidth % of those bits will come from the main part of the memory and 2 of those bits will come from the parity part.  If you look in the INIT lines for the 128b1 memory you will see a pattern - the INIT line contains slices of either 16 0's in a row (a given data bit was 0) or 15 0's follow one 1 (a given data bit was a 1).  In each case there are 15 filler bits that are not needed and 1 bit of data.  NOTE: above you will see that not every INIT line has 256 bits - the reason is they don't include leading 0's.  So, to do this you would need to zero-pad on the left to get to 256 bits for an INIT and then reverse them left-to-right.
+There is also a READ_WIDTH_A value of 18 for the 128b1 design.  This means that the initialization data is broken up into 18 bit chunks of bits (we call such a chunk a "slice").  When a request is made to the memory 18 bits will be read and the rightmost bit will be used as the requested data (this is for a 128x1 bit memory after all) and returned.  That means if you go into the INIT and INITP strings you will see the following:
+* The bits contained in the INITP lines are the top bits of the word (2 bits in the case of a read width of 18, 1 bit for a read width of 9, and so on).  The rest are in the INITlines.  In the case of 128b1 the parity bits are always 0 (and so wouldn't even be included in the FASM file).  In fact, the top 15 bits of the INIT slice and both parity bits in the INITP slice are fillers (0's).
 
-The reason for the padding is that BRAM's are only able to accommodate certain data widths (obviously their internal design imposes these limitations).  Thus, padding is used.
+So, with a little arithmetic you can compute where in an INIT line a particular bit from the memory initialize file will be.
 
-## Step #3: Interleaved Bits
-At this point it would seem we are done pretty easy - determine which INIT string contains the word of interest and then grab it.  Not quite.  If both halves of a BRAM are used (it is a RAMB36 instead of a RAMB18) then there are actually two RAMB18's and their bits are interleaved.  Notice in the INIT strings above that there is as RAMB18_Y0 specified in the name?  That is bottom RAMB18.  There is also a RAMB18_Y1.  Even bits are in the bottom half and odd bits are in the top half.  So the LSB of RAMB18_Y0.INIT_00 wll be bit 0 and the LSB of RAMB18_Y1_INIT will be bit 1.  Just what does that mean?
+## Step #3: Interleaved Bits - RAMB36E1
+At this point it would seem we are done pretty easy - determine which INIT string contains the word of interest and then grab the bit.  
 
-Determine the relative address by (x-addr_beg) and jump relativeaddr*dwid up to the relavent chunk
-    I usually end up ignoring the initlines of 256 bits by serializing them and then dividing them into chunks of the read width ascending
-    so an array lines[linenum]=256'b __ turns into slices[x] = 16'b __ and sliceP[x] = 2'b __
-The bits for the given slice of the init will be padded, but the relevant data is in the lower bit positions with their width given by (slice_end-slice_beg)
+Not quite.  If both halves of a BRAM are used (when it is a RAMB36 instead of a RAMB18) then there are actually two set of INIT/INITP strings. Notice in the INIT strings above that there is as RAMB18_Y0 specified in the name?  That holds the even bits.  There is also a RAMB18_Y1 which olds the odd bits .  
 
-If tile is set to Ramb18 mode, you already have the bit position you want, but if the tile is Ramb36 mode, you will need to unentangle the init strings for each. The true 36k of the memory in this case is distributed with bit 0 going to y0, bit 1 going to y1, bit 2 going to y0, and so on. Once the lines have been returned to their y0 y1 orientations, you should know the tile, Y0/Y1, line, and bit number of any given bit from an initialization value.
-Here's a little summary I whipped up of the mapping of bits from a memory initialization file to actual tile, initline, and bit numbers inside a fasm file
+If you zip together the Y0 and Y1 INIT and INITP strings into 512 character INIT and INITP strings, then the calculations are essentially identical for both RAMB18E1 and RAMB36E1 primitives.  The main differences are the lengths of the resulting INIT/INITP strings and some sizes are doubled.
+
+## The findTheBits.py Program
+The embodiment of the above algorithm is in the program `findTheBits.py`.  It is documented on the README.md page on the prjxray-bram-patch site.
+
+Using `findTheBits.py` you can output the mapping that tells where, in the FASM INIT and INITP strings, each bit from a init.mem file can be found.
+
+You can then further use that information and the prjxray database to convert those mappings to frame/bitoffset values in the actual bitstream.
+
+## Reversing the Process
+The mapping information from above can be used to map FASM INIT/INITP bits to init.mem values, meaning it can be _directly_ used to reconstruct an init.mem file from a bitstream (going through FASM as an intermediate step).
+
+Or, the prjxray database information could be used to directly extract the bits from a bitstream, allowing you to bypass the FASM file step.
+
+Read the `README.md` file on the prjxray-bram-patch github site for more information.
