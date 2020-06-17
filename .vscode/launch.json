@@ -26,7 +26,7 @@
             "request": "launch",
             "program": "findTheBits.py",
             "console": "integratedTerminal",
-            "args": ["testing/tests/master", "--design", "8kb18"
+            "args": ["testing/tests/master", "--design", "512b18"
             ]
           }
         ]
