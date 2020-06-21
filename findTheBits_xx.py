@@ -70,14 +70,17 @@ def findAllBits(
 
     # Step 4: Read the segbits database information for later use.  Also find record in tilegrid.json
     # First, read the segbits database info
-    segname = os.environ["XRAY_DIR"] + "/database/" + os.environ["XRAY_DATABASE"] + "/segbits_bram_l.block_ram.db"
+    segname = os.environ["XRAY_DIR"] + "/database/" + os.environ[
+        "XRAY_DATABASE"] + "/segbits_bram_l.block_ram.db"
     with open(segname) as f:
         segl_lines = f.readlines()
-    segname = os.environ["XRAY_DIR"] + "/database/" + os.environ["XRAY_DATABASE"] + "/segbits_bram_r.block_ram.db"
+    segname = os.environ["XRAY_DIR"] + "/database/" + os.environ[
+        "XRAY_DATABASE"] + "/segbits_bram_r.block_ram.db"
     with open(segname) as f:
         segr_lines = f.readlines()
     # Now, get the tileinfo from tilegrid.json
-    tilegridname = os.environ["XRAY_DIR"] + "/database/" + os.environ["XRAY_DATABASE"] + "/" + os.environ["XRAY_PART"] + "/tilegrid.json"
+    tilegridname = os.environ["XRAY_DIR"] + "/database/" + os.environ[
+        "XRAY_DATABASE"] + "/" + os.environ["XRAY_PART"] + "/tilegrid.json"
     with open(tilegridname) as f:
         tilegrid = json.load(f)
     tilegridinfo = tilegrid[cell.tile]
@@ -212,54 +215,37 @@ def findAllBits(
             ynum = '0' if ramb36 is False or bitOffset % 2 == 0 else '1'
             if parity:
                 segfeature = "{}.{}_Y{}.INITP_{}[{:03}]".format(
-                    cell.tile[0:6], 
-                    cell.type[:-2], 
-                    ynum,
-                    initRow, 
-                    bitOffset)
+                    cell.tile[0:6], cell.type[:-2], ynum, initRow, bitOffset
+                )
             else:
                 segfeature = "{}.{}_Y{}.INIT_{}[{:03}]".format(
-                    cell.tile[0:6], 
-                    cell.type[:-2], 
-                    ynum,
-                    initRow, 
-                    bitOffset)
-            segoffset = findSegOffset(segl_lines if ynum=='0' else segr_lines, segfeature)
+                    cell.tile[0:6], cell.type[:-2], ynum, initRow, bitOffset
+                )
+            segoffset = findSegOffset(
+                segl_lines if ynum == '0' else segr_lines, segfeature
+            )
             assert segoffset != "UNKNOWN"
-
 
             # Finally, print out the mapping if requested
             if mappings or verbose:
                 if parity:
                     print(
-                        "{} init.mem[{}][{}] -> {}.{}_Y{}.INITP_{}[{:03}] -> {} {}".
-                        format(
-                            designName,
-                            w,
-                            b,
-                            cell.tile[0:6],
-                            cell.type[:-2],
-                            ynum,
-                            initRow,
+                        "{} init.mem[{}][{}] -> {}.{}_Y{}.INITP_{}[{:03}] -> {} {}"
+                        .format(
+                            designName, w, b, cell.tile[0:6], cell.type[:-2],
+                            ynum, initRow,
                             int(bitOffset / 2) if ramb36 else bitOffset,
-                            cell.baseaddr,
-                            segoffset
+                            cell.baseaddr, segoffset
                         )
                     )
                 else:
                     print(
-                        "{} init.mem[{}][{}] -> {}.{}_Y{}.INIT_{}[{:03}] -> {} {}".
-                        format(
-                            designName,
-                            w,
-                            b,
-                            cell.tile[0:6],
-                            cell.type[:-2],
-                            ynum,
-                            initRow,
+                        "{} init.mem[{}][{}] -> {}.{}_Y{}.INIT_{}[{:03}] -> {} {}"
+                        .format(
+                            designName, w, b, cell.tile[0:6], cell.type[:-2],
+                            ynum, initRow,
                             int(bitOffset / 2) if ramb36 else bitOffset,
-                            cell.baseaddr,
-                            segoffset
+                            cell.baseaddr, segoffset
                         )
                     )
     # If we got here, it worked.
@@ -280,6 +266,7 @@ def findSegOffset(segs, segfeature):
         if line.split(" ")[0] == segfeature:
             return line.split(" ")[1].rstrip()
     return "UNKNOWN"
+
 
 # Pad a string to a certain length with 'ch'
 def pad(ch, wid, data):
