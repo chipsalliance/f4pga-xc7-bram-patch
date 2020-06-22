@@ -72,9 +72,10 @@ def patch_mem(
         frame_tups = []
         for data in mdd_data:
             for tup in cleared_tups:
-                if tup[0] != None and tup.set_feature.feature.find(data.tile) != -1:
-                        frame_tups.append(tup)
-        # Merge the newly found non_INIT tuples located at the BRAM with the 
+                if tup[0] != None and tup.set_feature.feature.find(data.tile
+                                                                   ) != -1:
+                    frame_tups.append(tup)
+        # Merge the newly found non_INIT tuples located at the BRAM with the
         # new memory tuples to create a partial FASM file
         merged = merge_tuples(cleared_tups=frame_tups, mem_tups=memfasm)
         write_fasm(outfile, merged)
@@ -119,15 +120,38 @@ def read_fasm(fname):
 
 if __name__ == "__main__":
     if len(sys.argv) == 6:
-        patch_mem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+        patch_mem(
+            sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
+        )
     elif len(sys.argv) == 7 and sys.argv[6] == "--partial":
         if sys.argv[6] == "--partial":
-            patch_mem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], partial=True)
+            patch_mem(
+                sys.argv[1],
+                sys.argv[2],
+                sys.argv[3],
+                sys.argv[4],
+                sys.argv[5],
+                partial=True
+            )
         elif sys.argv[6] == "--verbose":
-            patch_mem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], verbose=True)
+            patch_mem(
+                sys.argv[1],
+                sys.argv[2],
+                sys.argv[3],
+                sys.argv[4],
+                sys.argv[5],
+                verbose=True
+            )
         else:
-            print("Usage: patch_mem fasmFile newMemContents mddFile patchedFasmFile memName [--verbose] [--partial]")
+            print(
+                "Usage: patch_mem fasmFile newMemContents mddFile patchedFasmFile memName [--verbose] [--partial]"
+            )
     elif len(sys.argv) == 8:
-        patch_mem(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], True, True)
+        patch_mem(
+            sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5],
+            True, True
+        )
     else:
-        print("Usage: patch_mem fasmFile newMemContents mddFile patchedFasmFile memName [--verbose] [--partial]")
+        print(
+            "Usage: patch_mem fasmFile newMemContents mddFile patchedFasmFile memName [--verbose] [--partial]"
+        )
