@@ -99,7 +99,9 @@ def findAllBits(
 
     # Step 4: Load up the bit file if checking is requested
     if check:
-        frames = DbgParser.loadFrames(dr / "vivado" / "{}.bit".format(designName))
+        frames = DbgParser.loadFrames(
+            dr / "vivado" / "{}.bit".format(designName)
+        )
 
     # Step 5: Now check if we can find all the bits in this cell
     # We use the length of the init file to determine the # of words to check since
@@ -279,22 +281,28 @@ def findAllBits(
                         cell.wordoffset * 32 + froffset
                     )
                 )
-            
+
             # Check bit in frame data if asked
+            # This will use the .bit file read in step 4 above and compare to what is in both the init.mem and FASM files
             if check:
-                # Frame number is tilegrid.json's baseaddr + segbits frame offset number 
+                # Frame number is tilegrid.json's baseaddr + segbits frame offset number
                 frame = cell.baseaddr + int(segoffset.split("_")[0])
                 # Bit offset is given in segbits file
                 frboffset = int(segoffset.split("_")[1])
                 # Word bit will be in will be word offset from tilegrid.json file + bit offset from segbits
-                frwd = frames[frame][cell.wordoffset + int(frboffset/32)]
+                frwd = frames[frame][cell.wordoffset + int(frboffset / 32)]
                 # Mask off just the bit we want out of the 32
                 # 1. Doing a mod 32 will tell which bit num it is
                 # 2. Then, shift over and mask
                 frbit = (frwd >> frboffset % 32) & 0x1
                 if verbose:
-                    print("Frame = {:x} frboffset = {} frwd = {} frbit = {}".format(frame, frboffset, frwd, frbit))
-                assert frbit == int(initbit), "initbit: {} != frbit: {}".format(initbit, frbit)
+                    print(
+                        "Frame = {:x} frboffset = {} frwd = {} frbit = {}".
+                        format(frame, frboffset, frwd, frbit)
+                    )
+                assert frbit == int(
+                    initbit
+                ), "initbit: {} != frbit: {}".format(initbit, frbit)
 
     # If we got here, it worked.
     # So say so if you were asked to...
@@ -313,7 +321,6 @@ def findAllBits(
 
     if printbinfile:
         printBin(binfilePath)
-
 
 
 # Given a name, find the segOffset for it
@@ -395,5 +402,3 @@ def printBin(binfilePath):
     for line in binlines:
         r, c, frame, bitoffset = line
         print("{}:{} 0x{:08x} {}".format(r, c, frame, bitoffset))
-
-

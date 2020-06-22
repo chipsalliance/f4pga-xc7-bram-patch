@@ -83,7 +83,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--printbinfile",
         action='store_true',
-        help='Read and print the results from the binary mapping file (deprecated)'
+        help=
+        'Read and print the results from the binary mapping file (deprecated)'
     )
     parser.add_argument("--verbose", action='store_true')
     parser.add_argument(

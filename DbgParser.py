@@ -2,6 +2,7 @@
 # This is for files that do a write to the FAR and then a write of FDRI data and then repeat
 import pathlib
 
+
 def parse_bit_file(bitFile, verbose=False):
     header_st = 0
     firstByte_st = 1
@@ -91,7 +92,9 @@ def loadFrames(bitFile):
 
 
 if __name__ == '__main__':
-    bitfilePath = pathlib.Path("/home/nelson/mempatch/testing/tests/master/128b1/vivado/128b1.bit")
+    bitfilePath = pathlib.Path(
+        "/home/nelson/mempatch/testing/tests/master/128b1/vivado/128b1.bit"
+    )
     frames = loadFrames(bitfilePath)
 
     dumpframe(frames, 0x00c0000f, 10, 10)
