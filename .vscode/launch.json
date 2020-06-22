@@ -24,9 +24,9 @@
             "name": "findTheBits",
             "type": "python",
             "request": "launch",
-            "program": "findTheBits.py",
+            "program": "/home/nelson/mempatch/findTheBits.py",
             "console": "integratedTerminal",
-            "args": ["testing/tests/master", "--design", "512b18"
+            "args": ["testing/tests/master", "--design", "128b1", "--binfile", "--check", "--mappings"
             ]
           }
         ]

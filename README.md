@@ -228,8 +228,10 @@ The `findTheBits.py` program is intend to provide an understandable algorithm fo
 
 It then uses the prjxray database files to map those INIT and INITP bit locations to frame/offset locations in the real bitstream.  To do so it uses the `.../prjxray/database/artix7/segbits_bram_l.block_ram.db` file.
 
-Once it computes the mapping for a given design it can do any of the following:
-1. It can also check, bit-by-bit, if the mapping was correct by comparing bits in the `init.mem` file with bits in the FASM file's `INIT` strings and with the bistream's .bit file.  If the check is successful it will print a message.
+It then computes a mapping between those INIT and INITP string values and the bitstream's frames and bit offsets.  It does this using prjxray's `.../prjxray/database/artix7/segbits_bram_l.block_ram.db` file.
+
+Additionally:
+1. It can also check, bit-by-bit, if the mapping was correct by comparing bits in the `init.mem` file with bits in the FASM file's `INIT` strings.  If the check is successful it will print a message.
 1. It has a verbose flag to help in debugging by printing out lots of information on how the mapping computation was done.
 
 All of the 3 above options are controlled by command line options:
@@ -243,7 +245,7 @@ It is intended, like all programs in this project, using the prjxray environment
 python findTheBits.py ./testing/tests/master --design 128b1
 
 # Run the program on a specific design
-# Check that the init.mem contents match the FASM file and .bit file contents
+# Check that the init.mem, FASM file, and bitstream file bit values match
 python findTheBits.py ./testing/tests/master --design 128b1 --check
 
 # Run the program on a specific design and print out the mappings
@@ -262,15 +264,10 @@ python findTheBits.py ./testing/tests/master --design 128b1 --verbose
 python findTheBits.py ./testing/tests/master --check
 ```
 
-# Using the Mappings Produced by findTheBits.py
-As noted above, using `findTheBits.py` you can output the mapping that tells where, in the FASM INIT and INITP strings, each bit from a init.mem file can be found.
-
-You can then further use that information and the prjxray database (the `.../prjxray/database/artix7/segbits_bram_l.block_ram.db` file) to convert those mappings to frame/bitoffset values in the actual bitstream.
-
 ## Reversing the Process
-The mapping information from above can be used to map FASM INIT/INITP bits to init.mem values, meaning it can be _directly_ used to reconstruct an init.mem file from a bitstream (going through FASM as an intermediate step).
+The mapping information from above can be used to map bitstream bits to FASM INIT/INITP bits to init.mem values, meaning it can be _directly_ used to reconstruct an init.mem file from a bitstream (going through FASM as an intermediate step).
 
-Or, the prjxray database information could be used to directly extract the bits from a bitstream, allowing you to bypass the FASM file step.
+Or, the prjxray database information could be used to directly extract the bits from a bitstream, allowing you to bypass the FASM file step completely.
 
 ## More Info on findTheBits.py
 Read the `The_Algorithm.md` file in this repo for more information on how memories are mapped to BRAMs and how the `findTheBits.py` program operates.
