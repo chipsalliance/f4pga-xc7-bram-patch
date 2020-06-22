@@ -14,6 +14,7 @@ import argparse
 import json
 import pathlib
 import struct
+import DbgParser
 
 
 def findAllBits(
@@ -89,13 +90,18 @@ def findAllBits(
     with open(tilegridname) as f:
         tilegrid = json.load(f)
     tilegridinfo = tilegrid[cell.tile]
-    cell.baseaddr = tilegridinfo["bits"]["BLOCK_RAM"]["baseaddr"]
+    cell.baseaddr = int(tilegridinfo["bits"]["BLOCK_RAM"]["baseaddr"], 16)
+    cell.wordoffset = int(tilegridinfo["bits"]["BLOCK_RAM"]["offset"])
     # Finally, create binfile to dump results into
     if binfile:
         binfilePath = dr / "{}.bin".format(designName)
         bf = binfilePath.open("wb")
 
-    # Step 4: Now check if we can find all the bits in this cell
+    # Step 4: Load up the bit file if checking is requested
+    if check:
+        frames = DbgParser.loadFrames(dr / "vivado" / "{}.bit".format(designName))
+
+    # Step 5: Now check if we can find all the bits in this cell
     # We use the length of the init file to determine the # of words to check since
     # for a small memory (128b1), Vivado will generate a larger one, knowing you will
     # only use the lower part of the memory.
@@ -242,23 +248,25 @@ def findAllBits(
             if mappings or verbose:
                 if parity:
                     print(
-                        "{} init.mem[{}][{}] -> {}.{}_Y{}.INITP_{}[{:03}] -> {} {} {}"
+                        "{} init.mem[{}][{}] ({}) -> {}.{}_Y{}.INITP_{}[{:03}] -> {} {} {} wordoffset = {}"
                         .format(
-                            designName, w, b, cell.tile[0:6], cell.type[:-2],
-                            ynum, initRow,
+                            designName, w, b, initbit, cell.tile,
+                            cell.type[:-2], ynum, initRow,
                             int(bitOffset / 2) if ramb36 else bitOffset,
-                            cell.tile, cell.baseaddr, segoffset
+                            cell.tile, hex(cell.baseaddr), segoffset,
+                            cell.wordoffset
                         )
                     )
 
                 else:
                     print(
-                        "{} init.mem[{}][{}] -> {}.{}_Y{}.INIT_{}[{:03}] -> {} {} {}"
+                        "{} init.mem[{}][{}] ({}) -> {}.{}_Y{}.INIT_{}[{:03}] -> {} {} {} wordoffset = {}"
                         .format(
-                            designName, w, b, cell.tile[0:6], cell.type[:-2],
-                            ynum, initRow,
+                            designName, w, b, initbit, cell.tile,
+                            cell.type[:-2], ynum, initRow,
                             int(bitOffset / 2) if ramb36 else bitOffset,
-                            cell.tile, cell.baseaddr, segoffset
+                            cell.tile, hex(cell.baseaddr), segoffset,
+                            cell.wordoffset
                         )
                     )
             # If requested, write info to binary file
@@ -267,10 +275,26 @@ def findAllBits(
                 froffset = int(segoffset.split("_")[1])
                 bf.write(
                     struct.pack(
-                        'iiii', w, b,
-                        int(cell.baseaddr, 16) + frame, froffset
+                        'iiii', w, b, cell.baseaddr + frame,
+                        cell.wordoffset * 32 + froffset
                     )
                 )
+            
+            # Check bit in frame data if asked
+            if check:
+                # Frame number is tilegrid.json's baseaddr + segbits frame offset number 
+                frame = cell.baseaddr + int(segoffset.split("_")[0])
+                # Bit offset is given in segbits file
+                frboffset = int(segoffset.split("_")[1])
+                # Word bit will be in will be word offset from tilegrid.json file + bit offset from segbits
+                frwd = frames[frame][cell.wordoffset + int(frboffset/32)]
+                # Mask off just the bit we want out of the 32
+                # 1. Doing a mod 32 will tell which bit num it is
+                # 2. Then, shift over and mask
+                frbit = (frwd >> frboffset % 32) & 0x1
+                if verbose:
+                    print("Frame = {:x} frboffset = {} frwd = {} frbit = {}".format(frame, frboffset, frwd, frbit))
+                assert frbit == int(initbit), "initbit: {} != frbit: {}".format(initbit, frbit)
 
     # If we got here, it worked.
     # So say so if you were asked to...
@@ -289,6 +313,7 @@ def findAllBits(
 
     if printbinfile:
         printBin(binfilePath)
+
 
 
 # Given a name, find the segOffset for it
@@ -353,11 +378,22 @@ def processInitLines(initlines, parity):
     return inits
 
 
-def printBin(fname):
-    with fname.open('rb') as f:
+def readBin(binfilePath):
+    with binfilePath.open('rb') as f:
+        binlines = []
         while True:
             b = f.read(16)
             if len(b) != 16:
                 break
-            r, c, frame, bitoffset = struct.unpack('iiii', b)
-            print("{}:{} 0x{:08x} {}".format(r, c, frame, bitoffset))
+            contents = struct.unpack('iiii', b)
+            binlines.append(contents)
+    return binlines
+
+
+def printBin(binfilePath):
+    binlines = readBin(binfilePath)
+    for line in binlines:
+        r, c, frame, bitoffset = line
+        print("{}:{} 0x{:08x} {}".format(r, c, frame, bitoffset))
+
+
