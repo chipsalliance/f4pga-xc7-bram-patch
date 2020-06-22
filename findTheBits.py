@@ -78,12 +78,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--dumpbinfile",
         action='store_true',
-        help='Dump the mappings to a binary file'
+        help='Dump the mappings to a binary file (deprecated)'
     )
     parser.add_argument(
         "--printbinfile",
         action='store_true',
-        help='Read and print the results from the binary mapping file'
+        help='Read and print the results from the binary mapping file (deprecated)'
     )
     parser.add_argument("--verbose", action='store_true')
     parser.add_argument(
