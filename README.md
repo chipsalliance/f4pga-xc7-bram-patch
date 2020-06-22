@@ -224,11 +224,12 @@ The MDD file contains the information needed to do that mapping.  It is generate
 The current MDD file contains information on mapped BRAM primitives. It contains a number of BRAM properties that are not currently used and thus could possibly be reduced in the future.
 
 # The findTheBits.py Program
-The `findTheBits.py` program is intend to provide an understandable algorithm for computing the mapping between `init.mem` file bits and their location in the `INIT` and `INITP` strings in a FASM file.
+The `findTheBits.py` program is intend to provide an understandable algorithm for computing the mapping between `init.mem` file bits and their location in the `INIT` and `INITP` strings in a FASM file.  
+
+It then uses the prjxray database files to map those INIT and INITP bit locations to frame/offset locations in the real bitstream.  To do so it uses the `.../prjxray/database/artix7/segbits_bram_l.block_ram.db` file.
 
 Once it computes the mapping for a given design it can do any of the following:
-1. Output the mapping in text form so that the resulting info can be used to further map the location of individual bits to a frame/offset position in a bitstream using the `prjxray` database (the `.../prjxray/database/artix7/segbits_bram_l.block_ram.db` file).
-1. It can also check, bit-by-bit, if the mapping was correct by comparing bits in the `init.mem` file with bits in the FASM file's `INIT` strings.  If the check is successful it will print a message.
+1. It can also check, bit-by-bit, if the mapping was correct by comparing bits in the `init.mem` file with bits in the FASM file's `INIT` strings and with the bistream's .bit file.  If the check is successful it will print a message.
 1. It has a verbose flag to help in debugging by printing out lots of information on how the mapping computation was done.
 
 All of the 3 above options are controlled by command line options:
@@ -242,7 +243,7 @@ It is intended, like all programs in this project, using the prjxray environment
 python findTheBits.py ./testing/tests/master --design 128b1
 
 # Run the program on a specific design
-# Check that the init.mem contents match the FASM file
+# Check that the init.mem contents match the FASM file and .bit file contents
 python findTheBits.py ./testing/tests/master --design 128b1 --check
 
 # Run the program on a specific design and print out the mappings
