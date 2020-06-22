@@ -224,7 +224,9 @@ The MDD file contains the information needed to do that mapping.  It is generate
 The current MDD file contains information on mapped BRAM primitives. It contains a number of BRAM properties that are not currently used and thus could possibly be reduced in the future.
 
 # The findTheBits.py Program
-The `findTheBits.py` program is intend to provide an understandable algorithm for computing the mapping between `init.mem` file bits and their location in the `INIT` and `INITP` strings in a FASM file.
+The `findTheBits.py` program is intend to provide an understandable algorithm for computing the mapping between `init.mem` file bits and their location in the `INIT` and `INITP` strings in a FASM file.  
+
+It then uses the prjxray database files to map those INIT and INITP bit locations to frame/offset locations in the real bitstream.  To do so it uses the `.../prjxray/database/artix7/segbits_bram_l.block_ram.db` file.
 
 It then computes a mapping between those INIT and INITP string values and the bitstream's frames and bit offsets.  It does this using prjxray's `.../prjxray/database/artix7/segbits_bram_l.block_ram.db` file.
 
@@ -247,11 +249,11 @@ python findTheBits.py ./testing/tests/master --design 128b1
 python findTheBits.py ./testing/tests/master --design 128b1 --check
 
 # Run the program on a specific design and print out the mappings
-python findTheBits.py ./testing/tests/master --design 128b1 --mappings
+python findTheBits.py ./testing/tests/master --design 128b1 --printmappings
 
 # Run the program on a specific design.
 # Print out the mappings and do the checking
-python findTheBits.py ./testing/tests/master --design 128b1 --mappings --check
+python findTheBits.py ./testing/tests/master --design 128b1 --printmappings --check
 
 # Run the program and generate tons of debug output
 python findTheBits.py ./testing/tests/master --design 128b1 --verbose
