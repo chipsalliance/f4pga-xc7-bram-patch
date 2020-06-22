@@ -12,11 +12,16 @@ import glob
 import parseutil
 import argparse
 import json
+import pathlib
+import struct
 
 
 def findAllBits(
-    designName, mdd_data, cell, initFile, fasmFile, verbose, mappings, check
+    dr, mdd_data, cell, initFile, fasmFile, verbose, mappings, check, binfile,
+    printbinfile
 ):
+
+    designName = dr.name
 
     # Flag of whether this is RAMB36E cell or not
     ramb36 = (cell.type == "RAMB36E1")
@@ -85,6 +90,10 @@ def findAllBits(
         tilegrid = json.load(f)
     tilegridinfo = tilegrid[cell.tile]
     cell.baseaddr = tilegridinfo["bits"]["BLOCK_RAM"]["baseaddr"]
+    # Finally, create binfile to dump results into
+    if binfile:
+        binfilePath = dr / "{}.bin".format(designName)
+        bf = binfilePath.open("wb")
 
     # Step 4: Now check if we can find all the bits in this cell
     # We use the length of the init file to determine the # of words to check since
@@ -214,40 +223,55 @@ def findAllBits(
             # Is this Y0 or Y1?
             ynum = '0' if ramb36 is False or bitOffset % 2 == 0 else '1'
             if parity:
-                segfeature = "{}.{}_Y{}.INITP_{}[{:03}]".format(
-                    cell.tile[0:6], cell.type[:-2], ynum, initRow, bitOffset
+                segfeature = "{}.RAMB18_Y{}.INITP_{}[{:03}]".format(
+                    cell.tile[0:6], ynum, initRow,
+                    int(bitOffset / 2) if ramb36 else bitOffset
                 )
             else:
-                segfeature = "{}.{}_Y{}.INIT_{}[{:03}]".format(
-                    cell.tile[0:6], cell.type[:-2], ynum, initRow, bitOffset
+                segfeature = "{}.RAMB18_Y{}.INIT_{}[{:03}]".format(
+                    cell.tile[0:6], ynum, initRow,
+                    int(bitOffset / 2) if ramb36 else bitOffset
                 )
             segoffset = findSegOffset(
-                segl_lines if ynum == '0' else segr_lines, segfeature
+                segl_lines if segfeature.split(".")[0] == "BRAM_L" else
+                segr_lines, segfeature
             )
-            assert segoffset != "UNKNOWN"
+            assert segoffset != "UNKNOWN", "{}".format(segfeature)
 
             # Finally, print out the mapping if requested
             if mappings or verbose:
                 if parity:
                     print(
-                        "{} init.mem[{}][{}] -> {}.{}_Y{}.INITP_{}[{:03}] -> {} {}"
+                        "{} init.mem[{}][{}] -> {}.{}_Y{}.INITP_{}[{:03}] -> {} {} {}"
                         .format(
                             designName, w, b, cell.tile[0:6], cell.type[:-2],
                             ynum, initRow,
                             int(bitOffset / 2) if ramb36 else bitOffset,
-                            cell.baseaddr, segoffset
+                            cell.tile, cell.baseaddr, segoffset
                         )
                     )
+
                 else:
                     print(
-                        "{} init.mem[{}][{}] -> {}.{}_Y{}.INIT_{}[{:03}] -> {} {}"
+                        "{} init.mem[{}][{}] -> {}.{}_Y{}.INIT_{}[{:03}] -> {} {} {}"
                         .format(
                             designName, w, b, cell.tile[0:6], cell.type[:-2],
                             ynum, initRow,
                             int(bitOffset / 2) if ramb36 else bitOffset,
-                            cell.baseaddr, segoffset
+                            cell.tile, cell.baseaddr, segoffset
                         )
                     )
+            # If requested, write info to binary file
+            if binfile:
+                frame = int(segoffset.split("_")[0])
+                froffset = int(segoffset.split("_")[1])
+                bf.write(
+                    struct.pack(
+                        'iiii', w, b,
+                        int(cell.baseaddr, 16) + frame, froffset
+                    )
+                )
+
     # If we got here, it worked.
     # So say so if you were asked to...
     if check:
@@ -257,6 +281,14 @@ def findAllBits(
             ),
             flush=True
         )
+
+    # Close binary file opened above
+    if binfile:
+        bf.close()
+        print("  Closing binary mappings file: {}".format(binfilePath))
+
+    if printbinfile:
+        printBin(binfilePath)
 
 
 # Given a name, find the segOffset for it
@@ -319,3 +351,13 @@ def processInitLines(initlines, parity):
         inits.append("0" * 256)
 
     return inits
+
+
+def printBin(fname):
+    with fname.open('rb') as f:
+        while True:
+            b = f.read(16)
+            if len(b) != 16:
+                break
+            r, c, frame, bitoffset = struct.unpack('iiii', b)
+            print("{}:{} 0x{:08x} {}".format(r, c, frame, bitoffset))
