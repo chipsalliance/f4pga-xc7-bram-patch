@@ -246,11 +246,11 @@ python findTheBits.py ./testing/tests/master --design 128b1
 python findTheBits.py ./testing/tests/master --design 128b1 --check
 
 # Run the program on a specific design and print out the mappings
-python findTheBits.py ./testing/tests/master --design 128b1 --mappings
+python findTheBits.py ./testing/tests/master --design 128b1 --printmappings
 
 # Run the program on a specific design.
 # Print out the mappings and do the checking
-python findTheBits.py ./testing/tests/master --design 128b1 --mappings --check
+python findTheBits.py ./testing/tests/master --design 128b1 --printmappings --check
 
 # Run the program and generate tons of debug output
 python findTheBits.py ./testing/tests/master --design 128b1 --verbose
