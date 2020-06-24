@@ -38,7 +38,14 @@ class Cell:
         # print(f'{self.type} p{self.pbits}_d{self.dbits}')
 
     def toString(self):
-        s = self.cell_name + ' ' + self.type + ' ' + self.tile + ' ' + self.placement + ' ' + self.ram_name
+        s = "{} {} {} {} {} {} {}".format(
+            self.cell_name,
+            self.type,
+            self.tile,
+            self.placement,
+            self.ram_name,
+            self.addr_beg,
+            self.slice_beg)
         return s
 
 
