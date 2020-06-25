@@ -12,12 +12,12 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "SingleTest",
+            "name": "bitMapping",
             "type": "python",
             "request": "launch",
-            "program": "run_tests.py",
+            "program": "bitMapping.py",
             "console": "integratedTerminal",
-            "args": ["testing/tests/master/128b8"
+            "args": ["testing/tests/master/2kb4", "2048", "4"
             ]
           },
           {
