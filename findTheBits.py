@@ -22,7 +22,7 @@ def pad(ch, wid, data):
     return (ch * (wid - len(tmp)) + tmp)
 
 
-def findAllBitsInDir(dr, verbose, mappings, check, binfile, printbinfile, returnMappings):
+def findAllBitsInDir(dr, verbose, mappings, check):
     print("")
     print("Finding bits in directory: {}".format(str(dr)), flush=True)
     fname = dr.name
@@ -39,21 +39,17 @@ def findAllBitsInDir(dr, verbose, mappings, check, binfile, printbinfile, return
             flush=True
         )
         if cell.type == "RAMB36E1" or cell.type == "RAMB18E1":
-            retMappings = findTheBits_xx.findAllBits(
+            findTheBits_xx.findAllBits(
                 dr, mdd_data, cell, str(dr / "init/init.mem"),
-                str(dr / "real.fasm"), verbose, mappings, check, binfile,
-                printbinfile, returnMappings
+                str(dr / "real.fasm"), verbose, mappings, check
             )
-            if verbose:
-                for m in retMappings:
-                    print(m.toString())
         else:
             raise RuntimeError("Unknown cell.type: {}".format(cell.type))
 
 
-def findAllBitsInDirs(dirs, verbose, mappings, check, binfile, printbinfile, returnMappings = False):
+def findAllBitsInDirs(dirs, verbose, mappings, check):
     for dr in dirs:
-        findAllBitsInDir(dr, verbose, mappings, check, binfile, printbinfile, returnMappings)
+        findAllBitsInDir(dr, verbose, mappings, check)
 
 
 # Must provide a baseDir argument
@@ -73,22 +69,6 @@ if __name__ == "__main__":
         help=
         'If provided, specify just which directory to process.  Otherwise, program will process all designs.'
     )
-    parser.add_argument(
-        "--dumpbinfile",
-        action='store_true',
-        help='Dump the mappings to a binary file (deprecated)'
-    )
-    parser.add_argument(
-        "--returnMappings",
-        action='store_true',
-        help='Return a data structure containing the mapping info'
-    )
-    parser.add_argument(
-        "--printbinfile",
-        action='store_true',
-        help=
-        'Read and print the results from the binary mapping file (deprecated)'
-    )
     parser.add_argument("--verbose", action='store_true')
     parser.add_argument(
         "--printmappings", action='store_true', help='Print the mapping info'
@@ -103,16 +83,14 @@ if __name__ == "__main__":
     baseDir = pathlib.Path(args.baseDir)
     baseDir = baseDir.resolve()
 
-    print(args.returnMappings)
     if args.design is not None:
         findAllBitsInDir(
             baseDir / args.design, args.verbose, args.printmappings,
-            args.check, args.dumpbinfile, args.printbinfile, args.returnMappings
+            args.check
         )
     else:
         dirs = baseDir.glob("*")
         findAllBitsInDirs(
-            dirs, args.verbose, args.printmappings, args.check,
-            args.dumpbinfile, args.printbinfile, args.returnMappings
+            dirs, args.verbose, args.printmappings, args.check
         )
     print("")

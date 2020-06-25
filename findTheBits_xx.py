@@ -18,8 +18,7 @@ import DbgParser
 
 # Check the bits for a complete memory
 def findAllBits(
-    dr, mdd_data, cell, initFile, fasmFile, verbose, mappings, check, binfile,
-    printbinfile, returnMappings
+    dr, mdd_data, cell, initFile, fasmFile, verbose, mappings, check
 ):
 
     designName = dr.name
@@ -92,21 +91,12 @@ def findAllBits(
     tilegridinfo = tilegrid[cell.tile]
     cell.baseaddr = int(tilegridinfo["bits"]["BLOCK_RAM"]["baseaddr"], 16)
     cell.wordoffset = int(tilegridinfo["bits"]["BLOCK_RAM"]["offset"])
-    # Finally, create binfile to dump results into
-    if binfile:
-        binfilePath = dr / "{}.bin".format(designName)
-        bf = binfilePath.open("wb")
-
+    
     # Step 5: Load up the bit file if checking is requested
-    if check or returnMappings:
+    if check:
         frames = DbgParser.loadFrames(
             dr / "vivado" / "{}.bit".format(designName)
         )
-
-    # Step 6: If a return value consisting of a data structure is required, create it.
-    if returnMappings:
-        # Mappings is a list of Mapping cells, one for each initfile location
-        mappings = []
 
     # Step 7: Now check if we can find all the bits in this cell
     # We use the length of the init file to determine the # of words to check since
@@ -276,17 +266,7 @@ def findAllBits(
                             cell.wordoffset
                         )
                     )
-            # If requested, write info to binary file
-            if binfile:
-                frame = int(segoffset.split("_")[0])
-                froffset = int(segoffset.split("_")[1])
-                bf.write(
-                    struct.pack(
-                        'iiii', w, b, cell.baseaddr + frame,
-                        cell.wordoffset * 32 + froffset
-                    )
-                )
-            if check or returnMappings:
+            if check:
                 # Compute offsets for frame/bit in bitstream
                 # Frame number is tilegrid.json's baseaddr + segbits frame offset number
                 frame = cell.baseaddr + int(segoffset.split("_")[0])
@@ -311,24 +291,6 @@ def findAllBits(
                     initbit
                 ), "initbit: {} != frbit: {}".format(initbit, frbit)
             
-            # If requested, build Mapping object
-            if returnMappings:
-                # word, bit, fasmY, fasmINITP, fasmLine, fasmBit, frameBaseaddr, frameOffset, frameBitOffset
-                mappings.append(
-                    Mapping(
-                        w, 
-                        b, 
-                        ynum, 
-                        parity, 
-                        initRow, 
-                        int(bitOffset / 2) if ramb36 else bitOffset,
-                        frame, 
-                        frboffset,
-                        cell.wordoffset,
-                        frbit
-                    )
-                )
-
 
     # If we got here, it worked.
     # So say so if you were asked to...
@@ -339,20 +301,6 @@ def findAllBits(
             ),
             flush=True
         )
-
-    # Close binary file opened above
-    if binfile:
-        bf.close()
-        print("  Closing binary mappings file: {}".format(binfilePath))
-
-    if printbinfile:
-        printBin(binfilePath)
-
-    if returnMappings:
-        return mappings
-    else:
-        return "No mappings requested"
-
 
 # Given a name, find the segOffset for it
 def findSegOffset(segs, segfeature):
@@ -416,20 +364,3 @@ def processInitLines(initlines, parity):
     return inits
 
 
-def readBin(binfilePath):
-    with binfilePath.open('rb') as f:
-        binlines = []
-        while True:
-            b = f.read(16)
-            if len(b) != 16:
-                break
-            contents = struct.unpack('iiii', b)
-            binlines.append(contents)
-    return binlines
-
-
-def printBin(binfilePath):
-    binlines = readBin(binfilePath)
-    for line in binlines:
-        r, c, frame, bitoffset = line
-        print("{}:{} 0x{:08x} {}".format(r, c, frame, bitoffset))
