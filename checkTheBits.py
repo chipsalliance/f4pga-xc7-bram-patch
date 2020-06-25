@@ -227,8 +227,6 @@ if __name__ == "__main__":
         "memname", help='Name of memory to check (as in "mem/ram")'
     )
 
-    parser.add_argument("--design")
-
     parser.add_argument("--verbose", action='store_true')
 
     parser.add_argument(
