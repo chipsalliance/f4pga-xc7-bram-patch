@@ -2,7 +2,7 @@
 # Author: Brent Nelson
 # Created: 25 June 2020
 # Description:
-#    Outputs .h file format 
+#    Outputs .h file format
 
 import bitMapping
 import pathlib
@@ -10,6 +10,7 @@ import argparse
 import patch_mem
 import os
 import json
+
 
 ##############################################################################################
 # Create the bitmappings for a design
@@ -30,7 +31,7 @@ def genh(
     )
     # Add some info to the mdd_data
     tilegridname = os.environ["XRAY_DIR"] + "/database/" + os.environ[
-    "XRAY_DATABASE"] + "/" + os.environ["XRAY_PART"] + "/tilegrid.json"
+        "XRAY_DATABASE"] + "/" + os.environ["XRAY_PART"] + "/tilegrid.json"
     with open(tilegridname) as f:
         tilegrid = json.load(f)
 
@@ -91,8 +92,7 @@ if __name__ == "__main__":
     words = int(args.words)
     bits = int(args.bits)
     mappings, mdd_data = genh(
-        baseDir, words, bits, "mem/ram", args.verbose,
-        args.printmappings
+        baseDir, words, bits, "mem/ram", args.verbose, args.printmappings
     )
 
     # Now output the .h file
@@ -103,21 +103,30 @@ if __name__ == "__main__":
     print('#define FOO_MEM 0\n')
     print('const char * logical_names[]={', end='')
     print('"ram/mem"};\n')
-  
+
     numRanges = len(mdd_data)
     for i, m in enumerate(mdd_data):
         if i == 0:
             ranges = "{" + "0x{:08x},{}".format(m.baseaddr, m.numframes) + "}"
         else:
-            ranges += ",{" + "0x{:08x},{}".format(m.baseaddr, m.numframes) + "}"
+            ranges += ",{" + "0x{:08x},{}".format(
+                m.baseaddr, m.numframes
+            ) + "}"
 
-    print('struct frame_range mem0_frame_ranges[{}]='.format(numRanges) + "{" + ranges + '};\n')
-    print('struct bit_loc mem0_bitlocs[{}]='.format(words*bits) + '{')
+    print(
+        'struct frame_range mem0_frame_ranges[{}]='.format(numRanges) + "{" +
+        ranges + '};\n'
+    )
+    print('struct bit_loc mem0_bitlocs[{}]='.format(words * bits) + '{')
     for i, m in enumerate(mappings):
-        if i < len(mappings)-1:
-            s  = '    {' + '0x{:08x}, '.format(m.frameAddr) + '{}'.format(m.frameBitOffset) + '},'
+        if i < len(mappings) - 1:
+            s = '    {' + '0x{:08x}, '.format(m.frameAddr) + '{}'.format(
+                m.frameBitOffset
+            ) + '},'
         else:
-            s  = '    {' + '0x{:08x}, '.format(m.frameAddr) + '{}'.format(m.frameBitOffset) + '}'
+            s = '    {' + '0x{:08x}, '.format(m.frameAddr) + '{}'.format(
+                m.frameBitOffset
+            ) + '}'
 
         print(s)
     print("};")
@@ -125,8 +134,11 @@ if __name__ == "__main__":
     print('struct logical_memory logical_memories[NUM_LOGICAL] =')
     print('{')
     print(' {', end='')
-    print('{},{},{},mem0_frame_ranges,mem0_bitlocs'.format(numRanges, words, bits), end='')
+    print(
+        '{},{},{},mem0_frame_ranges,mem0_bitlocs'.format(
+            numRanges, words, bits
+        ),
+        end=''
+    )
     print('}   // FOO_MEM 0')
     print('};')
-    
-
