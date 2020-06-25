@@ -13,7 +13,7 @@ from prjxray import fasm_disassembler
 
 
 def readAndFilterMDDData(mdd, selectedMemToPatch, verbose=False):
-    # Handles either Path or strings 
+    # Handles either Path or strings
     if isinstance(mdd, pathlib.Path):
         mdd = str(mdd)
 

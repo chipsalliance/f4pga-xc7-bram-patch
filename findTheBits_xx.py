@@ -16,6 +16,7 @@ import pathlib
 import struct
 import DbgParser
 
+
 # Check the bits for a complete memory
 def findAllBits(
     dr, mdd_data, cell, initFile, fasmFile, verbose, mappings, check
@@ -91,7 +92,7 @@ def findAllBits(
     tilegridinfo = tilegrid[cell.tile]
     cell.baseaddr = int(tilegridinfo["bits"]["BLOCK_RAM"]["baseaddr"], 16)
     cell.wordoffset = int(tilegridinfo["bits"]["BLOCK_RAM"]["offset"])
-    
+
     # Step 5: Load up the bit file if checking is requested
     if check:
         frames = DbgParser.loadFrames(
@@ -290,7 +291,6 @@ def findAllBits(
                 assert frbit == int(
                     initbit
                 ), "initbit: {} != frbit: {}".format(initbit, frbit)
-            
 
     # If we got here, it worked.
     # So say so if you were asked to...
@@ -301,6 +301,7 @@ def findAllBits(
             ),
             flush=True
         )
+
 
 # Given a name, find the segOffset for it
 def findSegOffset(segs, segfeature):
@@ -362,5 +363,3 @@ def processInitLines(initlines, parity):
         inits.append("0" * 256)
 
     return inits
-
-

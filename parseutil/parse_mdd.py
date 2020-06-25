@@ -39,13 +39,9 @@ class Cell:
 
     def toString(self):
         s = "{} {} {} {} {} {} {}".format(
-            self.cell_name,
-            self.type,
-            self.tile,
-            self.placement,
-            self.ram_name,
-            self.addr_beg,
-            self.slice_beg)
+            self.cell_name, self.type, self.tile, self.placement,
+            self.ram_name, self.addr_beg, self.slice_beg
+        )
         return s
 
 

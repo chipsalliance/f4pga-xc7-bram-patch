@@ -16,9 +16,13 @@ import DbgParser
 import patch_mem
 import re
 
+
 # Holds a single mapping record from init.mem bit to FASM and bitstream
 class Mapping:
-    def __init__(self, word, bit, tile, bits, fasmY, fasmINITP, fasmLine, fasmBit, frameAddr, frameBitOffset):
+    def __init__(
+        self, word, bit, tile, bits, fasmY, fasmINITP, fasmLine, fasmBit,
+        frameAddr, frameBitOffset
+    ):
         self.word = word
         self.bit = bit
         self.tile = tile
@@ -29,9 +33,14 @@ class Mapping:
         self.fasmBit = fasmBit
         self.frameAddr = frameAddr
         self.frameBitOffset = frameBitOffset
+
     def toString(self):
         return "word={}, bit={}, tile = {}, bits = {}, fasmY={}, fasmINITP={}, fasmLine={}, fasmBit={}, frameAddr={:x}, frameBitOffset={}".format(
-            self.word, self.bit, self.tile, self.bits, self.fasmY, self.fasmINITP, self.fasmLine, self.fasmBit, self.frameAddr, self.frameBitOffset)
+            self.word, self.bit, self.tile, self.bits, self.fasmY,
+            self.fasmINITP, self.fasmLine, self.fasmBit, self.frameAddr,
+            self.frameBitOffset
+        )
+
 
 # Add mappings for a particular BRAM primitive into the mappingsn array and return it
 def createBitMapping(
@@ -64,8 +73,9 @@ def createBitMapping(
             RAMBparityinitwidth = cell.pbits
             RAMBdatainitwidth = cell.dbits
             assert RAMBinitwidth == RAMBdatainitwidth + RAMBparityinitwidth, "RAMBinitwidth ERROR: {} {} {} {}".format(
-                        RAMBinitwidth, RAMBreadinitwidth, RAMBparityinitwidth, RAMBdatainitwidth
-                    )
+                RAMBinitwidth, RAMBreadinitwidth, RAMBparityinitwidth,
+                RAMBdatainitwidth
+            )
 
             # 2b: Determine how many bits are in parity and how many are in the "normal" bits
             if not ramb36:
@@ -77,7 +87,11 @@ def createBitMapping(
                 print("\nDoing: {} {}".format(w, b))
                 print(
                     "{} data bits will be found in {}({}) LSB's of INITP and {}({}) LSB's of INIT"
-                    .format(RAMBinitwidth, RAMBparityinitwidth, initpSliceinitwidth, RAMBdatainitwidth, initSliceinitwidth),
+                    .format(
+                        RAMBinitwidth, RAMBparityinitwidth,
+                        initpSliceinitwidth, RAMBdatainitwidth,
+                        initSliceinitwidth
+                    ),
                     end=''
                 )
                 print(
@@ -103,8 +117,12 @@ def createBitMapping(
                 )
             # Some sanity checks
             # Number of bits in INIT and INITP should be 32K and 4K respectively (RAMB36E1) or 16K and 2K respectively (RAMB18E1)
-            assert initSliceinitwidth * RAMBdepth == (32768 if ramb36 else 16384)
-            assert initpSliceinitwidth == 0 or initpSliceinitwidth * RAMBdepth == (4096 if ramb36 else 2048)
+            assert initSliceinitwidth * RAMBdepth == (
+                32768 if ramb36 else 16384
+            )
+            assert initpSliceinitwidth == 0 or initpSliceinitwidth * RAMBdepth == (
+                4096 if ramb36 else 2048
+            )
 
             # 2c: Is the bit of interest in the INIT portion or the INITP portion?
             if b - cell.slice_beg < initSliceinitwidth:
@@ -131,8 +149,10 @@ def createBitMapping(
 
             # 2.f: Compute where to find the bit in the INIT strings
             # Find which INIT or INITP entry it is in (00-3F for INIT, 00-07 for INITP)
-            initRow = int((w-cell.addr_beg) / numWordsPerInit)
-            assert initRow <= 0x3F, "{} {} {} {} {}".format(initRow, w, numWordsPerInit, initStringLen, sliceinitwidth)
+            initRow = int((w - cell.addr_beg) / numWordsPerInit)
+            assert initRow <= 0x3F, "{} {} {} {} {}".format(
+                initRow, w, numWordsPerInit, initStringLen, sliceinitwidth
+            )
 
             # 2.g: Now, compute the actual bit offset into that INIT or INITP string
             wordOffset = int(w % numWordsPerInit)
@@ -150,9 +170,9 @@ def createBitMapping(
             lr = 0 if cell.tile[6] == "L" else 1
             y01 = 0 if ramb36 is False or bitOffset % 2 == 0 else 1
             segoffset = findSegOffset(
-                segs, 
-                lr, 
-                y01, 
+                segs,
+                lr,
+                y01,
                 1 if parity else 0,
                 initRow,
                 int(bitOffset / 2) if ramb36 else bitOffset,
@@ -162,7 +182,7 @@ def createBitMapping(
             # Frame number is tilegrid.json's baseaddr + segbits frame offset number
             frameNum = cell.baseaddr + segoffset[0]
             # Bit offset is given in segbits file
-            frameBitOffset = int(segoffset[1]) + cell.wordoffset*32
+            frameBitOffset = int(segoffset[1]) + cell.wordoffset * 32
 
             # 2.j: Print out the mapping if requested
             bbb = int(bitOffset / 2) if ramb36 else bitOffset
@@ -172,12 +192,8 @@ def createBitMapping(
                         "{} init.mem[{}][{}] -> {}.{}_Y{}.INITP_{:02x}[{:03}] -> {} {} {} wordoffset = {}"
                         .format(
                             designName, w, b, cell.tile,
-                            cell.type[:-2], 
-                            y01, 
-                            initRow,
-                            bbb,
-                            cell.tile, hex(cell.baseaddr), segoffset,
-                            cell.wordoffset
+                            cell.type[:-2], y01, initRow, bbb, cell.tile,
+                            hex(cell.baseaddr), segoffset, cell.wordoffset
                         )
                     )
 
@@ -186,32 +202,21 @@ def createBitMapping(
                         "{} init.mem[{}][{}] -> {}.{}_Y{}.INIT_{:02x}[{:03}] -> {} {} {} wordoffset = {}"
                         .format(
                             designName, w, b, cell.tile,
-                            cell.type[:-2], 
-                            y01, 
-                            initRow,
-                            bbb,
-                            cell.tile, hex(cell.baseaddr), segoffset,
-                            cell.wordoffset
+                            cell.type[:-2], y01, initRow, bbb, cell.tile,
+                            hex(cell.baseaddr), segoffset, cell.wordoffset
                         )
                     )
 
             # 2.k: Finally, build a Mapping object and add it to the mappings list (to be returned below)
             mappings.append(
                 Mapping(
-                    w, 
-                    b, 
-                    cell.tile,
-                    bits,
-                    y01, 
-                    parity, 
-                    initRow, 
-                    bbb,
-                    frameNum, 
+                    w, b, cell.tile, bits, y01, parity, initRow, bbb, frameNum,
                     frameBitOffset
                 )
             )
     # All done...
     return mappings
+
 
 # Given a word/bit index, find the mapping
 def findMapping(w, b, bits, mappings):
@@ -222,12 +227,24 @@ def findMapping(w, b, bits, mappings):
     row = (w * bits) + b
     return mappings[row]
 
+
 # If this is done once and re-used, much time can be saved
 def loadSegs():
-    # Read the segbits database information for later use.  
+    # Read the segbits database information for later use.
     # Create multidimensional array to hold it.
     # Indices from left to right are: lr, y01, initinitp, initnum, initbit, frame, framebit
-    segs = [[[[[None for j in range(256)] for k in range(64)] for l in range(2)] for m in range(2)] for n in range(2)]
+    segs = [
+        [
+            [
+                [[None
+                  for j in range(256)]
+                 for k in range(64)]
+                for l in range(2)
+            ]
+            for m in range(2)
+        ]
+        for n in range(2)
+    ]
 
     # Read the segbits database info
     segname = os.environ["XRAY_DIR"] + "/database/" + os.environ[
@@ -243,17 +260,21 @@ def loadSegs():
 
     return segs
 
+
 # Process the segment lines read from the database and fill an array with them
 def processSegLines(seglines, segs):
     # seglines is a multi-dimensional array, indexed by integers
     # Level1: [bram_l, bram_r]
     # Level 2: [y0, y1]
-    # Level 3: [INIT, INITP]   
+    # Level 3: [INIT, INITP]
     # Level 4: [0, 1, ..., 3F] (which INIT line?  could make INITP ones shorter but, hey...)
     # Level 5: [0, 1, ..., 255]  (bits from a given init line)
     # Level 6: [frame, bit]     (the location in the bitstream for this bit)
     for line in seglines:
-        m = re.search('^BRAM_(.)\.RAMB18_Y(.)\.([^_]*)_(..)\[(...)\] ([^_]*)_(.*)$', line.rstrip())
+        m = re.search(
+            '^BRAM_(.)\.RAMB18_Y(.)\.([^_]*)_(..)\[(...)\] ([^_]*)_(.*)$',
+            line.rstrip()
+        )
         assert m is not None, "{}".format(line)
         lr = 0 if m.group(1) == 'L' else 1
         y01 = int(m.group(2))
@@ -275,19 +296,21 @@ def processSegLines(seglines, segs):
         segs[lr][y01][initinitp][initnum][initbit] = [frame, framebit]
     return segs
 
+
 def findSegOffset(segs, lr, y01, initinitp, initnum, initbit):
     #print("{} {} {} {} {}".format(lr, y01, initinitp, initnum, initbit))
     return segs[lr][y01][initinitp][initnum][initbit]
+
 
 ##############################################################################################
 # Create the bitmappings for a design
 ##############################################################################################
 def createBitMappings(
-    baseDir, # The directory where the design lives
-    words,   # Number of words in init.mem file
-    bits,    # Number of bits per word in init.memfile
+    baseDir,  # The directory where the design lives
+    words,  # Number of words in init.mem file
+    bits,  # Number of bits per word in init.memfile
     memName,
-    verbose, 
+    verbose,
     printMappings
 ):
     designName = baseDir.name
@@ -296,7 +319,7 @@ def createBitMappings(
     mdd_data = patch_mem.readAndFilterMDDData(
         str(baseDir / "{}.mdd".format(baseDir.name)), memName
     )
-    
+
     # 2. Load the segment data from the prjxray database.
     #    This uses the environment variables set by prjxray
     #    Passing it into createBitMappings() each time will save a lot of time since it can be reused for all
@@ -310,16 +333,16 @@ def createBitMappings(
     # 4. Create the bitmappings for each BRAM Primitive
     for cell in mdd_data:
         mappings = createBitMapping(
-            designName,             # Name of design
-            segs,                   # The segs info
-            words,                  # Depth of memory
-            bits,                   # Width of memory
-            cell,                   # The BRAM primitive to process
-            mappings,               # The returned mappings data structure
-            verbose, 
+            designName,  # Name of design
+            segs,  # The segs info
+            words,  # Depth of memory
+            bits,  # Width of memory
+            cell,  # The BRAM primitive to process
+            mappings,  # The returned mappings data structure
+            verbose,
             printMappings
         )
-    
+
     # Inner function for use in sort below
     def mapSort(m):
         # Need a key that is ascending for the order we want
@@ -331,21 +354,13 @@ def createBitMappings(
     return mappings
 
 
-
-
 # The routine createBitMappings() above is intended to be called from other programs which require the mappings.
 # This main routine below is designed to test it
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "baseDir", help='Directory where design is located.'
-    )
-    parser.add_argument(
-        "words", help='Number of words in memory.'
-    )
-    parser.add_argument(
-        "bits", help='Number of words in memory.'
-    )
+    parser.add_argument("baseDir", help='Directory where design is located.')
+    parser.add_argument("words", help='Number of words in memory.')
+    parser.add_argument("bits", help='Number of words in memory.')
     parser.add_argument("--verbose", action='store_true')
     parser.add_argument(
         "--printmappings", action='store_true', help='Print the mapping info'
@@ -354,16 +369,14 @@ if __name__ == "__main__":
 
     baseDir = pathlib.Path(args.baseDir).resolve()
 
-    mappings = createBitMappings(baseDir, int(args.words), int(args.bits), "mem/ram", args.verbose, args.printmappings)
+    mappings = createBitMappings(
+        baseDir, int(args.words), int(args.bits), "mem/ram", args.verbose,
+        args.printmappings
+    )
 
     # Since this is a test program, print out what was returned
     print("\nMappings:")
     for m in mappings:
         print(" {}".format(m.toString()))
-    
+
     print("")
-
-
-
-        
-

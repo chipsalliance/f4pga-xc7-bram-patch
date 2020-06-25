@@ -19,17 +19,18 @@ import bitMapping
 import patch_mem
 import re
 
+
 # Check the bits for a complete memory
 def checkTheBits(
-    baseDir,        # pathlib.Path
-    memName,        # str
-    mdd,            # pathlib.Path
-    initbitwidth,   # int
-    initFile,       # pathlib.Path
-    fasmFile,       # pathlib.Path
-    verbose,        # bool
-    printmappings   # bool
-    ):
+    baseDir,  # pathlib.Path
+    memName,  # str
+    mdd,  # pathlib.Path
+    initbitwidth,  # int
+    initFile,  # pathlib.Path
+    fasmFile,  # pathlib.Path
+    verbose,  # bool
+    printmappings  # bool
+):
 
     designName = baseDir.name
 
@@ -38,16 +39,18 @@ def checkTheBits(
 
     # 1. Read the init.mem file for this design
     # Put the contents into an array of strings
-    initMemContents = parseutil.parse_init_test.read_initfile(initFile, initbitwidth)
+    initMemContents = parseutil.parse_init_test.read_initfile(
+        initFile, initbitwidth
+    )
     #print(initMemContents)
     words = len(initMemContents)
 
     # 2. Get the mapping infols /
     print("Loading mappings for {}...".format(designName))
     mappings = bitMapping.createBitMappings(
-        baseDir, # The directory where the design lives
-        words,   # Number of words in init.mem file
-        initbitwidth,    # Number of bits per word in init.memfile
+        baseDir,  # The directory where the design lives
+        words,  # Number of words in init.mem file
+        initbitwidth,  # Number of bits per word in init.memfile
         memName,
         False,
         printmappings
@@ -68,7 +71,9 @@ def checkTheBits(
     )
 
     # 4. Read the fasm file for this cell and collect the INIT/INITP lines
-    init0lines, init0plines, init1lines, init1plines = readInitStringsFromFASMFile(fasmFile)
+    init0lines, init0plines, init1lines, init1plines = readInitStringsFromFASMFile(
+        fasmFile
+    )
 
     # 5. Check each cell
     for cell in mdd_data:
@@ -85,7 +90,7 @@ def checkTheBits(
                 if b < cell.slice_beg or b > cell.slice_end:
                     continue
 
-                # Get the bit from the memory 
+                # Get the bit from the memory
                 initbit = initMemContents[w][b]
                 #print("xxx {} {}".format(w, cell.width-1-b))
                 #print(initMemContents[w])
@@ -93,7 +98,9 @@ def checkTheBits(
                 # Get the bit from the FASM line
                 #print("Hi: {} {} {}".format(w, b, bits))
                 mapping = bitMapping.findMapping(w, b, initbitwidth, mappings)
-                assert mapping is not None, "{} {} {}".format(w, b, initbitwidth)
+                assert mapping is not None, "{} {} {}".format(
+                    w, b, initbitwidth
+                )
                 if mapping.fasmY == 0 and mapping.fasmINITP == True:
                     #print("0ps")
                     fasmbit = init0ps[mapping.fasmLine][mapping.fasmBit]
@@ -113,7 +120,7 @@ def checkTheBits(
                 # Get the bit from the bitstream
                 frame = mapping.frameAddr
                 bitOffset = mapping.frameBitOffset
-                frwd = frames[frame][int(bitOffset/32)]
+                frwd = frames[frame][int(bitOffset / 32)]
                 # Mask off just the bit we want out of the 32
                 # 1. Doing a mod 32 will tell which bit num it is
                 # 2. Then, shift over and mask
@@ -128,8 +135,13 @@ def checkTheBits(
                     )
                 #print("{}:{}".format(w, b))
                 #print(mapping.toString())
-                assert fasmbit == initbit, "initbit: {} != fasmbit: {} ({}:{} {} {} \n   {})".format(initbit, fasmbit, w, b, initMemContents[w], initbitwidth, mapping.toString())
-                assert frbit == int(initbit), "initbit: {} != bitstream bit: {}".format(initbit, frbit)
+                assert fasmbit == initbit, "initbit: {} != fasmbit: {} ({}:{} {} {} \n   {})".format(
+                    initbit, fasmbit, w, b, initMemContents[w], initbitwidth,
+                    mapping.toString()
+                )
+                assert frbit == int(
+                    initbit
+                ), "initbit: {} != bitstream bit: {}".format(initbit, frbit)
 
         # If we got here, it worked.
         # So say so if you were asked to...
@@ -202,22 +214,17 @@ def processInitLines(typ, initlines, cell, parity):
         inits.append("0" * 256)
     return inits
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "baseDir", help='Directory where design sub-directories are located.'
     )
 
-    parser.add_argument(
-        "bits",
-        help=
-        'Width of each word of memory'
-    )
+    parser.add_argument("bits", help='Width of each word of memory')
 
     parser.add_argument(
-        "memname",
-        help=
-        'Name of memory to check (as in "mem/ram")'
+        "memname", help='Name of memory to check (as in "mem/ram")'
     )
 
     parser.add_argument("--design")
@@ -233,15 +240,10 @@ if __name__ == "__main__":
     baseDir = pathlib.Path(args.baseDir).resolve()
     designName = baseDir.name
 
-    checkTheBits(baseDir, 
-        args.memname, 
-        baseDir / "{}.mdd".format(designName), 
-        int(args.bits),
-        baseDir / "init/init.mem", 
-        baseDir / "real.fasm", 
-        args.verbose, 
-        args.printmappings
+    checkTheBits(
+        baseDir, args.memname, baseDir / "{}.mdd".format(designName),
+        int(args.bits), baseDir / "init/init.mem", baseDir / "real.fasm",
+        args.verbose, args.printmappings
     )
 
     print("")
-

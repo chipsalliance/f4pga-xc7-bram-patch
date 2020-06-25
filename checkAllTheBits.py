@@ -4,7 +4,6 @@
 # Description:
 #    Driver to check all the designs in a directory for regression testing
 
-
 import checkTheBits
 import argparse
 import pathlib
@@ -26,19 +25,13 @@ if __name__ == "__main__":
     baseDir = pathlib.Path(args.baseDir).resolve()
     dirs = list(baseDir.glob("*"))
     dirs.sort()
-        
+
     for d in dirs:
         designName = d.name
         checkTheBits.checkTheBits(
-            d,
-            "mem/ram",
-            d / "{}.mdd".format(designName), 
-            int(designName.split('b')[1]),
-            d / "init/init.mem", 
-            d / "real.fasm", 
-            args.verbose, 
-            args.printmappings
+            d, "mem/ram", d / "{}.mdd".format(designName),
+            int(designName.split('b')[1]), d / "init/init.mem",
+            d / "real.fasm", args.verbose, args.printmappings
         )
 
     print("")
-

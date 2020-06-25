@@ -17,10 +17,11 @@ def pad(ch, wid, data):
     tmp = str(data)
     return (ch * (wid - len(tmp)) + tmp)
 
+
 # Read the init file contents, pad to the desired width, and then reverse.
 # That way, the LSB is element 0 of each word
 def read_initfile(infile, wid):
-    # Handles either Path or strings 
+    # Handles either Path or strings
     if isinstance(infile, pathlib.Path):
         infile = str(infile)
 
@@ -35,8 +36,9 @@ def read_initfile(infile, wid):
                 init_data.append(data[::-1])
         return init_data
 
+
 def initfile_to_initlist(infile, mdd):
-    # Handles either Path or strings 
+    # Handles either Path or strings
     if isinstance(infile, pathlib.Path):
         infile = str(infile)
 

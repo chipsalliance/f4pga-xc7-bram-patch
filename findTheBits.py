@@ -85,12 +85,9 @@ if __name__ == "__main__":
 
     if args.design is not None:
         findAllBitsInDir(
-            baseDir / args.design, args.verbose, args.printmappings,
-            args.check
+            baseDir / args.design, args.verbose, args.printmappings, args.check
         )
     else:
         dirs = baseDir.glob("*")
-        findAllBitsInDirs(
-            dirs, args.verbose, args.printmappings, args.check
-        )
+        findAllBitsInDirs(dirs, args.verbose, args.printmappings, args.check)
     print("")
