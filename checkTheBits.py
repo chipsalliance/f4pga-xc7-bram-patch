@@ -42,7 +42,6 @@ def checkTheBits(
     initMemContents = parseutil.parse_init_test.read_initfile(
         initFile, initbitwidth
     )
-    #print(initMemContents)
     words = len(initMemContents)
 
     # 2. Get the mapping infols /
@@ -56,14 +55,6 @@ def checkTheBits(
         printmappings
     )
     print("  Done loading mappings")
-    #i = 0
-    #for m in mappings:
-    #    print(m.toString())
-    #    i += 1
-    #    if i > 8:
-    #        break
-    #for m in mappings:
-    #    print(m.toString())
 
     # 3. Load up the bit file
     frames = DbgParser.loadFrames(
@@ -77,11 +68,15 @@ def checkTheBits(
 
     # 5. Check each cell
     for cell in mdd_data:
+        # inits will be indexed as inits[y01][initinitp]
+        inits = [[None for j in range(2)] for k in range(2)]
+
         # Convert the FASM lines into the proper format strings
-        init0s = processInitLines("0s", init0lines, cell, False)
-        init0ps = processInitLines("0ps", init0plines, cell, True)
-        init1s = processInitLines("1s", init1lines, cell, False)
-        init1ps = processInitLines("1ps", init1plines, cell, True)
+        # Store them in a multi-dimensional array indexed by y01 and INITP/INIT (True/False)
+        inits[0][False] = processInitLines("0s", init0lines, cell, False)
+        inits[0][True] = processInitLines("0ps", init0plines, cell, True)
+        inits[1][False] = processInitLines("1s", init1lines, cell, False)
+        inits[1][True] = processInitLines("1ps", init1plines, cell, True)
 
         for w in range(words):
             for b in range(initbitwidth):
@@ -92,30 +87,15 @@ def checkTheBits(
 
                 # Get the bit from the memory
                 initbit = initMemContents[w][b]
-                #print("xxx {} {}".format(w, cell.width-1-b))
-                #print(initMemContents[w])
 
                 # Get the bit from the FASM line
-                #print("Hi: {} {} {}".format(w, b, bits))
                 mapping = bitMapping.findMapping(w, b, initbitwidth, mappings)
                 assert mapping is not None, "{} {} {}".format(
                     w, b, initbitwidth
                 )
-                if mapping.fasmY == 0 and mapping.fasmINITP == True:
-                    #print("0ps")
-                    fasmbit = init0ps[mapping.fasmLine][mapping.fasmBit]
-                elif mapping.fasmY == 1 and mapping.fasmINITP == True:
-                    #print("1ps")
-                    fasmbit = init1ps[mapping.fasmLine][mapping.fasmBit]
-                elif mapping.fasmY == 0 and mapping.fasmINITP == False:
-                    #print("\n0s {}".format(init0s[mapping.fasmLine]))
-                    fasmbit = init0s[mapping.fasmLine][mapping.fasmBit]
-                else:
-                    #print("\n1s {}".format(init1s[mapping.fasmLine]))
-                    fasmbit = init1s[mapping.fasmLine][mapping.fasmBit]
-
-                #print("*** " + mapping.toString())
-                #print("### {} {} {} {}".format(w, b, mapping.fasmLine, mapping.fasmBit))
+                # Now get the actual bit
+                fasmbit = inits[mapping.fasmY][mapping.fasmINITP][
+                    mapping.fasmLine][mapping.fasmBit]
 
                 # Get the bit from the bitstream
                 frame = mapping.frameAddr
@@ -133,8 +113,6 @@ def checkTheBits(
                         "Frame = {:x} bitOffset = {} frwd = {} frbit = {}".
                         format(frame, bitOffset, frwd, frbit)
                     )
-                #print("{}:{}".format(w, b))
-                #print(mapping.toString())
                 assert fasmbit == initbit, "initbit: {} != fasmbit: {} ({}:{} {} {} \n   {})".format(
                     initbit, fasmbit, w, b, initMemContents[w], initbitwidth,
                     mapping.toString()
@@ -168,8 +146,6 @@ def readInitStringsFromFASMFile(fasmFile):
     init1plines = []
     with fasmFile.open() as f:
         for line in f.readlines():
-            #if line.split(".")[0] != cell.tile:
-            #    continue
             if "Y0.INITP" in line:
                 init0plines.append(line)
             elif "Y0.INIT" in line:
@@ -205,9 +181,6 @@ def processInitLines(typ, initlines, cell, parity):
         key = int(key, 16)
         assert key == indx, "key={} indx={} line={}".format(key, indx, line)
         val = pad('0', 256, val)[::-1]
-        #print(key)
-        #print(val)
-        #print(typ)
         inits.append(val)
         indx += 1
     while len(inits) < (8 if parity else 64):
