@@ -2,9 +2,9 @@
 # Author: Brent Nelson
 # Created: 15 June 2020
 # Description:
-#    Will compute bit mappings from init.mem bit locations to FASM INIT/INITP lines/bits
-#    If a bit mismatch is found between a given init.mem file and locations in the FASM file, an assertion will fail.
-#    So, you can run this and if no exceptions are thrown because all bits matched.
+#    Will verify that the bits in an init.mem file are where it says they should be in the FASM file and bitstream.
+#    If a bit mismatch is found between a given init.mem file and locations in the FASM or bitstream file, an assertion will fail.
+#    So, you can run this and if no exceptions are thrown that means all checked out.
 
 import os
 import sys
@@ -16,10 +16,10 @@ import pathlib
 import struct
 import DbgParser
 
-
+# Check the bits for a complete memory
 def findAllBits(
     dr, mdd_data, cell, initFile, fasmFile, verbose, mappings, check, binfile,
-    printbinfile
+    printbinfile, returnMappings
 ):
 
     designName = dr.name
@@ -97,13 +97,18 @@ def findAllBits(
         binfilePath = dr / "{}.bin".format(designName)
         bf = binfilePath.open("wb")
 
-    # Step 4: Load up the bit file if checking is requested
-    if check:
+    # Step 5: Load up the bit file if checking is requested
+    if check or returnMappings:
         frames = DbgParser.loadFrames(
             dr / "vivado" / "{}.bit".format(designName)
         )
 
-    # Step 5: Now check if we can find all the bits in this cell
+    # Step 6: If a return value consisting of a data structure is required, create it.
+    if returnMappings:
+        # Mappings is a list of Mapping cells, one for each initfile location
+        mappings = []
+
+    # Step 7: Now check if we can find all the bits in this cell
     # We use the length of the init file to determine the # of words to check since
     # for a small memory (128b1), Vivado will generate a larger one, knowing you will
     # only use the lower part of the memory.
@@ -281,10 +286,8 @@ def findAllBits(
                         cell.wordoffset * 32 + froffset
                     )
                 )
-
-            # Check bit in frame data if asked
-            # This will use the .bit file read in step 4 above and compare to what is in both the init.mem and FASM files
-            if check:
+            if check or returnMappings:
+                # Compute offsets for frame/bit in bitstream
                 # Frame number is tilegrid.json's baseaddr + segbits frame offset number
                 frame = cell.baseaddr + int(segoffset.split("_")[0])
                 # Bit offset is given in segbits file
@@ -295,6 +298,10 @@ def findAllBits(
                 # 1. Doing a mod 32 will tell which bit num it is
                 # 2. Then, shift over and mask
                 frbit = (frwd >> frboffset % 32) & 0x1
+
+            # Check bit in frame data if asked
+            # This will use the .bit file read in step 4 above and compare to what is in both the init.mem and FASM files
+            if check:
                 if verbose:
                     print(
                         "Frame = {:x} frboffset = {} frwd = {} frbit = {}".
@@ -303,6 +310,25 @@ def findAllBits(
                 assert frbit == int(
                     initbit
                 ), "initbit: {} != frbit: {}".format(initbit, frbit)
+            
+            # If requested, build Mapping object
+            if returnMappings:
+                # word, bit, fasmY, fasmINITP, fasmLine, fasmBit, frameBaseaddr, frameOffset, frameBitOffset
+                mappings.append(
+                    Mapping(
+                        w, 
+                        b, 
+                        ynum, 
+                        parity, 
+                        initRow, 
+                        int(bitOffset / 2) if ramb36 else bitOffset,
+                        frame, 
+                        frboffset,
+                        cell.wordoffset,
+                        frbit
+                    )
+                )
+
 
     # If we got here, it worked.
     # So say so if you were asked to...
@@ -321,6 +347,11 @@ def findAllBits(
 
     if printbinfile:
         printBin(binfilePath)
+
+    if returnMappings:
+        return mappings
+    else:
+        return "No mappings requested"
 
 
 # Given a name, find the segOffset for it
