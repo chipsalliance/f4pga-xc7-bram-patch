@@ -22,7 +22,7 @@ def pad(ch, wid, data):
     return (ch * (wid - len(tmp)) + tmp)
 
 
-def findAllBitsInDir(dr, verbose, mappings, check, binfile, printbinfile):
+def findAllBitsInDir(dr, verbose, mappings, check):
     print("")
     print("Finding bits in directory: {}".format(str(dr)), flush=True)
     fname = dr.name
@@ -30,6 +30,7 @@ def findAllBitsInDir(dr, verbose, mappings, check, binfile, printbinfile):
     mdd_data = patch_mem.readAndFilterMDDData(
         str(dr / "{}.mdd".format(fname)), "mem/ram"
     )
+
     for cell in mdd_data:
         print(
             "  Processing cell: {} {} {}".format(
@@ -37,25 +38,18 @@ def findAllBitsInDir(dr, verbose, mappings, check, binfile, printbinfile):
             ),
             flush=True
         )
-        if cell.type == "RAMB36E1":
+        if cell.type == "RAMB36E1" or cell.type == "RAMB18E1":
             findTheBits_xx.findAllBits(
                 dr, mdd_data, cell, str(dr / "init/init.mem"),
-                str(dr / "real.fasm"), verbose, mappings, check, binfile,
-                printbinfile
-            )
-        elif cell.type == "RAMB18E1":
-            findTheBits_xx.findAllBits(
-                dr, mdd_data, cell, str(dr / "init/init.mem"),
-                str(dr / "real.fasm"), verbose, mappings, check, binfile,
-                printbinfile
+                str(dr / "real.fasm"), verbose, mappings, check
             )
         else:
             raise RuntimeError("Unknown cell.type: {}".format(cell.type))
 
 
-def findAllBitsInDirs(dirs, verbose, mappings, check, binfile, printbinfile):
+def findAllBitsInDirs(dirs, verbose, mappings, check):
     for dr in dirs:
-        findAllBitsInDir(dr, verbose, mappings, check, binfile, printbinfile)
+        findAllBitsInDir(dr, verbose, mappings, check)
 
 
 # Must provide a baseDir argument
@@ -75,17 +69,6 @@ if __name__ == "__main__":
         help=
         'If provided, specify just which directory to process.  Otherwise, program will process all designs.'
     )
-    parser.add_argument(
-        "--dumpbinfile",
-        action='store_true',
-        help='Dump the mappings to a binary file (deprecated)'
-    )
-    parser.add_argument(
-        "--printbinfile",
-        action='store_true',
-        help=
-        'Read and print the results from the binary mapping file (deprecated)'
-    )
     parser.add_argument("--verbose", action='store_true')
     parser.add_argument(
         "--printmappings", action='store_true', help='Print the mapping info'
@@ -102,13 +85,9 @@ if __name__ == "__main__":
 
     if args.design is not None:
         findAllBitsInDir(
-            baseDir / args.design, args.verbose, args.printmappings,
-            args.check, args.dumpbinfile, args.printbinfile
+            baseDir / args.design, args.verbose, args.printmappings, args.check
         )
     else:
         dirs = baseDir.glob("*")
-        findAllBitsInDirs(
-            dirs, args.verbose, args.printmappings, args.check,
-            args.dumpbinfile, args.printbinfile
-        )
+        findAllBitsInDirs(dirs, args.verbose, args.printmappings, args.check)
     print("")

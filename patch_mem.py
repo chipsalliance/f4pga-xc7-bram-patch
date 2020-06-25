@@ -6,12 +6,17 @@ import parseutil.parse_mdd as mddutil
 import parseutil.fasmread as fasmutil
 import parseutil.parse_init_test as initutil
 import cProfile
+import pathlib
 
 from prjxray.db import Database
 from prjxray import fasm_disassembler
 
 
 def readAndFilterMDDData(mdd, selectedMemToPatch, verbose=False):
+    # Handles either Path or strings
+    if isinstance(mdd, pathlib.Path):
+        mdd = str(mdd)
+
     # Read and filter the MDD file contents based on selectedMemToPatch
     tmp_mdd_data = mddutil.read_mdd(mdd)
     mdd_data = [

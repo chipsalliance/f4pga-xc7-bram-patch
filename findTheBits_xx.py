@@ -2,9 +2,9 @@
 # Author: Brent Nelson
 # Created: 15 June 2020
 # Description:
-#    Will compute bit mappings from init.mem bit locations to FASM INIT/INITP lines/bits
-#    If a bit mismatch is found between a given init.mem file and locations in the FASM file, an assertion will fail.
-#    So, you can run this and if no exceptions are thrown because all bits matched.
+#    Will verify that the bits in an init.mem file are where it says they should be in the FASM file and bitstream.
+#    If a bit mismatch is found between a given init.mem file and locations in the FASM or bitstream file, an assertion will fail.
+#    So, you can run this and if no exceptions are thrown that means all checked out.
 
 import os
 import sys
@@ -17,9 +17,9 @@ import struct
 import DbgParser
 
 
+# Check the bits for a complete memory
 def findAllBits(
-    dr, mdd_data, cell, initFile, fasmFile, verbose, mappings, check, binfile,
-    printbinfile
+    dr, mdd_data, cell, initFile, fasmFile, verbose, mappings, check
 ):
 
     designName = dr.name
@@ -92,18 +92,14 @@ def findAllBits(
     tilegridinfo = tilegrid[cell.tile]
     cell.baseaddr = int(tilegridinfo["bits"]["BLOCK_RAM"]["baseaddr"], 16)
     cell.wordoffset = int(tilegridinfo["bits"]["BLOCK_RAM"]["offset"])
-    # Finally, create binfile to dump results into
-    if binfile:
-        binfilePath = dr / "{}.bin".format(designName)
-        bf = binfilePath.open("wb")
 
-    # Step 4: Load up the bit file if checking is requested
+    # Step 5: Load up the bit file if checking is requested
     if check:
         frames = DbgParser.loadFrames(
             dr / "vivado" / "{}.bit".format(designName)
         )
 
-    # Step 5: Now check if we can find all the bits in this cell
+    # Step 7: Now check if we can find all the bits in this cell
     # We use the length of the init file to determine the # of words to check since
     # for a small memory (128b1), Vivado will generate a larger one, knowing you will
     # only use the lower part of the memory.
@@ -271,20 +267,8 @@ def findAllBits(
                             cell.wordoffset
                         )
                     )
-            # If requested, write info to binary file
-            if binfile:
-                frame = int(segoffset.split("_")[0])
-                froffset = int(segoffset.split("_")[1])
-                bf.write(
-                    struct.pack(
-                        'iiii', w, b, cell.baseaddr + frame,
-                        cell.wordoffset * 32 + froffset
-                    )
-                )
-
-            # Check bit in frame data if asked
-            # This will use the .bit file read in step 4 above and compare to what is in both the init.mem and FASM files
             if check:
+                # Compute offsets for frame/bit in bitstream
                 # Frame number is tilegrid.json's baseaddr + segbits frame offset number
                 frame = cell.baseaddr + int(segoffset.split("_")[0])
                 # Bit offset is given in segbits file
@@ -295,6 +279,10 @@ def findAllBits(
                 # 1. Doing a mod 32 will tell which bit num it is
                 # 2. Then, shift over and mask
                 frbit = (frwd >> frboffset % 32) & 0x1
+
+            # Check bit in frame data if asked
+            # This will use the .bit file read in step 4 above and compare to what is in both the init.mem and FASM files
+            if check:
                 if verbose:
                     print(
                         "Frame = {:x} frboffset = {} frwd = {} frbit = {}".
@@ -313,14 +301,6 @@ def findAllBits(
             ),
             flush=True
         )
-
-    # Close binary file opened above
-    if binfile:
-        bf.close()
-        print("  Closing binary mappings file: {}".format(binfilePath))
-
-    if printbinfile:
-        printBin(binfilePath)
 
 
 # Given a name, find the segOffset for it
@@ -383,22 +363,3 @@ def processInitLines(initlines, parity):
         inits.append("0" * 256)
 
     return inits
-
-
-def readBin(binfilePath):
-    with binfilePath.open('rb') as f:
-        binlines = []
-        while True:
-            b = f.read(16)
-            if len(b) != 16:
-                break
-            contents = struct.unpack('iiii', b)
-            binlines.append(contents)
-    return binlines
-
-
-def printBin(binfilePath):
-    binlines = readBin(binfilePath)
-    for line in binlines:
-        r, c, frame, bitoffset = line
-        print("{}:{} 0x{:08x} {}".format(r, c, frame, bitoffset))

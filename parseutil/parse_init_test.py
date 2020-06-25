@@ -1,6 +1,7 @@
 import parseutil.parse_mdd as mddutil
 import parseutil.fasmread as fasmutil
 import fasm
+import pathlib
 
 # from collections import recordclass
 
@@ -17,7 +18,30 @@ def pad(ch, wid, data):
     return (ch * (wid - len(tmp)) + tmp)
 
 
+# Read the init file contents, pad to the desired width, and then reverse.
+# That way, the LSB is element 0 of each word
+def read_initfile(infile, wid):
+    # Handles either Path or strings
+    if isinstance(infile, pathlib.Path):
+        infile = str(infile)
+
+    with open(infile, 'r') as f:
+        init_data = []
+        for line in f:
+            linedata = line.split(' ')
+            for data in linedata:
+                n = int(data, 16)
+                data = bin(n)[2:]
+                data = pad('0', wid, data)
+                init_data.append(data[::-1])
+        return init_data
+
+
 def initfile_to_initlist(infile, mdd):
+    # Handles either Path or strings
+    if isinstance(infile, pathlib.Path):
+        infile = str(infile)
+
     width = mddutil.get_width(mdd)
     # print(width)
     with open(infile, 'r') as f:
