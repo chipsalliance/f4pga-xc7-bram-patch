@@ -20,15 +20,15 @@ def genh(
     words,  # Number of words in init.mem file
     bits,  # Number of bits per word in init.memfile
     memName,
+    mdd,
     verbose,
     printMappings
 ):
     designName = baseDir.name
 
     # 1. Load the MDD file.  Note the name is derived from the designName (it is "designName.mdd")
-    mdd_data = patch_mem.readAndFilterMDDData(
-        str(baseDir / "{}.mdd".format(baseDir.name)), memName
-    )
+    mddName = "{}.mdd".format(baseDir.name) if mdd is None else mdd
+    mdd_data = patch_mem.readAndFilterMDDData(str(baseDir / mddName), memName)
     # Add some info to the mdd_data
     tilegridname = os.environ["XRAY_DIR"] + "/database/" + os.environ[
         "XRAY_DATABASE"] + "/" + os.environ["XRAY_PART"] + "/tilegrid.json"
@@ -83,6 +83,7 @@ if __name__ == "__main__":
     parser.add_argument("bits", help='Number of words in memory.')
     parser.add_argument("--verbose", action='store_true')
     parser.add_argument("--memname")
+    parser.add_argument("--mddname")
     parser.add_argument(
         "--printmappings", action='store_true', help='Print the mapping info'
     )
@@ -93,8 +94,10 @@ if __name__ == "__main__":
     words = int(args.words)
     bits = int(args.bits)
     memName = "mem/ram" if args.memname is None else args.memname
+
     mappings, mdd_data = genh(
-        baseDir, words, bits, memName, args.verbose, args.printmappings
+        baseDir, words, bits, memName, args.mddname, args.verbose,
+        args.printmappings
     )
 
     # Now output the .h file
