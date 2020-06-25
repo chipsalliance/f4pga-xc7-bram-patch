@@ -9,6 +9,7 @@ import os
 import sys
 import glob
 import parseutil
+import parseutil.misc as misc
 import argparse
 import json
 import pathlib
@@ -32,7 +33,6 @@ def fasm2init(
     verbose,  # bool
     printmappings  # bool
 ):
-
     designName = baseDir.name
 
     # 0. Read the MDD data and filter out the ones we want for this memory
@@ -51,7 +51,7 @@ def fasm2init(
     print("  Done loading mappings")
 
     # 2. Read the fasm file for this cell and collect the INIT/INITP lines
-    init0lines, init0plines, init1lines, init1plines = readInitStringsFromFASMFile(
+    init0lines, init0plines, init1lines, init1plines = misc.readInitStringsFromFASMFile(
         fasmFile
     )
 
@@ -63,10 +63,10 @@ def fasm2init(
 
         # Convert the FASM lines into the proper format strings
         # Store them in a multi-dimensional array indexed by y01 and INITP/INIT (True/False)
-        inits[0][False] = processInitLines("0s", init0lines, cell, False)
-        inits[0][True] = processInitLines("0ps", init0plines, cell, True)
-        inits[1][False] = processInitLines("1s", init1lines, cell, False)
-        inits[1][True] = processInitLines("1ps", init1plines, cell, True)
+        inits[0][False] = misc.processInitLines("0s", init0lines, cell, False)
+        inits[0][True] =  misc.processInitLines("0ps", init0plines, cell, True)
+        inits[1][False] = misc.processInitLines("1s", init1lines, cell, False)
+        inits[1][True] =  misc.processInitLines("1ps", init1plines, cell, True)
 
         for w in range(words):
             for b in range(initbitwidth):
@@ -121,64 +121,6 @@ def fasm2init(
 
     # 7. If we got here we were successful
     print("      Initfile re-created successfully!")
-
-
-# Pad a string to a certain length with 'ch'
-def pad(ch, wid, data):
-    tmp = str(data)
-    return (ch * (wid - len(tmp)) + tmp)
-
-
-# Read the FASM file and filter out Y0 and Y1 INIT and INITP strings
-# for the current cell and put into lists to return.
-def readInitStringsFromFASMFile(fasmFile):
-    init0lines = []
-    init0plines = []
-    init1lines = []
-    init1plines = []
-    with fasmFile.open() as f:
-        for line in f.readlines():
-            if "Y0.INITP" in line:
-                init0plines.append(line)
-            elif "Y0.INIT" in line:
-                init0lines.append(line)
-            if "Y1.INITP" in line:
-                init1plines.append(line)
-            elif "Y1.INIT" in line:
-                init1lines.append(line)
-    return (init0lines, init0plines, init1lines, init1plines)
-
-
-# Process the INIT lines one at a time.
-# Pad them into 256 character lines and reverse them end to end.
-# Return a list of them.
-# They should appear in ascending order, this checks that.
-# TODO: is it possible to have less than the full count of 64 INIT lines?
-#           Yes: see design 512b18.
-#       Would an INIT get left out of the FASM file it is was all zeroes?
-#           It is possible - but haven't seen this yet since using random data.
-#       To be safe, filling out full complement of lines with 0's in the code below.
-#       May be overkill but hey...
-def processInitLines(typ, initlines, cell, parity):
-    if len(initlines) == 0:
-        return []
-    inits = []
-    indx = 0
-    for line in enumerate(initlines):
-        lin = line[1].rstrip()
-        if lin.split(".")[0] != cell.tile:
-            continue
-        key = lin.split(".")[2].split("_")[1][0:2]
-        val = lin.split("=")[1][6:]
-        key = int(key, 16)
-        assert key == indx, "key={} indx={} line={}".format(key, indx, line)
-        val = pad('0', 256, val)[::-1]
-        inits.append(val)
-        indx += 1
-    while len(inits) < (8 if parity else 64):
-        inits.append("0" * 256)
-    return inits
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
