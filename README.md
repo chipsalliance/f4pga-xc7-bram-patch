@@ -241,6 +241,12 @@ Its behavior is controlled by command line options for verbosity, etc.
 This program runs `checkTheBits.py` on all the designs in a directory.  It assumes a particular file naming convention.  See the code.
 Its behavior is controlled by command line options for verbosity, etc.
 
+# The fasm2init.py Program
+This program uses `bitMapping.py` to get the mappings for a memory and then uses it to reconstruct an `init/init.mem` file from a corresponding FASM file.
+
+# The bits2init.py Program (to be completed)
+This program uses `bitMapping.py` to get the mappings for a memory and then uses it to reconstruct an `init/init.mem` file from a bitstream file.
+
 ## More Info
 Read the `The_Algorithm.md` file in this repo for more information on how memories are mapped to BRAMs and how the `bitMapping.py` program operates.
 
