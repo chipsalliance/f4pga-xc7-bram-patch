@@ -82,6 +82,7 @@ if __name__ == "__main__":
     parser.add_argument("words", help='Number of words in memory.')
     parser.add_argument("bits", help='Number of words in memory.')
     parser.add_argument("--verbose", action='store_true')
+    parser.add_argument("--memname")
     parser.add_argument(
         "--printmappings", action='store_true', help='Print the mapping info'
     )
@@ -91,8 +92,9 @@ if __name__ == "__main__":
 
     words = int(args.words)
     bits = int(args.bits)
+    memName = "mem/ram" if args.memname is None else args.memname
     mappings, mdd_data = genh(
-        baseDir, words, bits, "mem/ram", args.verbose, args.printmappings
+        baseDir, words, bits, memName, args.verbose, args.printmappings
     )
 
     # Now output the .h file
