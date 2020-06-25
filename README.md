@@ -223,7 +223,28 @@ The MDD file contains the information needed to do that mapping.  It is generate
 
 The current MDD file contains information on mapped BRAM primitives. It contains a number of BRAM properties that are not currently used and thus could possibly be reduced in the future.
 
-# The findTheBits.py Program
+# The bitMapping.py Program
+The `bitMapping.py` program is intend to provide an understandable algorithm for computing the mapping between `init.mem` file bits and their location in the `INIT` and `INITP` strings in a FASM file as well as in frames of a bitstream.  
+
+The first mapping (init -> fasm) is based on experimentation with a set of test circuits.  The second mapping (fasm -> bitstream) is based on the prjxray database files `/prjxray/database/artix7/segbits_bram_l.block_ram.db` and `/prjxray/database/artix7/segbits_bram_r.block_ram.db` files.
+
+When run, it returns a list of mappings.
+
+It has a couple of command line flags to control verbosity and to print out the resulting mappings.
+
+# The checkTheBits.py Program
+This program uses `bitMapping.py` and loads up a specific design and, for each bit in the `init/init.mem` file,   checks that the corresponding bit is correct in both the `real.fasm` and `vivado/designName.bit` files.
+
+Its behavior is controlled by command line options for verbosity, etc.
+
+# The checkAllTheBits.py Program
+This program runs `checkTheBits.py` on all the designs in a directory.  It assumes a particular file naming convention.  See the code.
+Its behavior is controlled by command line options for verbosity, etc.
+
+## More Info
+Read the `The_Algorithm.md` file in this repo for more information on how memories are mapped to BRAMs and how the `bitMapping.py` program operates.
+
+# The findTheBits.py Program (deprecated)
 The `findTheBits.py` program is intend to provide an understandable algorithm for computing the mapping between `init.mem` file bits and their location in the `INIT` and `INITP` strings in a FASM file.  
 
 It then uses the prjxray database files to map those INIT and INITP bit locations to frame/offset locations in the real bitstream.  To do so it uses the `.../prjxray/database/artix7/segbits_bram_l.block_ram.db` file.
@@ -236,7 +257,7 @@ Additionally:
 
 All of the 3 above options are controlled by command line options:
 
-## Usage of findTheBits.py
+## Usage of findTheBits.py (deprecated)
 It is intended, like all programs in this project, using the prjxray environment.  For all examples below, leaving off the `--design designName` argument will cause it to run for _all_ designs in the given directory (see last example).
 ```
 # Run the program on a specific design.  
