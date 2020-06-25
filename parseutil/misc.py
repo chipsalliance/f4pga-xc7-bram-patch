@@ -2,7 +2,8 @@
 # Author: Brent Nelson
 # Created: 25 June 2020
 # Description:
-#    Miscellaneous routines 
+#    Miscellaneous routines
+
 
 # Pad a string to a certain length with 'ch'
 def pad(ch, wid, data):

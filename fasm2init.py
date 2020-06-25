@@ -64,9 +64,9 @@ def fasm2init(
         # Convert the FASM lines into the proper format strings
         # Store them in a multi-dimensional array indexed by y01 and INITP/INIT (True/False)
         inits[0][False] = misc.processInitLines("0s", init0lines, cell, False)
-        inits[0][True] =  misc.processInitLines("0ps", init0plines, cell, True)
+        inits[0][True] = misc.processInitLines("0ps", init0plines, cell, True)
         inits[1][False] = misc.processInitLines("1s", init1lines, cell, False)
-        inits[1][True] =  misc.processInitLines("1ps", init1plines, cell, True)
+        inits[1][True] = misc.processInitLines("1ps", init1plines, cell, True)
 
         for w in range(words):
             for b in range(initbitwidth):
@@ -121,6 +121,7 @@ def fasm2init(
 
     # 7. If we got here we were successful
     print("      Initfile re-created successfully!")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
