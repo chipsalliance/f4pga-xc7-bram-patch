@@ -12,7 +12,7 @@ from prjxray import fasm_disassembler
 
 
 def patch_mem(
-    fasm=None, init=None, mdd=None, outfile=None, selectedMemToPatch=None
+        fasm=None, init=None, mdd=None, outfile=None, selectedMemToPatch=None
 ):
     assert fasm is not None
     assert init is not None

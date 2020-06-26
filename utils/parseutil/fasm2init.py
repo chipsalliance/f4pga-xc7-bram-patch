@@ -45,22 +45,22 @@ class Ramb36:
         self.dwid = cell.dbits
         self.real_pwid = cell.pbits
         self.real_dwid = cell.dbits
-        if cell.width > cell.pbits+cell.dbits:
+        if cell.width > cell.pbits + cell.dbits:
             if cell.width < 9:
                 self.real_pwid = 0
                 self.real_dwid = cell.width
             elif cell.width < 72:
                 self.real_pwid = cell.width % 8
-                self.real_dwid = cell.width-self.real_pwid
+                self.real_dwid = cell.width - self.real_pwid
             else:
                 self.real_pwid = cell.width % 32
-                self.real_dwid = cell.width-self.real_pwid
+                self.real_dwid = cell.width - self.real_pwid
 
     def sort_lines(self):
-
         def reverse(string):
             string = string[::-1]
             return string
+
         serialized_data = ""
         serialized_pdata = ""
         if self.size == "36k":
@@ -72,7 +72,8 @@ class Ramb36:
                 linenum = int(hexnum, 16)
                 y = y_val[-1]
                 bin_initline = '{:0>256}'.format(
-                    bin(line.set_feature.value)[2:])
+                    bin(line.set_feature.value)[2:]
+                )
                 bin_initline = reverse(bin_initline)
                 if inittype == "INIT":
                     data[int(y)][linenum] = bin_initline
@@ -82,7 +83,7 @@ class Ramb36:
             comb_pdata = ["" for x in range(8)]
             for x in range(64):
                 for y in range(256):
-                    comb_data[x] = comb_data[x]+data[0][x][y]+data[1][x][y]
+                    comb_data[x] = comb_data[x] + data[0][x][y] + data[1][x][y]
             for x in range(8):
                 if len(pdata[0][x]) is not 0:
                     for y in range(256):
@@ -99,7 +100,8 @@ class Ramb36:
                 inittype, hexnum = initline.split('_')
                 linenum = int(hexnum, 16)
                 bin_initline = '{:0>256}'.format(
-                    bin(line.set_feature.value)[2:])
+                    bin(line.set_feature.value)[2:]
+                )
                 bin_initline = reverse(bin_initline)
                 if inittype == "INIT":
                     data[linenum] = bin_initline
@@ -109,14 +111,14 @@ class Ramb36:
         for linenum, line in enumerate(data):
             print(f'{hex(linenum)}: {line}')
             if line == '':
-                serialized_data = serialized_data+"{:0>256}".format(line)
+                serialized_data = serialized_data + "{:0>256}".format(line)
             else:
-                serialized_data = serialized_data+line
+                serialized_data = serialized_data + line
         for line in pdata:
             if line == '':
-                serialized_pdata = serialized_pdata+"{:0>256}".format(line)
+                serialized_pdata = serialized_pdata + "{:0>256}".format(line)
             else:
-                serialized_pdata = serialized_pdata+line
+                serialized_pdata = serialized_pdata + line
         self.data = serialized_data
         self.pdata = serialized_pdata
 
@@ -130,22 +132,21 @@ def calc_wid(tiles):
         tile = ramb36.mdd
         if tile.slice_end >= width:
             width = tile.slice_end
-    width = width+1
+    width = width + 1
     return width
 
 
-
-
-def extract_and_distribute_init(fasm=None, mdd=None, outfile=None, selectedMemToExtract=None):
+def extract_and_distribute_init(
+        fasm=None, mdd=None, outfile=None, selectedMemToExtract=None
+):
     assert fasm is not None
     assert mdd is not None
 
     tmp_mdd_data = mddutil.read_mdd(mdd)
     if selectedMemToExtract is not None:
         mdd_data = [
-            m for m in tmp_mdd_data
-            if '/'.join(m.cell_name.split('/')[:-1]) + '/' +
-            m.ram_name == selectedMemToExtract
+            m for m in tmp_mdd_data if '/'.join(m.cell_name.split('/')[:-1]) +
+            '/' + m.ram_name == selectedMemToExtract
         ]
     else:
         mdd_data = tmp_mdd_data
@@ -177,7 +178,6 @@ def extract_and_distribute_init(fasm=None, mdd=None, outfile=None, selectedMemTo
 
 
 def slice_n_dice(tiles, outfile=None):
-
     def reverse(string):
         string = string[::-1]
         return string
@@ -195,8 +195,8 @@ def slice_n_dice(tiles, outfile=None):
         if tile.addr_end >= depth:
             depth = tile.addr_end
 
-    width = width+1
-    depth = depth+1
+    width = width + 1
+    depth = depth + 1
     ordered_slices = sorted(list(slice_sets), key=lambda x: x[0], reverse=True)
     ordered_addrs = sorted(list(addr_sets), key=lambda x: x[0])
     inits = []
@@ -206,7 +206,7 @@ def slice_n_dice(tiles, outfile=None):
     for addr, mddlist in addr_dict.items():
         wid = 1 + addr[1] - addr[0]
         assert wid is not 0
-        sortedmdd=sorted(mddlist, key=lambda x: x.slice[0], reverse=True)
+        sortedmdd = sorted(mddlist, key=lambda x: x.slice[0], reverse=True)
         addr_dict[addr] = sortedmdd
         for mdd in sortedmdd:
             trimmed_pwid = mdd.pwid
@@ -214,15 +214,18 @@ def slice_n_dice(tiles, outfile=None):
             real_pwid = mdd.real_pwid
             real_dwid = mdd.real_dwid
             for x in range(len(mdd.slicearr)):
-                p = mdd.pdata[x*real_pwid:(x+1)*real_pwid]
-                d = mdd.data[x*real_dwid:(x+1)*real_dwid]
+                p = mdd.pdata[x * real_pwid:(x + 1) * real_pwid]
+                d = mdd.data[x * real_dwid:(x + 1) * real_dwid]
                 p = reverse(p)
                 d = reverse(d)
                 mdd.slicearr[x] = '{}{}'.format(p, d)
-        splicey = [''.join([mdd.slicearr[x] for mdd in sortedmdd])
-                   for x in range(len(mdd.slicearr))]
+        splicey = [
+            ''.join([mdd.slicearr[x]
+                     for mdd in sortedmdd])
+            for x in range(len(mdd.slicearr))
+        ]
         inits = inits + splicey
-    hex_padwid = (int(width/4) if width % 4 == 0 else int(width/4)+1)
+    hex_padwid = (int(width / 4) if width % 4 == 0 else int(width / 4) + 1)
     vals = []
     for x in inits:
         if x == '':
@@ -264,24 +267,25 @@ def get_depth(design):
     if 'k' not in design:
         return int(design.split('b')[0])
     else:
-        return 1028*int(design.split('k')[0])
+        return 1028 * int(design.split('k')[0])
 
 
-def test_design(cwd,design):
-    failed = os.path.join(cwd,'testing','failed_extraction.txt')
-    success = os.path.join(cwd,'testing','succeeded_extraction.txt')
+def test_design(cwd, design):
+    failed = os.path.join(cwd, 'testing', 'failed_extraction.txt')
+    success = os.path.join(cwd, 'testing', 'succeeded_extraction.txt')
     testdir = os.path.join(cwd, "testing", "tests", "master", design)
     depth = get_depth(design)
     outfile = os.path.join(testdir, "extracted_init.mem")
-    tiles = extract_and_distribute_init(fasm=os.path.join(testdir, "real.fasm"),
-                                        mdd=os.path.join(
-                                            testdir, "mapping.mdd"),
-                                        outfile=outfile,
-                                        selectedMemToExtract=None)
+    tiles = extract_and_distribute_init(
+        fasm=os.path.join(testdir, "real.fasm"),
+        mdd=os.path.join(testdir, "mapping.mdd"),
+        outfile=outfile,
+        selectedMemToExtract=None
+    )
     width = calc_wid(tiles=tiles)
     val_list = slice_n_dice(tiles=tiles, outfile=outfile)
     export_init(val_list=val_list, outfile=outfile, width=width, depth=depth)
-    real=os.path.join(testdir,'init','init.mem')
+    real = os.path.join(testdir, 'init', 'init.mem')
     print('Checking results...')
     diff = subprocess.run(
         ['diff', real, outfile],
@@ -291,12 +295,12 @@ def test_design(cwd,design):
 
     if (diff.stdout == ''):
         print('RESULT: Files match, success!')
-        with open(success,mode='a') as f:
+        with open(success, mode='a') as f:
             f.write('{}\n'.format(design))
         return "SUCCESS"
     else:
         print('RESULT: ERROR - Files do not match')
-        with open(failed,mode='a') as f:
+        with open(failed, mode='a') as f:
             f.write('{}\n'.format(design))
         return "FAILURE"
     return "SUCCESS"
@@ -307,21 +311,12 @@ def test_all_normal_designs():
         1, 2, 4, 8, 9, 16, 18, 32, 36, 64, 72, 128, 144, 256, 288
     ]
     depths_to_test = [
-        '128', 
-        '256', 
-        '512', 
-        '1k', 
-        '2k',
-        '4k', 
-        '8k', 
-        '16k',
-        '32k', 
-        '64k', 
+        '128', '256', '512', '1k', '2k', '4k', '8k', '16k', '32k', '64k',
         '128k'
     ]
     cwd = os.getcwd()
-    failed = os.path.join(cwd,'testing','failed_extraction.txt')
-    success = os.path.join(cwd,'testing','succeeded_extraction.txt')
+    failed = os.path.join(cwd, 'testing', 'failed_extraction.txt')
+    success = os.path.join(cwd, 'testing', 'succeeded_extraction.txt')
 
     with open(failed, mode='w') as r:
         pass
@@ -329,19 +324,17 @@ def test_all_normal_designs():
         pass
     for wid in widths_to_test:
         for depth in depths_to_test:
-            design='{}b{}'.format(depth,wid)
-            test_design(cwd=cwd,design=design)
+            design = '{}b{}'.format(depth, wid)
+            test_design(cwd=cwd, design=design)
+
 
 def __main__():
     cwd = os.getcwd()
-    failed = os.path.join(cwd,'testing','failed_extraction.txt')
-    success = os.path.join(cwd,'testing','succeeded_extraction.txt')
+    failed = os.path.join(cwd, 'testing', 'failed_extraction.txt')
+    success = os.path.join(cwd, 'testing', 'succeeded_extraction.txt')
 
     design = '16kb4'
-    test_design(cwd=cwd,design=design)
-    
-
-
+    test_design(cwd=cwd, design=design)
 
 
 if __name__ == "__main__":
