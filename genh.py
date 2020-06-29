@@ -23,7 +23,7 @@ def genh(
     verbose,
     printMappings
 ):
-    # 1. Load the MDD file.  
+    # 1. Load the MDD file.
     mdd_data = patch_mem.readAndFilterMDDData(mddName, memName)
     # Add some info to the mdd_data
     tilegridname = os.environ["XRAY_DIR"] + "/database/" + os.environ[
@@ -68,13 +68,17 @@ def genh(
 
     return (mappings, mdd_data)
 
+
 # The routine createBitMappings() above is intended to be called from other programs which require the mappings.
 # This main routine below is designed to test it
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("mddname", help='Name of mdd file to use')
     parser.add_argument("memname", help='Name of memory')
-    parser.add_argument('outfile', help='Name root of .h and .c files to write (without extension)')
+    parser.add_argument(
+        'outfile',
+        help='Name root of .h and .c files to write (without extension)'
+    )
     parser.add_argument("words", help='Number of words in memory.')
     parser.add_argument("bits", help='Number of words in memory.')
     parser.add_argument("--verbose", action='store_true')
@@ -87,8 +91,7 @@ if __name__ == "__main__":
     bits = int(args.bits)
 
     mappings, mdd_data = genh(
-        args.mddname, args.memname, 
-        words, bits, args.verbose,
+        args.mddname, args.memname, words, bits, args.verbose,
         args.printmappings
     )
 
@@ -102,8 +105,10 @@ if __name__ == "__main__":
         f.write('#define {} 0\n\n'.format(s.upper()))
 
         f.write("extern const char * logical_names[NUM_LOGICAL];\n")
-        f.write("extern struct logical_memory logical_memories[NUM_LOGICAL];\n\n")
-    
+        f.write(
+            "extern struct logical_memory logical_memories[NUM_LOGICAL];\n\n"
+        )
+
     with open(args.outfile + ".c", "w") as f:
         f.write('#include "bert_types.h"\n\n')
         f.write('#define NUM_LOGICAL 1\n')
@@ -118,17 +123,21 @@ if __name__ == "__main__":
         numRanges = len(mdd_data)
         for i, m in enumerate(mdd_data):
             if i == 0:
-                ranges = "{" + "0x{:08x},{}".format(m.baseaddr, m.numframes) + "}"
+                ranges = "{" + "0x{:08x},{}".format(
+                    m.baseaddr, m.numframes
+                ) + "}"
             else:
                 ranges += ",{" + "0x{:08x},{}".format(
                     m.baseaddr, m.numframes
                 ) + "}"
 
         f.write(
-            'struct frame_range mem0_frame_ranges[{}]='.format(numRanges) + "{" +
-            ranges + '};\n\n'
+            'struct frame_range mem0_frame_ranges[{}]='.format(numRanges) +
+            "{" + ranges + '};\n\n'
         )
-        f.write('struct bit_loc mem0_bitlocs[{}]='.format(words * bits) + '{\n')
+        f.write(
+            'struct bit_loc mem0_bitlocs[{}]='.format(words * bits) + '{\n'
+        )
         for i, m in enumerate(mappings):
             if i < len(mappings) - 1:
                 s = '    {' + '0x{:08x}, '.format(m.frameAddr) + '{}'.format(
@@ -154,5 +163,3 @@ if __name__ == "__main__":
         s = args.memname.replace("/", "_")
         f.write('// {} 0\n'.format(s.upper()))
         f.write('};\n')
-
-
