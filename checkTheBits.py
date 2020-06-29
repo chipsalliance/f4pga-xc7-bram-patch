@@ -52,12 +52,15 @@ def checkTheBits(
         words,  # Number of words in init.mem file
         initbitwidth,  # Number of bits per word in init.memfile
         memName,
+        mdd,
         False,
         printmappings
     )
     print("  Done loading mappings")
 
     # 3. Load up the bit file
+    #    It MUST be a debug bitstream which is generated in Vivado using the following command in the .tcl file before called write_bitstream:
+    #          set_property BITSTREAM.GENERAL.PERFRAMECRC YES [current_design]
     frames = DbgParser.loadFrames(
         baseDir / "vivado" / "{}.bit".format(designName)
     )
@@ -162,3 +165,13 @@ if __name__ == "__main__":
     )
 
     print("")
+
+########################################################################
+# checkTheBits.py will check that the bits in the init.mem file match those
+# in the real.fasm file and also in the bitstream.
+# To run it:
+#       python checkTheBits.py testing/tests/master/128b1 1 mem/ram
+# You will see if there are any errors thrown.  If not, everything checked out.
+# The code shows how to pull bits from a bitstream as well.  Important: the code above
+#     tells how to ensure you have a debug bitstream for this to work with.
+########################################################################
