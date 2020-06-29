@@ -189,21 +189,23 @@ def createBitMapping(
             if printMappings or verbose:
                 if parity:
                     print(
-                        "init.mem[{}][{}] -> {}.{}_Y{}.INITP_{:02x}[{:03}] -> {} {} {} wordoffset = {}"
+                        "init.mem[{}][{}] -> {}.{}_Y{}.INITP_{:02x}[{:03}] -> {} {} {}_{} wordoffset = {}"
                         .format(
                             w, b, cell.tile,
                             cell.type[:-2], y01, initRow, bbb, cell.tile,
-                            hex(cell.baseaddr), segoffset, cell.wordoffset
+                            hex(cell.baseaddr), segoffset[0], segoffset[1],
+                            cell.wordoffset
                         )
                     )
 
                 else:
                     print(
-                        "init.mem[{}][{}] -> {}.{}_Y{}.INIT_{:02x}[{:03}] -> {} {} {} wordoffset = {}"
+                        "init.mem[{}][{}] -> {}.{}_Y{}.INIT_{:02x}[{:03}] -> {} {} {}_{} wordoffset = {}"
                         .format(
                             w, b, cell.tile,
                             cell.type[:-2], y01, initRow, bbb, cell.tile,
-                            hex(cell.baseaddr), segoffset, cell.wordoffset
+                            hex(cell.baseaddr), segoffset[0], segoffset[1],
+                            cell.wordoffset
                         )
                     )
 
@@ -358,6 +360,8 @@ if __name__ == "__main__":
     parser.add_argument("baseDir", help='Directory where design is located.')
     parser.add_argument("words", help='Number of words in memory.')
     parser.add_argument("bits", help='Number of words in memory.')
+    parser.add_argument("memname", help='Name of memory.')
+    parser.add_argument("mddname", help='Base name of mdd file')
     parser.add_argument("--verbose", action='store_true')
     parser.add_argument(
         "--printmappings", action='store_true', help='Print the mapping info'
@@ -367,8 +371,8 @@ if __name__ == "__main__":
     baseDir = pathlib.Path(args.baseDir).resolve()
 
     mappings = createBitMappings(
-        baseDir, int(args.words), int(args.bits), "mem/ram", args.verbose,
-        args.printmappings
+        baseDir, int(args.words), int(args.bits), "mem/ram",
+        baseDir / args.mddname, args.verbose, args.printmappings
     )
 
     # Since this is a test program, print out what was returned
@@ -377,3 +381,20 @@ if __name__ == "__main__":
         print(" {}".format(m.toString()))
 
     print("")
+
+#############################################################################################################################
+# bitMapping.py will compute the bit mappings for a particular memory and return them in a data structure
+# The routine above called createBitMappings() is intended to be called from other programs.
+# But, to test it, you can call it from the command line like this:
+#      python bitMapping.py testing/tests/master/128b1 128 1 mem/ram 128b1.mdd
+#
+# This program will print out the resulting data structure to the terminal if you call it from the command line like above.  Here is an example:
+#  word=127, bit=0, tile = BRAM_L_X6Y5, bits = 1, fasmY=0, fasmINITP=False, fasmLine=7, fasmBit=240, frameAddr=c0000f, frameBitOffset=327
+# As you can see from the code, it prints out the values in each mapping record it creates.  In the line above,
+#  init[127][0] can be found in BRAM_L_X6Y5, fasm Y0, INIT line 7, bit=240
+#  The same bit can also be found in frame c0000f, bit offset 327.
+# So, what is the "bits = 1" doing?  It is there just to tell you how many bits are in each word of the INIT file.
+#     For most purposes it is not needed but if you ever go to re-create an init.mem file you will need it to know how wide to make each word.
+#
+# You can experiment with this program from the command line but the real use of it comes when calling createBitMappings() to get the data structure returned.
+# See fasm2init.py for an example program.

@@ -27,8 +27,8 @@ def fasm2init(
     mdd,  # pathlib.Path
     words,
     initbitwidth,  # int
-    initFile,  # pathlib.Path
-    origInitFile,
+    initFile,  # pathlib.Path  
+    origInitFile,  # if not None then will do checking between it and re-created initFile on the previous line
     fasmFile,  # pathlib.Path
     verbose,  # bool
     printmappings  # bool
@@ -38,13 +38,14 @@ def fasm2init(
     # 0. Read the MDD data and filter out the ones we want for this memory
     mdd_data = patch_mem.readAndFilterMDDData(mdd, memName)
 
-    # 1. Get the mapping infols /
+    # 1. Get the mapping info
     print("Loading mappings for {}...".format(designName))
     mappings = bitMapping.createBitMappings(
         baseDir,  # The directory where the design lives
         words,  # Number of words in init.mem file
         initbitwidth,  # Number of bits per word in init.memfile
         memName,
+        mdd,
         False,
         printmappings
     )
@@ -113,6 +114,7 @@ def fasm2init(
                         )
                     )
                     sys.exit(1)
+        print("      Everything checked out successfully!!!")
 
     # 6. Finally, write it out
     with initFile.open('w') as f:
@@ -120,7 +122,7 @@ def fasm2init(
             f.write(lin[::-1] + "\n")
 
     # 7. If we got here we were successful
-    print("      Initfile re-created successfully!")
+    print("      Initfile {} re-created successfully!".format(initFile))
 
 
 if __name__ == "__main__":
@@ -136,8 +138,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "memname", help='Name of memory to check (as in "mem/ram")'
     )
+    parser.add_argument("mddname", help='Name of mdd file)')
 
     parser.add_argument("--verbose", action='store_true')
+
+    parser.add_argument("--check", action='store_true')
 
     parser.add_argument(
         "--printmappings", action='store_true', help='Print the mapping info'
@@ -149,10 +154,22 @@ if __name__ == "__main__":
     designName = baseDir.name
 
     fasm2init(
-        baseDir, args.memname, baseDir / "{}.mdd".format(designName),
-        int(args.words), int(args.bits), baseDir / "init/fromFasm.mem",
-        baseDir / "init/init.mem", baseDir / "real.fasm", args.verbose,
-        args.printmappings
+        baseDir, args.memname, baseDir / args.mddname, int(args.words),
+        int(args.bits), baseDir / "init/fromFasm.mem",
+        baseDir / "init/init.mem" if args.check == True else None,
+        baseDir / "real.fasm", args.verbose, args.printmappings
     )
 
     print("")
+
+#################################################################################################################
+# fasm2init.py will take a .fasm file and re-create a new init.mem-type file from them.
+# It deposits the new file into baseDir/init/fromFasm.mem
+# If the --check flag is true it will compare what it constructs against the values from baseDir/init/init.mem (used mainly for testing)
+#    If there is a mismatch it will print out an error message.
+# A typical run of this program is:
+#    python fasm2init.py testing/tests/master/128b1 128 1 mem/ram 128b1.mdd
+# Or, you could do:
+#    python fasm2init.py testing/tests/master/128b1 128 1 mem/ram 128b1.mdd --check
+# The only difference is the second one does the check.
+#################################################################################################################
