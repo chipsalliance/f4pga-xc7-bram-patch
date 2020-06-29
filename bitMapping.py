@@ -315,10 +315,8 @@ def createBitMappings(
     printMappings
 ):
 
-    # 1. Load the MDD file.  
-    mdd_data = patch_mem.readAndFilterMDDData(
-        mddName, memName
-    )
+    # 1. Load the MDD file.
+    mdd_data = patch_mem.readAndFilterMDDData(mddName, memName)
 
     # 2. Load the segment data from the prjxray database.
     #    This uses the environment variables set by prjxray
