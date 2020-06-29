@@ -44,7 +44,7 @@ class Mapping:
 
 # Add mappings for a particular BRAM primitive into the mappingsn array and return it
 def createBitMapping(
-    designName, segs, words, bits, cell, mappings, verbose, printMappings
+    segs, words, bits, cell, mappings, verbose, printMappings
 ):
 
     # 1. Flag of whether this is RAMB36E cell or not
@@ -189,9 +189,9 @@ def createBitMapping(
             if printMappings or verbose:
                 if parity:
                     print(
-                        "{} init.mem[{}][{}] -> {}.{}_Y{}.INITP_{:02x}[{:03}] -> {} {} {} wordoffset = {}"
+                        "init.mem[{}][{}] -> {}.{}_Y{}.INITP_{:02x}[{:03}] -> {} {} {} wordoffset = {}"
                         .format(
-                            designName, w, b, cell.tile,
+                            w, b, cell.tile,
                             cell.type[:-2], y01, initRow, bbb, cell.tile,
                             hex(cell.baseaddr), segoffset, cell.wordoffset
                         )
@@ -199,9 +199,9 @@ def createBitMapping(
 
                 else:
                     print(
-                        "{} init.mem[{}][{}] -> {}.{}_Y{}.INIT_{:02x}[{:03}] -> {} {} {} wordoffset = {}"
+                        "init.mem[{}][{}] -> {}.{}_Y{}.INIT_{:02x}[{:03}] -> {} {} {} wordoffset = {}"
                         .format(
-                            designName, w, b, cell.tile,
+                            w, b, cell.tile,
                             cell.type[:-2], y01, initRow, bbb, cell.tile,
                             hex(cell.baseaddr), segoffset, cell.wordoffset
                         )
@@ -310,15 +310,13 @@ def createBitMappings(
     words,  # Number of words in init.mem file
     bits,  # Number of bits per word in init.memfile
     memName,
+    mddName,
     verbose,
     printMappings
 ):
-    designName = baseDir.name
 
-    # 1. Load the MDD file.  Note the name is derived from the designName (it is "designName.mdd")
-    mdd_data = patch_mem.readAndFilterMDDData(
-        str(baseDir / "{}.mdd".format(baseDir.name)), memName
-    )
+    # 1. Load the MDD file.
+    mdd_data = patch_mem.readAndFilterMDDData(mddName, memName)
 
     # 2. Load the segment data from the prjxray database.
     #    This uses the environment variables set by prjxray
@@ -333,7 +331,6 @@ def createBitMappings(
     # 4. Create the bitmappings for each BRAM Primitive
     for cell in mdd_data:
         mappings = createBitMapping(
-            designName,  # Name of design
             segs,  # The segs info
             words,  # Depth of memory
             bits,  # Width of memory
