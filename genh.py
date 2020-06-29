@@ -12,16 +12,17 @@ import os
 import json
 import parseutil
 
+
 class Mem:
-    def __init__(
-        self, name, words, bits
-    ):
+    def __init__(self, name, words, bits):
         self.name = name
         self.words = words
         self.bits = bits
 
     def toString(self):
-        return "name={}, words={}, bits = {}".format(self.name, self.words, self.bits)
+        return "name={}, words={}, bits = {}".format(
+            self.name, self.words, self.bits
+        )
 
 
 ##############################################################################################
@@ -80,6 +81,7 @@ def genh(
 
     return (mappings, mdd_data)
 
+
 # Return a dict mapping names to [words, bits] lists
 def getMDDMemories(mddName):
     mdd = parseutil.parse_mdd.read_mdd(mddName)
@@ -87,14 +89,15 @@ def getMDDMemories(mddName):
     for m in mdd:
         s = '/'.join(m.cell_name.split('/')[:-1]) + '/' + m.ram_name
         if s not in lst.keys():
-            lst[s] = [int(m.addr_end)+1, int(m.slice_end)+1]
+            lst[s] = [int(m.addr_end) + 1, int(m.slice_end) + 1]
         else:
             itm = lst[s]
             wb = [0, 0]
-            wb[0] = max(itm[0], int(m.addr_end)+1)
-            wb[1] = max(itm[1], int(m.slice_end)+1)
+            wb[0] = max(itm[0], int(m.addr_end) + 1)
+            wb[1] = max(itm[1], int(m.slice_end) + 1)
             lst[s] = wb
     return lst
+
 
 # The routine createBitMappings() above is intended to be called from other programs which require the mappings.
 # This main routine below is designed to test it
@@ -120,6 +123,7 @@ if __name__ == "__main__":
     # Next 4 lines unused
     # The problem with the next 4 lines is that for small memories, Vivado doesn't tell us the correct size,
     # Example: for anything shallower than 1k, it gives the depth as 1024
+    # Will need to come up with something to address this before doing all memories in one design.
     # Get list of .mdd file memory names
     mddMemoryNames = getMDDMemories(args.mddname)
     #for m in mddMemoryNames.keys():
