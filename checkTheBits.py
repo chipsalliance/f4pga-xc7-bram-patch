@@ -121,7 +121,11 @@ def checkTheBits(
                     initbit, fasmbit, w, b, initMemContents[w], initbitwidth,
                     mapping.toString()
                 )
-                assert str(frbit) == initbit, "initbit: {} != bitstream bit: {}".format(initbit, frbit)
+                assert str(
+                    frbit
+                ) == initbit, "initbit: {} != bitstream bit: {}".format(
+                    initbit, frbit
+                )
 
                 if printmappings:
                     print("bit[{}][{}] = {}".format(w, b, initbit))
