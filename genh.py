@@ -24,6 +24,7 @@ class Mem:
             self.name, self.words, self.bits
         )
 
+
 ##############################################################################################
 # Create the bitmappings for a design
 ##############################################################################################
@@ -106,7 +107,7 @@ if __name__ == "__main__":
     def inRanges(ranges, s):
         # Method to figure out if string already in ranges
         for r in ranges:
-                # Method to figure out if string already in ranges
+            # Method to figure out if string already in ranges
             if r == s:
                 # Method to figure out if string already in ranges
                 return True
@@ -145,7 +146,6 @@ if __name__ == "__main__":
         args.printmappings
     )
 
-
     # Now output the .h file
     with open(args.outfile + ".h", 'w') as f:
         f.write('#include "bert_types.h"\n\n')
@@ -178,10 +178,12 @@ if __name__ == "__main__":
             if not inRanges(ranges, s):
                 ranges.add(s)
 
-        f.write('struct frame_range mem0_frame_ranges[{}]= \n'.format(len(ranges)))
+        f.write(
+            'struct frame_range mem0_frame_ranges[{}]= \n'.format(len(ranges))
+        )
         f.write("{\n")
-        for i,r in enumerate(ranges):
-            if i < len(ranges)-1:
+        for i, r in enumerate(ranges):
+            if i < len(ranges) - 1:
                 f.write("  " + r + ",\n")
             else:
                 f.write("  " + r + "\n")
@@ -215,4 +217,3 @@ if __name__ == "__main__":
         s = args.memname.replace("/", "_")
         f.write('// {} 0\n'.format(s.upper()))
         f.write('};\n')
-
