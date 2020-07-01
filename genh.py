@@ -121,8 +121,6 @@ if __name__ == "__main__":
         'outfile',
         help='Name root of .h and .c files to write (without extension)'
     )
-    parser.add_argument("words", help='Number of words in memory.')
-    parser.add_argument("bits", help='Number of words in memory.')
     parser.add_argument("--verbose", action='store_true')
     parser.add_argument(
         "--extendedoutput",
@@ -134,31 +132,34 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    words = int(args.words)
-    bits = int(args.bits)
-
-    # Next 4 lines unused
-    # The problem with the next 4 lines is that for small memories, Vivado doesn't tell us the correct size,
-    # Example: for anything shallower than 1k, it gives the depth as 1024
-    # Will need to come up with something to address this before doing all memories in one design.
-    # Get list of .mdd file memory names
     mddMemoryNames = getMDDMemories(args.mddname)
-    #for m in mddMemoryNames.keys():
-    #    print("   {} = {}".format(m, mddMemoryNames[m]))
+    print("Here are the memories in this design:")
+    for m in mddMemoryNames.keys():
+        print("     {} = {}".format(m, mddMemoryNames[m]))
 
-    mappings, mdd_data = genh(
-        args.mddname, args.memname, words, bits, args.verbose,
-        args.printmappings
-    )
+    mappingsLst = []
+    mddsLst = []
+    memnamesLst = []
+    for m in mddMemoryNames.keys():
+        tmp_mappings, tmp_mdd_data = genh(
+            args.mddname, m, int(mddMemoryNames[m][0]),
+            int(mddMemoryNames[m][1]), args.verbose, args.printmappings
+        )
+        mappingsLst.append(tmp_mappings)
+        mddsLst.append(tmp_mdd_data)
+        memnamesLst.append(m)
 
     # Now output the .h file
     with open(args.outfile + ".h", 'w') as f:
         f.write('#include "bert_types.h"\n\n')
-        f.write('#define NUM_LOGICAL 1\n')
+        f.write('#define NUM_LOGICAL {}\n'.format(len(mddMemoryNames.keys())))
         f.write('\n')
         f.write("// local name for each memory\n")
-        s = args.memname.replace("/", "_")
-        f.write('#define {} 0\n\n'.format(s.upper()))
+        for i, m in enumerate(mddMemoryNames.keys()):
+            s = m.replace("/", "_")
+            f.write('#define {} {}\n'.format(s.upper(), i))
+
+        f.write('\n')
 
         f.write("extern const char * logical_names[NUM_LOGICAL];\n")
         f.write(
@@ -167,62 +168,93 @@ if __name__ == "__main__":
 
     with open(args.outfile + ".c", "w") as f:
         f.write('#include "bert_types.h"\n\n')
-        f.write('#define NUM_LOGICAL 1\n')
+        f.write('#define NUM_LOGICAL {}\n'.format(len(mddMemoryNames.keys())))
         f.write('\n')
         f.write("// local name for each memory\n")
-        s = args.memname.replace("/", "_")
-        f.write('#define {} 0\n\n'.format(s.upper()))
-        f.write('const char * logical_names[]={')
-        mname = "\"" + "/top/" + args.memname + "\"" + "};\n\n"
-        f.write(mname)
+        for i, m in enumerate(mddMemoryNames.keys()):
+            s = m.replace("/", "_")
+            f.write('#define {} {}\n'.format(s.upper(), i))
 
-        numRanges = len(mdd_data)
-        ranges = set()
-        for m in mdd_data:
-            s = "{" + "0x{:08x},{}".format(m.baseaddr, m.numframes) + "}"
-            if not inRanges(ranges, s):
-                ranges.add(s)
+        f.write('\n')
 
-        f.write(
-            'struct frame_range mem0_frame_ranges[{}]= \n'.format(len(ranges))
-        )
-        f.write("{\n")
-        for i, r in enumerate(ranges):
-            if i < len(ranges) - 1:
-                f.write("  " + r + ",\n")
+        f.write('const char * logical_names[]={\n')
+        for i, m in enumerate(mddMemoryNames.keys()):
+            if i < len(mddMemoryNames.keys()) - 1:
+                f.write("  \"" + "/top/" + m + "\"" + ",\n")
             else:
-                f.write("  " + r + "\n")
+                f.write("  \"" + "/top/" + m + "\"" + "\n")
         f.write("};\n\n")
 
-        f.write(
-            'struct bit_loc mem0_bitlocs[{}]='.format(words * bits) + '{\n'
-        )
-        for i, m in enumerate(mappings):
-            if i < len(mappings) - 1:
-                s = '    {' + '0x{:08x}, '.format(
-                    m.frameAddr
-                ) + '{:6d}'.format(m.frameBitOffset) + '},'
-                if args.extendedoutput:
-                    s += ' \t // ' + m.toStringShort()
-            else:
-                s = '    {' + '0x{:08x}, '.format(
-                    m.frameAddr
-                ) + '{:6d}'.format(m.frameBitOffset) + '},'
-                if args.extendedoutput:
-                    s += ' \t // ' + m.toStringShort()
+        for i in range(len(mappingsLst)):
+            mdd_data = mddsLst[i]
+            mappings = mappingsLst[i]
+            memname = memnamesLst[i]
 
-            f.write(s + "\n")
-        f.write("};\n")
-        f.write("\n")
-        f.write('struct logical_memory logical_memories[NUM_LOGICAL] =\n')
-        f.write('  {\n')
-        f.write('   {')
-        f.write(
-            '{},{},{},mem0_frame_ranges,mem0_bitlocs'.format(
-                len(ranges), words, bits
+            numRanges = len(mdd_data)
+            ranges = set()
+            for m in mdd_data:
+                s = "{" + "0x{:08x},{}".format(m.baseaddr, m.numframes) + "}"
+                if not inRanges(ranges, s):
+                    ranges.add(s)
+
+            f.write(
+                'struct frame_range mem{}_frame_ranges[{}]= \n'.format(
+                    i, len(ranges)
+                )
             )
-        )
-        f.write('  }   ')
-        s = args.memname.replace("/", "_")
-        f.write('// {} 0\n'.format(s.upper()))
-        f.write('};\n')
+            f.write("{\n")
+            for j, r in enumerate(ranges):
+                if j < len(ranges) - 1:
+                    f.write("  " + r + ",\n")
+                else:
+                    f.write("  " + r + "\n")
+            f.write("};\n\n")
+
+            f.write(
+                'struct bit_loc mem{}_bitlocs[{}]='.format(
+                    i, mddMemoryNames[memname][0] * mddMemoryNames[memname][1]
+                ) + '{\n'
+            )
+            for j, m in enumerate(mappings):
+                if j < len(mappings) - 1:
+                    s = '    {' + '0x{:08x}, '.format(
+                        m.frameAddr
+                    ) + '{:6d}'.format(m.frameBitOffset) + '},'
+                    if args.extendedoutput:
+                        s += ' \t // ' + m.toStringShort()
+                else:
+                    s = '    {' + '0x{:08x}, '.format(
+                        m.frameAddr
+                    ) + '{:6d}'.format(m.frameBitOffset) + '},'
+                    if args.extendedoutput:
+                        s += ' \t // ' + m.toStringShort()
+
+                f.write(s + "\n")
+            f.write("};\n")
+            f.write("\n")
+
+        f.write('struct logical_memory logical_memories[NUM_LOGICAL] =\n')
+        f.write('{\n')
+        for i in range(len(mappingsLst)):
+            f.write('   {')
+            if i < len(mappingsLst) - 1:
+                f.write(
+                    '{},{},{},mem{}_frame_ranges,mem{}_bitlocs'.format(
+                        len(ranges), mddMemoryNames[memname][1],
+                        mddMemoryNames[memname][0], i, i
+                    )
+                )
+                f.write('},')
+                s = memnamesLst[i].replace("/", "_")
+                f.write('    // {} {}\n'.format(s.upper(), i))
+            else:
+                f.write(
+                    '{},{},{},mem{}_frame_ranges,mem{}_bitlocs'.format(
+                        len(ranges), mddMemoryNames[memname][1],
+                        mddMemoryNames[memname][0], i, i
+                    )
+                )
+                f.write('}')
+                s = memnamesLst[i].replace("/", "_")
+                f.write('    // {} {}'.format(s.upper(), i))
+        f.write('\n};\n')
