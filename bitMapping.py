@@ -40,6 +40,12 @@ class Mapping:
             self.fasmINITP, self.fasmLine, self.fasmBit, self.frameAddr,
             self.frameBitOffset
         )
+    def toStringShort(self):
+        return "word={}, bit={}, tile = {}, frameAddr={:x}, frameBitOffset={}".format(
+            self.word, self.bit, self.tile, 
+            self.frameAddr,
+            self.frameBitOffset
+        )
 
 
 # Add mappings for a particular BRAM primitive into the mappingsn array and return it
