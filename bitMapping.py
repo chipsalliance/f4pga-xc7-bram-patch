@@ -1,4 +1,4 @@
-﻿# File: fbitMapping.py
+﻿# File: bitMapping.py
 # Author: Brent Nelson
 # Created: 24 June 2020
 # Description:
