@@ -60,6 +60,8 @@ def genh(
     mappings = []
 
     # 4. Create the bitmappings for each BRAM Primitive
+    if printMappings:
+        print("Cell = {}".format(memName))
     for cell in mdd_data:
         mappings = bitMapping.createBitMapping(
             segs,  # The segs info
@@ -111,7 +113,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("mddname", help='Name of mdd file to use')
-    parser.add_argument("memname", help='Name of memory')
+    #parser.add_argument("memname", help='Name of memory')
     parser.add_argument(
         'outfile',
         help='Name root of .h and .c files to write (without extension)'
@@ -226,13 +228,13 @@ if __name__ == "__main__":
                         m.frameAddr
                     ) + '{:6d}'.format(m.frameBitOffset) + '},'
                     if args.extendedoutput:
-                        s += ' \t // ' + m.toStringShort()
+                        s += ' \t // ' + m.toString()
                 else:
                     s = '    {' + '0x{:08x}, '.format(
                         m.frameAddr
                     ) + '{:6d}'.format(m.frameBitOffset) + '},'
                     if args.extendedoutput:
-                        s += ' \t // ' + m.toStringShort()
+                        s += ' \t // ' + m.toString()
 
                 f.write(s + "\n")
             f.write("};\n")
