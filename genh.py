@@ -24,7 +24,6 @@ class Mem:
             self.name, self.words, self.bits
         )
 
-
 ##############################################################################################
 # Create the bitmappings for a design
 ##############################################################################################
@@ -102,6 +101,18 @@ def getMDDMemories(mddName):
 # The routine createBitMappings() above is intended to be called from other programs which require the mappings.
 # This main routine below is designed to test it
 if __name__ == "__main__":
+
+    # Method to figure out if string already in ranges
+    def inRanges(ranges, s):
+        # Method to figure out if string already in ranges
+        for r in ranges:
+                # Method to figure out if string already in ranges
+            if r == s:
+                # Method to figure out if string already in ranges
+                return True
+            # Method to figure out if string already in ranges
+        return False
+
     parser = argparse.ArgumentParser()
     parser.add_argument("mddname", help='Name of mdd file to use')
     parser.add_argument("memname", help='Name of memory')
@@ -134,6 +145,7 @@ if __name__ == "__main__":
         args.printmappings
     )
 
+
     # Now output the .h file
     with open(args.outfile + ".h", 'w') as f:
         f.write('#include "bert_types.h"\n\n')
@@ -160,20 +172,21 @@ if __name__ == "__main__":
         f.write(mname)
 
         numRanges = len(mdd_data)
-        for i, m in enumerate(mdd_data):
-            if i == 0:
-                ranges = "{" + "0x{:08x},{}".format(
-                    m.baseaddr, m.numframes
-                ) + "}"
-            else:
-                ranges += ",{" + "0x{:08x},{}".format(
-                    m.baseaddr, m.numframes
-                ) + "}"
+        ranges = set()
+        for m in mdd_data:
+            s = "{" + "0x{:08x},{}".format(m.baseaddr, m.numframes) + "}"
+            if not inRanges(ranges, s):
+                ranges.add(s)
 
-        f.write(
-            'struct frame_range mem0_frame_ranges[{}]='.format(numRanges) +
-            "{" + ranges + '};\n\n'
-        )
+        f.write('struct frame_range mem0_frame_ranges[{}]= \n'.format(len(ranges)))
+        f.write("{\n")
+        for i,r in enumerate(ranges):
+            if i < len(ranges)-1:
+                f.write("  " + r + ",\n")
+            else:
+                f.write("  " + r + "\n")
+        f.write("};\n\n")
+
         f.write(
             'struct bit_loc mem0_bitlocs[{}]='.format(words * bits) + '{\n'
         )
@@ -195,10 +208,11 @@ if __name__ == "__main__":
         f.write('   {')
         f.write(
             '{},{},{},mem0_frame_ranges,mem0_bitlocs'.format(
-                numRanges, words, bits
+                len(ranges), words, bits
             )
         )
         f.write('  }   ')
         s = args.memname.replace("/", "_")
         f.write('// {} 0\n'.format(s.upper()))
         f.write('};\n')
+
