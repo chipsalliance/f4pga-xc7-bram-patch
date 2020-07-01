@@ -142,8 +142,8 @@ if __name__ == "__main__":
     memnamesLst = []
     for m in mddMemoryNames.keys():
         tmp_mappings, tmp_mdd_data = genh(
-            args.mddname, m, int(mddMemoryNames[m][0]), int(mddMemoryNames[m][1]), args.verbose,
-            args.printmappings
+            args.mddname, m, int(mddMemoryNames[m][0]),
+            int(mddMemoryNames[m][1]), args.verbose, args.printmappings
         )
         mappingsLst.append(tmp_mappings)
         mddsLst.append(tmp_mdd_data)
@@ -155,10 +155,10 @@ if __name__ == "__main__":
         f.write('#define NUM_LOGICAL {}\n'.format(len(mddMemoryNames.keys())))
         f.write('\n')
         f.write("// local name for each memory\n")
-        for i,m in enumerate(mddMemoryNames.keys()):
+        for i, m in enumerate(mddMemoryNames.keys()):
             s = m.replace("/", "_")
             f.write('#define {} {}\n'.format(s.upper(), i))
-        
+
         f.write('\n')
 
         f.write("extern const char * logical_names[NUM_LOGICAL];\n")
@@ -171,15 +171,15 @@ if __name__ == "__main__":
         f.write('#define NUM_LOGICAL {}\n'.format(len(mddMemoryNames.keys())))
         f.write('\n')
         f.write("// local name for each memory\n")
-        for i,m in enumerate(mddMemoryNames.keys()):
+        for i, m in enumerate(mddMemoryNames.keys()):
             s = m.replace("/", "_")
             f.write('#define {} {}\n'.format(s.upper(), i))
-        
+
         f.write('\n')
 
         f.write('const char * logical_names[]={\n')
-        for i,m in enumerate(mddMemoryNames.keys()):
-            if i < len(mddMemoryNames.keys())-1:
+        for i, m in enumerate(mddMemoryNames.keys()):
+            if i < len(mddMemoryNames.keys()) - 1:
                 f.write("  \"" + "/top/" + m + "\"" + ",\n")
             else:
                 f.write("  \"" + "/top/" + m + "\"" + "\n")
@@ -198,7 +198,9 @@ if __name__ == "__main__":
                     ranges.add(s)
 
             f.write(
-                'struct frame_range mem{}_frame_ranges[{}]= \n'.format(i, len(ranges))
+                'struct frame_range mem{}_frame_ranges[{}]= \n'.format(
+                    i, len(ranges)
+                )
             )
             f.write("{\n")
             for j, r in enumerate(ranges):
@@ -209,7 +211,9 @@ if __name__ == "__main__":
             f.write("};\n\n")
 
             f.write(
-                'struct bit_loc mem{}_bitlocs[{}]='.format(i, mddMemoryNames[memname][0] * mddMemoryNames[memname][1]) + '{\n'
+                'struct bit_loc mem{}_bitlocs[{}]='.format(
+                    i, mddMemoryNames[memname][0] * mddMemoryNames[memname][1]
+                ) + '{\n'
             )
             for j, m in enumerate(mappings):
                 if j < len(mappings) - 1:
@@ -233,18 +237,22 @@ if __name__ == "__main__":
         f.write('{\n')
         for i in range(len(mappingsLst)):
             f.write('   {')
-            if i < len(mappingsLst)-1:
+            if i < len(mappingsLst) - 1:
                 f.write(
-                '{},{},{},mem{}_frame_ranges,mem{}_bitlocs'.format(
-                    len(ranges), mddMemoryNames[memname][1], mddMemoryNames[memname][0], i, i)
+                    '{},{},{},mem{}_frame_ranges,mem{}_bitlocs'.format(
+                        len(ranges), mddMemoryNames[memname][1],
+                        mddMemoryNames[memname][0], i, i
+                    )
                 )
                 f.write('},')
                 s = memnamesLst[i].replace("/", "_")
                 f.write('    // {} {}\n'.format(s.upper(), i))
             else:
                 f.write(
-                '{},{},{},mem{}_frame_ranges,mem{}_bitlocs'.format(
-                    len(ranges), mddMemoryNames[memname][1], mddMemoryNames[memname][0], i, i)
+                    '{},{},{},mem{}_frame_ranges,mem{}_bitlocs'.format(
+                        len(ranges), mddMemoryNames[memname][1],
+                        mddMemoryNames[memname][0], i, i
+                    )
                 )
                 f.write('}')
                 s = memnamesLst[i].replace("/", "_")
