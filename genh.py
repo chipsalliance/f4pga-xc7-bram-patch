@@ -124,6 +124,7 @@ if __name__ == "__main__":
     parser.add_argument("words", help='Number of words in memory.')
     parser.add_argument("bits", help='Number of words in memory.')
     parser.add_argument("--verbose", action='store_true')
+    parser.add_argument("--extendedoutput", help='Print out short mapping record info into .c file', action='store_true')
     parser.add_argument(
         "--printmappings", action='store_true', help='Print the mapping info'
     )
@@ -194,13 +195,17 @@ if __name__ == "__main__":
         )
         for i, m in enumerate(mappings):
             if i < len(mappings) - 1:
-                s = '    {' + '0x{:08x}, '.format(m.frameAddr) + '{}'.format(
+                s = '    {' + '0x{:08x}, '.format(m.frameAddr) + '{:6d}'.format(
                     m.frameBitOffset
                 ) + '},'
+                if args.extendedoutput:
+                    s += ' \t // ' + m.toStringShort()
             else:
-                s = '    {' + '0x{:08x}, '.format(m.frameAddr) + '{}'.format(
+                s = '    {' + '0x{:08x}, '.format(m.frameAddr) + '{:6d}'.format(
                     m.frameBitOffset
-                ) + '}'
+                ) + '},'
+                if args.extendedoutput:
+                    s += ' \t // ' + m.toStringShort()
 
             f.write(s + "\n")
         f.write("};\n")
