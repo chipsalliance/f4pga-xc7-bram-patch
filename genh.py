@@ -99,19 +99,14 @@ def getMDDMemories(mddName):
     return lst
 
 
-# The routine createBitMappings() above is intended to be called from other programs which require the mappings.
-# This main routine below is designed to test it
+# This is the main driver program to generate the .c and .h files
 if __name__ == "__main__":
 
-    # Method to figure out if string already in ranges
+    # Method to figure out if string already in the ranges set
     def inRanges(ranges, s):
-        # Method to figure out if string already in ranges
         for r in ranges:
-            # Method to figure out if string already in ranges
             if r == s:
-                # Method to figure out if string already in ranges
                 return True
-            # Method to figure out if string already in ranges
         return False
 
     parser = argparse.ArgumentParser()
@@ -132,14 +127,17 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    # Make a list of the memories in the design and their sizes
     mddMemoryNames = getMDDMemories(args.mddname)
     print("Here are the memories in this design:")
     for m in mddMemoryNames.keys():
         print("     {} = {}".format(m, mddMemoryNames[m]))
 
+    # Now, make 3 parallel lists:  the memory names, the mappings for each memory, the mdd entries for each memory
+    # We will loop across those below
+    memnamesLst = []
     mappingsLst = []
     mddsLst = []
-    memnamesLst = []
     for m in mddMemoryNames.keys():
         tmp_mappings, tmp_mdd_data = genh(
             args.mddname, m, int(mddMemoryNames[m][0]),
@@ -166,6 +164,7 @@ if __name__ == "__main__":
             "extern struct logical_memory logical_memories[NUM_LOGICAL];\n\n"
         )
 
+    # Next, output the .c file
     with open(args.outfile + ".c", "w") as f:
         f.write('#include "bert_types.h"\n\n')
         f.write('#define NUM_LOGICAL {}\n'.format(len(mddMemoryNames.keys())))
@@ -185,11 +184,14 @@ if __name__ == "__main__":
                 f.write("  \"" + "/top/" + m + "\"" + "\n")
         f.write("};\n\n")
 
+        # Loop across each memory to output the needed information
         for i in range(len(mappingsLst)):
             mdd_data = mddsLst[i]
             mappings = mappingsLst[i]
             memname = memnamesLst[i]
 
+            # Figure out the ranges of frames for a given memory
+            # Be sure to eliminate duplicates
             numRanges = len(mdd_data)
             ranges = set()
             for m in mdd_data:
@@ -197,6 +199,7 @@ if __name__ == "__main__":
                 if not inRanges(ranges, s):
                     ranges.add(s)
 
+            # Output those ranges for this memory
             f.write(
                 'struct frame_range mem{}_frame_ranges[{}]= \n'.format(
                     i, len(ranges)
@@ -210,6 +213,8 @@ if __name__ == "__main__":
                     f.write("  " + r + "\n")
             f.write("};\n\n")
 
+            # Output the actual mappings now.  This is taken from the mappings info returned from calling createBitMapping() above.
+            # They are output in word/bit order as in word0/bit0, word0/bit1, ..., word1/bit0, word1/bit1, ...
             f.write(
                 'struct bit_loc mem{}_bitlocs[{}]='.format(
                     i, mddMemoryNames[memname][0] * mddMemoryNames[memname][1]
@@ -233,6 +238,7 @@ if __name__ == "__main__":
             f.write("};\n")
             f.write("\n")
 
+        # Finally write the struct info for each memory and be done
         f.write('struct logical_memory logical_memories[NUM_LOGICAL] =\n')
         f.write('{\n')
         for i in range(len(mappingsLst)):
