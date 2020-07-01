@@ -41,6 +41,11 @@ class Mapping:
             self.frameBitOffset
         )
 
+    def toStringShort(self):
+        return "word={}, bit={}, tile = {}, frameAddr={:x}, frameBitOffset={}".format(
+            self.word, self.bit, self.tile, self.frameAddr, self.frameBitOffset
+        )
+
 
 # Add mappings for a particular BRAM primitive into the mappingsn array and return it
 def createBitMapping(
