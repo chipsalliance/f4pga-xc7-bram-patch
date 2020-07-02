@@ -8,6 +8,7 @@ import os
 import sys
 import glob
 import parseutil
+import parseutil.misc as misc
 import argparse
 import json
 import pathlib
@@ -314,8 +315,6 @@ def findSegOffset(segs, lr, y01, initinitp, initnum, initbit):
 ##############################################################################################
 def createBitMappings(
     baseDir,  # The directory where the design lives
-    words,  # Number of words in init.mem file
-    bits,  # Number of bits per word in init.memfile
     memName,
     mddName,
     verbose,
@@ -324,6 +323,8 @@ def createBitMappings(
 
     # 1. Load the MDD file.
     mdd_data = patch_mem.readAndFilterMDDData(mddName, memName)
+    words, bits = misc.getMDDMemorySize(mdd_data)
+    #print("Words = {}, bits = {}".format(words, bits))
 
     # 2. Load the segment data from the prjxray database.
     #    This uses the environment variables set by prjxray
@@ -363,8 +364,6 @@ def createBitMappings(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("baseDir", help='Directory where design is located.')
-    parser.add_argument("words", help='Number of words in memory.')
-    parser.add_argument("bits", help='Number of words in memory.')
     parser.add_argument("memname", help='Name of memory.')
     parser.add_argument("mddname", help='Base name of mdd file')
     parser.add_argument("--verbose", action='store_true')
@@ -376,8 +375,8 @@ if __name__ == "__main__":
     baseDir = pathlib.Path(args.baseDir).resolve()
 
     mappings = createBitMappings(
-        baseDir, int(args.words), int(args.bits), "mem/ram",
-        baseDir / args.mddname, args.verbose, args.printmappings
+        baseDir, "mem/ram", baseDir / args.mddname, args.verbose,
+        args.printmappings
     )
 
     # Since this is a test program, print out what was returned
@@ -391,7 +390,7 @@ if __name__ == "__main__":
 # bitMapping.py will compute the bit mappings for a particular memory and return them in a data structure
 # The routine above called createBitMappings() is intended to be called from other programs.
 # But, to test it, you can call it from the command line like this:
-#      python bitMapping.py testing/tests/master/128b1 128 1 mem/ram 128b1.mdd
+#      python bitMapping.py testing/tests/master/1kb1 mem/ram 1kb1.mdd
 #
 # This program will print out the resulting data structure to the terminal if you call it from the command line like above.  Here is an example:
 #  word=127, bit=0, tile = BRAM_L_X6Y5, bits = 1, fasmY=0, fasmINITP=False, fasmLine=7, fasmBit=240, frameAddr=c0000f, frameBitOffset=327

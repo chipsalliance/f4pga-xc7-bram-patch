@@ -4,6 +4,8 @@
 # Description:
 #    Miscellaneous routines
 
+import parseutil
+
 
 # Pad a string to a certain length with 'ch'
 def pad(ch, wid, data):
@@ -60,3 +62,43 @@ def readInitStringsFromFASMFile(fasmFile):
             elif "Y1.INIT" in line:
                 init1lines.append(line)
     return (init0lines, init0plines, init1lines, init1plines)
+
+
+# Return a dict mapping names to [words, bits] lists
+def getMDDMemories(mddName):
+    mdd = parseutil.parse_mdd.read_mdd(mddName)
+    lst = dict()
+    for m in mdd:
+        # Create memory name from cell_name and ram_name
+        s = '/'.join(m.cell_name.split('/')[:-1]) + '/' + m.ram_name
+        # Add it to list if not there already
+        if s not in lst.keys():
+            lst[s] = [int(m.addr_end) + 1, int(m.slice_end) + 1]
+        else:
+            # Update coordinates so we know how big the memory is
+            itm = lst[s]
+            wb = [0, 0]
+            wb[0] = max(itm[0], int(m.addr_end) + 1)
+            wb[1] = max(itm[1], int(m.slice_end) + 1)
+            lst[s] = wb
+    return lst
+
+
+# Return the size of a memory from already-filtered mdd_data
+def getMDDMemorySize(mdd_data):
+    dep = 0
+    wid = 0
+    for m in mdd_data:
+        dep = max(dep, int(m.addr_end))
+        wid = max(wid, int(m.slice_end))
+    return (dep + 1, wid + 1)
+
+
+def designSizes(designName):
+    words = designName.split('b')[0]
+    if words[-1] == 'k':
+        words = int(words[:-1]) * 1024
+    else:
+        words = int(words)
+    bits = int(designName.split('b')[1])
+    return (words, bits)

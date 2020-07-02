@@ -19,6 +19,7 @@ import DbgParser
 import bitMapping
 import patch_mem
 import re
+import parseutil.misc as misc
 
 
 # Check the bits for a complete memory
@@ -26,7 +27,6 @@ def checkTheBits(
     baseDir,  # pathlib.Path
     memName,  # str
     mdd,  # pathlib.Path
-    initbitwidth,  # int
     initFile,  # pathlib.Path
     fasmFile,  # pathlib.Path
     verbose,  # bool
@@ -37,6 +37,7 @@ def checkTheBits(
 
     # 0. Read the MDD data and filter out the ones we want for this memory
     mdd_data = patch_mem.readAndFilterMDDData(mdd, memName)
+    initwordcnt, initbitwidth = misc.getMDDMemorySize(mdd_data)
 
     # 1. Read the init.mem file for this design
     # Put the contents into an array of strings
@@ -44,13 +45,14 @@ def checkTheBits(
         initFile, initbitwidth
     )
     words = len(initMemContents)
+    assert initwordcnt == words, "Discrepancy between length of .init file and design as reported by Vivado: {} vs. {} \n  (Vivado sometimes lies about length of small memories).".format(
+        words, initwordcnt
+    )
 
     # 2. Get the mapping infols /
     print("Loading mappings for {}...".format(designName))
     mappings = bitMapping.createBitMappings(
         baseDir,  # The directory where the design lives
-        words,  # Number of words in init.mem file
-        initbitwidth,  # Number of bits per word in init.memfile
         memName,
         mdd,
         False,
@@ -146,8 +148,6 @@ if __name__ == "__main__":
         "baseDir", help='Directory where design sub-directories are located.'
     )
 
-    parser.add_argument("bits", help='Width of each word of memory')
-
     parser.add_argument(
         "memname", help='Name of memory to check (as in "mem/ram")'
     )
@@ -165,8 +165,8 @@ if __name__ == "__main__":
 
     checkTheBits(
         baseDir, args.memname, baseDir / "{}.mdd".format(designName),
-        int(args.bits), baseDir / "init/init.mem", baseDir / "real.fasm",
-        args.verbose, args.printmappings
+        baseDir / "init/init.mem", baseDir / "real.fasm", args.verbose,
+        args.printmappings
     )
 
     print("")
@@ -175,7 +175,7 @@ if __name__ == "__main__":
 # checkTheBits.py will check that the bits in the init.mem file match those
 # in the real.fasm file and also in the bitstream.
 # To run it:
-#       python checkTheBits.py testing/tests/master/128b1 1 mem/ram
+#       python checkTheBits.py testing/tests/master/128b1 mem/ram
 # You will see if there are any errors thrown.  If not, everything checked out.
 # The code shows how to pull bits from a bitstream as well.  Important: the code above
 #     tells how to ensure you have a debug bitstream for this to work with.
