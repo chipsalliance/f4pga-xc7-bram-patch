@@ -11,6 +11,7 @@ import patch_mem
 import os
 import json
 import parseutil
+import parseutil.misc as misc
 
 
 class Mem:
@@ -84,26 +85,6 @@ def genh(
     return (mappings, mdd_data)
 
 
-# Return a dict mapping names to [words, bits] lists
-def getMDDMemories(mddName):
-    mdd = parseutil.parse_mdd.read_mdd(mddName)
-    lst = dict()
-    for m in mdd:
-        # Create memory name from cell_name and ram_name
-        s = '/'.join(m.cell_name.split('/')[:-1]) + '/' + m.ram_name
-        # Add it to list if not there already
-        if s not in lst.keys():
-            lst[s] = [int(m.addr_end) + 1, int(m.slice_end) + 1]
-        else:
-            # Update coordinates so we know how big the memory is
-            itm = lst[s]
-            wb = [0, 0]
-            wb[0] = max(itm[0], int(m.addr_end) + 1)
-            wb[1] = max(itm[1], int(m.slice_end) + 1)
-            lst[s] = wb
-    return lst
-
-
 # This is the main driver program to generate the .c and .h files
 if __name__ == "__main__":
 
@@ -133,7 +114,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Make a list of the memories in the design and their sizes
-    mddMemoryNames = getMDDMemories(args.mddname)
+    mddMemoryNames = misc.getMDDMemories(args.mddname)
     print("Here are the memories in this design:")
     for m in mddMemoryNames.keys():
         print("     {} = {}".format(m, mddMemoryNames[m]))
@@ -230,14 +211,16 @@ if __name__ == "__main__":
                     s = '    {' + '0x{:08x}, '.format(
                         m.frameAddr
                     ) + '{:6d}'.format(m.frameBitOffset) + '},'
+                    s += ' \t// [{}][{}]'.format(m.word, m.bit)
                     if args.extendedoutput:
-                        s += ' \t // ' + m.toString()
+                        s += ' \t ' + m.toString()
                 else:
                     s = '    {' + '0x{:08x}, '.format(
                         m.frameAddr
                     ) + '{:6d}'.format(m.frameBitOffset) + '},'
+                    s += ' \t// [{}][{}]'.format(m.word, m.bit)
                     if args.extendedoutput:
-                        s += ' \t // ' + m.toString()
+                        s += ' \t' + m.toString()
 
                 f.write(s + "\n")
             f.write("};\n")
