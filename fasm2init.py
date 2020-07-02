@@ -18,6 +18,7 @@ import DbgParser
 import bitMapping
 import patch_mem
 import re
+import parseutil.misc as misc
 
 
 # Check the bits for a complete memory
@@ -25,8 +26,6 @@ def fasm2init(
     baseDir,  # pathlib.Path
     memName,  # str
     mdd,  # pathlib.Path
-    words,
-    initbitwidth,  # int
     initFile,  # pathlib.Path  
     origInitFile,  # if not None then will do checking between it and re-created initFile on the previous line
     fasmFile,  # pathlib.Path
@@ -37,13 +36,12 @@ def fasm2init(
 
     # 0. Read the MDD data and filter out the ones we want for this memory
     mdd_data = patch_mem.readAndFilterMDDData(mdd, memName)
+    words, initbitwidth = misc.getMDDMemorySize(mdd_data)
 
     # 1. Get the mapping info
     print("Loading mappings for {}...".format(designName))
     mappings = bitMapping.createBitMappings(
         baseDir,  # The directory where the design lives
-        words,  # Number of words in init.mem file
-        initbitwidth,  # Number of bits per word in init.memfile
         memName,
         mdd,
         False,
@@ -131,31 +129,23 @@ if __name__ == "__main__":
         "baseDir", help='Directory where design sub-directories are located.'
     )
 
-    parser.add_argument("words", help='Number of words in memory')
-
-    parser.add_argument("bits", help='Width of each word of memory')
-
     parser.add_argument(
         "memname", help='Name of memory to check (as in "mem/ram")'
     )
     parser.add_argument("mddname", help='Name of mdd file)')
-
     parser.add_argument("--verbose", action='store_true')
-
     parser.add_argument("--check", action='store_true')
-
     parser.add_argument(
         "--printmappings", action='store_true', help='Print the mapping info'
     )
-
     args = parser.parse_args()
 
     baseDir = pathlib.Path(args.baseDir).resolve()
     designName = baseDir.name
 
     fasm2init(
-        baseDir, args.memname, baseDir / args.mddname, int(args.words),
-        int(args.bits), baseDir / "init/fromFasm.mem",
+        baseDir, args.memname, baseDir / args.mddname,
+        baseDir / "init/fromFasm.mem",
         baseDir / "init/init.mem" if args.check == True else None,
         baseDir / "real.fasm", args.verbose, args.printmappings
     )
