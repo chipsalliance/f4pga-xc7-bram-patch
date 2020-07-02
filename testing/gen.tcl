@@ -27,5 +27,5 @@ mddMake ${::env(BATCH_DIR)}/$::env(DESIGN_NAME)
 
 write_edif -force ${::env(BATCH_DIR)}/vivado/${::env(DESIGN_NAME)}.edif
 write_checkpoint -force ${::env(BATCH_DIR)}/vivado/${::env(DESIGN_NAME)}.dcp
-write_bitstream -force ${::env(BATCH_DIR)}/vivado/${::env(DESIGN_NAME)}.bit
+write_bitstream -force ${::env(BATCH_DIR)}/vivado/${::env(DESIGN_NAME)}.bit -logic_location_file
 
