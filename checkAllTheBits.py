@@ -30,7 +30,7 @@ if __name__ == "__main__":
         designName = d.name
         checkTheBits.checkTheBits(
             d, "mem/ram", d / "{}.mdd".format(designName),
-            int(designName.split('b')[1]), d / "init/init.mem",
+            d / "init/init.mem",
             d / "real.fasm", args.verbose, args.printmappings
         )
 

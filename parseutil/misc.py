@@ -82,3 +82,12 @@ def getMDDMemories(mddName):
             wb[1] = max(itm[1], int(m.slice_end) + 1)
             lst[s] = wb
     return lst
+
+# Return the size of a memory from already-filtered mdd_data
+def getMDDMemorySize(mdd_data):
+    dep = 0
+    wid = 0
+    for m in mdd_data:
+        dep = max(dep, int(m.addr_end))
+        wid = max(wid, int(m.slice_end))
+    return (dep+1, wid+1)

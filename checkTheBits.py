@@ -19,6 +19,7 @@ import DbgParser
 import bitMapping
 import patch_mem
 import re
+import parseutil.misc as misc
 
 
 # Check the bits for a complete memory
@@ -26,7 +27,6 @@ def checkTheBits(
     baseDir,  # pathlib.Path
     memName,  # str
     mdd,  # pathlib.Path
-    initbitwidth,  # int
     initFile,  # pathlib.Path
     fasmFile,  # pathlib.Path
     verbose,  # bool
@@ -37,6 +37,7 @@ def checkTheBits(
 
     # 0. Read the MDD data and filter out the ones we want for this memory
     mdd_data = patch_mem.readAndFilterMDDData(mdd, memName)
+    initwordcnt, initbitwidth = misc.getMDDMemorySize(mdd_data)
 
     # 1. Read the init.mem file for this design
     # Put the contents into an array of strings
@@ -49,8 +50,6 @@ def checkTheBits(
     print("Loading mappings for {}...".format(designName))
     mappings = bitMapping.createBitMappings(
         baseDir,  # The directory where the design lives
-        words,  # Number of words in init.mem file
-        initbitwidth,  # Number of bits per word in init.memfile
         memName,
         mdd,
         False,
