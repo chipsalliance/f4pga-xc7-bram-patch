@@ -6,6 +6,7 @@
 
 import parseutil
 
+
 # Pad a string to a certain length with 'ch'
 def pad(ch, wid, data):
     tmp = str(data)
@@ -62,6 +63,7 @@ def readInitStringsFromFASMFile(fasmFile):
                 init1lines.append(line)
     return (init0lines, init0plines, init1lines, init1plines)
 
+
 # Return a dict mapping names to [words, bits] lists
 def getMDDMemories(mddName):
     mdd = parseutil.parse_mdd.read_mdd(mddName)
@@ -80,4 +82,3 @@ def getMDDMemories(mddName):
             wb[1] = max(itm[1], int(m.slice_end) + 1)
             lst[s] = wb
     return lst
-
