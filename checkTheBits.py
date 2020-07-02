@@ -45,6 +45,7 @@ def checkTheBits(
         initFile, initbitwidth
     )
     words = len(initMemContents)
+    assert initwordcnt == words, "Discrepancy between length of .init file and design as reported by Vivado: {} vs. {} \n  (Vivado sometimes lies about length of small memories).".format(words, initwordcnt)
 
     # 2. Get the mapping infols /
     print("Loading mappings for {}...".format(designName))
@@ -145,8 +146,6 @@ if __name__ == "__main__":
         "baseDir", help='Directory where design sub-directories are located.'
     )
 
-    parser.add_argument("bits", help='Width of each word of memory')
-
     parser.add_argument(
         "memname", help='Name of memory to check (as in "mem/ram")'
     )
@@ -164,7 +163,7 @@ if __name__ == "__main__":
 
     checkTheBits(
         baseDir, args.memname, baseDir / "{}.mdd".format(designName),
-        int(args.bits), baseDir / "init/init.mem", baseDir / "real.fasm",
+        baseDir / "init/init.mem", baseDir / "real.fasm",
         args.verbose, args.printmappings
     )
 
