@@ -375,8 +375,8 @@ if __name__ == "__main__":
     baseDir = pathlib.Path(args.baseDir).resolve()
 
     mappings = createBitMappings(
-        baseDir, "mem/ram",
-        baseDir / args.mddname, args.verbose, args.printmappings
+        baseDir, "mem/ram", baseDir / args.mddname, args.verbose,
+        args.printmappings
     )
 
     # Since this is a test program, print out what was returned
