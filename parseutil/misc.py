@@ -92,3 +92,13 @@ def getMDDMemorySize(mdd_data):
         dep = max(dep, int(m.addr_end))
         wid = max(wid, int(m.slice_end))
     return (dep + 1, wid + 1)
+
+
+def designSizes(designName):
+    words = designName.split('b')[0]
+    if words[-1] == 'k':
+        words = int(words[:-1]) * 1024
+    else:
+        words = int(words)
+    bits = int(designName.split('b')[1])
+    return (words, bits)
