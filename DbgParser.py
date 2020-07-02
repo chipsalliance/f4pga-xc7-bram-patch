@@ -33,6 +33,7 @@ def extract_frame_data(fd, verbose):
     frames = dict()
     while True:
         # Find type 1 write to FAR
+        # Look for any of 0x30002001 (Set FAR), 0x30004065 (Write frame contents), or 0x30000001 (CRC)
         flg = lookFor3(
             fd, 0x30, 0x00, 0x20, 0x01, 0x30, 0x00, 0x40, 0x65, 0x30, 0x00,
             0x00, 0x01
@@ -51,14 +52,18 @@ def extract_frame_data(fd, verbose):
                                                               8) | bytes[3]
                 frmContents.append(word)
             frames[frameword] = frmContents
-        elif flg == 2:  # Skip CRC
+        elif flg == 2:  # CRC
+            # Skip the actual CRC word
             fd.read(4)
+            # Increment frame # to prep for next frame
             frameword += 1
         else:
             break
     return frames
 
 
+# Repeated read 4 word chunks and look for either b0b1b2b3, b4b5b6b7, or b8b9babb
+# Return 0, 1, or 2 depending on what matched
 def lookFor3(f, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, ba, bb):
     #print("Looking for: {} {} {} {}".format(hex(str(b0)), hex(str(b1)),hex(str(b2)), hex(str(b3))))
     while (1):
@@ -76,6 +81,7 @@ def lookFor3(f, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, ba, bb):
             return 2
 
 
+# Print frame contents
 def dumpframe(frames, frame, wordoffset=0, flen=101):
     print("frame #: " + hex(frame))
     f = frames[frame]
