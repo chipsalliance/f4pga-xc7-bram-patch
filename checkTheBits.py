@@ -45,7 +45,9 @@ def checkTheBits(
         initFile, initbitwidth
     )
     words = len(initMemContents)
-    assert initwordcnt == words, "Discrepancy between length of .init file and design as reported by Vivado: {} vs. {} \n  (Vivado sometimes lies about length of small memories).".format(words, initwordcnt)
+    assert initwordcnt == words, "Discrepancy between length of .init file and design as reported by Vivado: {} vs. {} \n  (Vivado sometimes lies about length of small memories).".format(
+        words, initwordcnt
+    )
 
     # 2. Get the mapping infols /
     print("Loading mappings for {}...".format(designName))
@@ -163,8 +165,8 @@ if __name__ == "__main__":
 
     checkTheBits(
         baseDir, args.memname, baseDir / "{}.mdd".format(designName),
-        baseDir / "init/init.mem", baseDir / "real.fasm",
-        args.verbose, args.printmappings
+        baseDir / "init/init.mem", baseDir / "real.fasm", args.verbose,
+        args.printmappings
     )
 
     print("")
@@ -173,7 +175,7 @@ if __name__ == "__main__":
 # checkTheBits.py will check that the bits in the init.mem file match those
 # in the real.fasm file and also in the bitstream.
 # To run it:
-#       python checkTheBits.py testing/tests/master/128b1 1 mem/ram
+#       python checkTheBits.py testing/tests/master/128b1 mem/ram
 # You will see if there are any errors thrown.  If not, everything checked out.
 # The code shows how to pull bits from a bitstream as well.  Important: the code above
 #     tells how to ensure you have a debug bitstream for this to work with.

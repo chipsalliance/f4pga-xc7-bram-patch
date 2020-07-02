@@ -158,8 +158,8 @@ if __name__ == "__main__":
 # If the --check flag is true it will compare what it constructs against the values from baseDir/init/init.mem (used mainly for testing)
 #    If there is a mismatch it will print out an error message.
 # A typical run of this program is:
-#    python fasm2init.py testing/tests/master/128b1 128 1 mem/ram 128b1.mdd
+#    python fasm2init.py testing/tests/master/128b1 mem/ram 128b1.mdd
 # Or, you could do:
-#    python fasm2init.py testing/tests/master/128b1 128 1 mem/ram 128b1.mdd --check
-# The only difference is the second one does the check.
+#    python fasm2init.py testing/tests/master/128b1 mem/ram 128b1.mdd --check
+# The only difference is the second one does the check against baseDir/init/init.mem.
 #################################################################################################################

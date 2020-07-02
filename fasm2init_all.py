@@ -42,7 +42,7 @@ if __name__ == "__main__":
         designName = d.name
         words, bits = designSizes(designName)
         fasm2init.fasm2init(
-            d, "mem/ram", d / "{}.mdd".format(designName), words, bits,
+            d, "mem/ram", d / "{}.mdd".format(designName),
             d / "init/fromFasm.mem", d / "init/init.mem", d / "real.fasm",
             args.verbose, args.printmappings
         )
