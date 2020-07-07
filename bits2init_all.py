@@ -37,9 +37,9 @@ if __name__ == "__main__":
         words, bits = designSizes(designName)
         print(designName)
         bits2init.bits2init(
-            d, "mem/ram", d / "{}.mdd".format(designName),
-            d / "init/new.mem", d / "init/init.mem", d / "real.fasm",
-            args.verbose, args.printmappings
+            d, "mem/ram", d / "{}.mdd".format(designName), d / "init/new.mem",
+            d / "init/init.mem", d / "real.fasm", args.verbose,
+            args.printmappings
         )
         print("")
     print("")
