@@ -60,7 +60,7 @@ def bits2init(
         binaryWord = ('0' * (32 - len(binaryWord))) + binaryWord
         binaryWord = binaryWord[::-1]
         initArrays[mapping.word][mapping.bit] = binaryWord[frameBit]
-    
+
     # 5. Combine the arrays into new init strings
     for i in range(words):
         string = "".join(initArrays[i])
@@ -82,7 +82,12 @@ def bits2init(
                             w, b, initStrings[w][b], origInit[w][b]
                         )
                     )
-                    print("original: {}\nnew: {}".format(hex(int(origInit[w], 2)), hex(int(initStrings[w], 2))))
+                    print(
+                        "original: {}\nnew: {}".format(
+                            hex(int(origInit[w], 2)),
+                            hex(int(initStrings[w], 2))
+                        )
+                    )
                     sys.exit(1)
         print("      Everything checked out successfully!!!")
     print("  Done assembling init strings")
