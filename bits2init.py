@@ -1,17 +1,12 @@
 import os
 import sys
-import glob
 import parseutil
 import parseutil.misc as misc
 import argparse
-import json
 import pathlib
-import struct
 import DbgParser
 import bitMapping
 import patch_mem
-import re
-import parseutil.misc as misc
 
 
 # Check the bits for a complete memory
@@ -94,7 +89,7 @@ def bits2init(
     print("Writing to {}/init/new.mem".format(designName))
 
     # 6. Writes the string to new.mem in the init directory of a design
-    with (baseDir / "init" / "new.mem").open('w+') as f:
+    with (baseDir / "init" / "new.mem").open('w') as f:
         for string in initStrings:
             f.write(hex(int(string, 2))[2:])
             f.write("\n")
