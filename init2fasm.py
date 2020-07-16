@@ -22,9 +22,10 @@ def init2fasm (
     mdd,  # pathlib.Path
     initFile,  # pathlib.Path  
     fasmFile,  # pathlib.Path
-    checkFile, #pathlib.Path
+    checkFile,  #pathlib.Path
     verbose,  # bool
-    printmappings  # bool
+    printmappings,  # bool
+    partial  # bool
 ):
     designName = baseDir.name
 
@@ -117,11 +118,22 @@ def init2fasm (
                                     break
     print("  Done editing fasm lines")
 
-    # 7. Write the new line sout to new.fasm
+    # 7. Write the new lines out to new.fasm
     with (baseDir / "new.fasm").open('w') as w:
-        for line in fasm_lines:
-            w.write(line)
-    
+        if partial:
+            current_tile = ""
+            for line in fasm_lines:
+                for data in mdd_data:
+                    if re.search(data.tile, line) != None:
+                        if current_tile != "" and data.tile != current_tile:
+                            w.write("\n")
+                        w.write(line)
+                        current_tile = data.tile
+                        break 
+        else:
+            for line in fasm_lines:
+                w.write(line)
+
     # 8. Check the new lines against real.fasm
     if checkFile != None:
         print("Checking new fasm lines against real.fasm")
@@ -154,6 +166,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--printmappings", action='store_true', help='Print the mapping info'
     )
+    parser.add_argument("--partial", action='store_true')
     args = parser.parse_args()
 
     baseDir = pathlib.Path(args.baseDir).resolve()
@@ -161,7 +174,7 @@ if __name__ == "__main__":
 
     init2fasm(
             baseDir, args.memname, baseDir / args.mddname,
-            baseDir / args.memfile, baseDir / "test.fasm", 
+            baseDir / args.memfile, baseDir / "real.fasm", 
             baseDir / "real.fasm" if args.check == True else None,
-            args.verbose, args.printmappings
+            args.verbose, args.printmappings, args.partial
         )

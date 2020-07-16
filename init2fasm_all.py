@@ -25,6 +25,6 @@ if __name__ == "__main__":
         init2fasm.init2fasm(
             d, "mem/ram", d / "{}.mdd".format(designName),
             d / "init/init.mem", d / "real.fasm", d / "real.fasm",
-            args.verbose, args.printmappings
+            args.verbose, args.printmappings, False
         )
         print("")
