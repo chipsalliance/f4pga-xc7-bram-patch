@@ -46,9 +46,12 @@ def init2fasm (
     )
     print("  Done loading mappings")
 
+    # 2. Get the init data
     with initFile.open() as f:
         init_words = f.read().split()
 
+    # 3. Reassemble init strings as a dictionary of arrays
+    print("Assembling new FASM strings from {}".format(initFile.name))
     for mapping in mappings:
         if mapping.fasmY:
             index_string = 'Y1'
@@ -66,6 +69,7 @@ def init2fasm (
         else:
             reassembled_init_array[mapping.tile][index_string][mapping.fasmLine][mapping.fasmBit] = bin_word[mapping.bit]
 
+    # 4. Combine reassembled init arrays into strings
     for tile in reassembled_init_array:
         for group in reassembled_init_array[tile]:
             for line in reassembled_init_array[tile][group]:
@@ -74,95 +78,65 @@ def init2fasm (
                         line[i] = '0'
                 full_word = ("".join(line))[::-1]
                 reassembled_init_strings[tile][group].append(full_word[full_word.index('1'):])
+    print("  Done assembling new fasm init strings")
     
+    # 5. Get the base fasm data to edit later
     with fasmFile.open() as f:
         fasm_lines = f.readlines()
 
+    # 6. Replace fasm init lines with newly constructed ones
+    print("Editing fasm lines")
     for tile in reassembled_init_strings:
         for group in reassembled_init_strings[tile]:
             for i in range(len(reassembled_init_strings[tile][group])):
                 string = reassembled_init_strings[tile][group][i]
                 fasm_num = hex(i)[2:]
-                print(fasm_num)
-                print(string)
-                fasm_entry = None
                 k = -1
                 for j in range(len(fasm_lines)):
-                    if re.search(tile + "\.RAMB18_" + group[0:2] + "\." + group[2:] + "_" + fasm_num.upper(), fasm_lines[j]) != None:
+                    if re.search(tile + "\.RAMB18_" + group[0:2] + "\." + group[2:] + "_0?" + fasm_num.upper() + "\[", fasm_lines[j]) != None:
                         k = j
                         break
+                new_fasm_line = "{}.RAMB18_{}.{}_{}{}[{}:0] = {}'b{}\n".format(tile,group[0:2],group[2:],"" if len(fasm_num) == 2 else "0",fasm_num.upper(),str(len(string)-1),len(string),string)
                 if k != -1:
-                    pass
+                    fasm_lines[k] = new_fasm_line
                 else:
-                    print("We haven't created this feature yet")
-                    exit(1)
+                    fasm_int = int(fasm_num, 16)
+                    for j in range(len(fasm_lines)):
+                        if re.search(tile + "\.RAMB18_" + group[0:2] + "\." + group[2:] + "_", fasm_lines[j])  != None:
+                            if fasm_int == 0:
+                                fasm_lines.insert(j, new_fasm_line)
+                                break
+                            if fasm_int > int(re.search("_..\[", fasm_lines[j]).group(0)[1:3], 16):
+                                entry_group = re.search(tile + "\.RAMB18_" + group[0:2] + "\." + group[2:] + "_..", fasm_lines[j+1])
+                                if entry_group == None:
+                                    fasm_lines.insert(j+1, new_fasm_line)
+                                    break
+                                entry_num = int(entry_group.group(0)[-2:], 16)
+                                if fasm_int < entry_num:
+                                    fasm_lines.insert(j+1, new_fasm_line)
+                                    break
+    print("  Done editing fasm lines")
 
-    #newInitBits = [[None for j in range(initbitwidth)] for k in range(words)]
-    # 3. Handle each cell
-    #for cell in mdd_data:
-        ## inits will be indexed as inits[y01][initinitp]
-        #inits = [[None for j in range(2)] for k in range(2)]
-
-        ## Convert the FASM lines into the proper format strings
-        ## Store them in a multi-dimensional array indexed by y01 and INITP/INIT (True/False)
-        #inits[0][False] = misc.processInitLines("0s", init0lines, cell, False)
-        #inits[0][True] = misc.processInitLines("0ps", init0plines, cell, True)
-        #inits[1][False] = misc.processInitLines("1s", init1lines, cell, False)
-        #inits[1][True] = misc.processInitLines("1ps", init1plines, cell, True)
-
-    #    for w in range(words):
-    #        for b in range(initbitwidth):
-    #            if w < cell.addr_beg or w > cell.addr_end:
-    #                continue
-    #            if b < cell.slice_beg or b > cell.slice_end:
-    #                continue
-
-    #            # Get the bit from the FASM line
-    #            mapping = bitMapping.findMapping(w, b, initbitwidth, mappings)
-    #            assert mapping is not None, "{} {} {}".format(
-    #                w, b, initbitwidth
-    #            )
-    #            # Now get the actual bit
-    #            fasmbit = inits[mapping.fasmY][mapping.fasmINITP][
-    #                mapping.fasmLine][mapping.fasmBit]
-
-    #            # Put the bit into the array
-    #            newInitBits[w][b] = fasmbit
-    ## 4. Now, create real init array
-    #newInitFile = []
-    #or w in range(words):
-    #   wd = ""
-    #   for b in range(initbitwidth):
-    #       if newInitBits[w][b] is None:
-    #            print("ERROR: None at {}:{}".format(w, b))
-    #        else:
-    #            wd += newInitBits[w][b]
-    #    newInitFile.append(wd[::-1])  # Don't forget to reverse it
-
-    # 5. Do checking if asked
-    #if origInitFile is not None:
-    #   print("    Checking with original...")
-    #    origInit = parseutil.parse_init_test.read_initfile(
-    #        origInitFile, initbitwidth, reverse=False
-    #    )
-    #   for w in range(words):
-    #       for b in range(initbitwidth):
-    #           if newInitFile[w][b] != origInit[w][b]:
-    #               print(
-    #                   "Mismatch: {}:{} {} {}".format(
-    #                       w, b, newInitFile[w][b], origInit[w][b]
-    #                   )
-    #               )
-    #                sys.exit(1)
-    #    print("      Everything checked out successfully!!!")
-
-    # 6. Finally, write it out
-    #with initFile.open('w') as f:
-    #    for lin in newInitFile:
-    #        f.write(lin[::-1] + "\n")
-
-    # 7. If we got here we were successful
-    #print("      Initfile {} re-created successfully!".format(initFile))
+    # 7. Write the new line sout to new.fasm
+    with (baseDir / "new.fasm").open('w') as w:
+        for line in fasm_lines:
+            w.write(line)
+    
+    # 8. Check the new lines against real.fasm
+    if checkFile != None:
+        print("Checking new fasm lines against real.fasm")
+        with checkFile.open() as f:
+            check_lines = f.readlines()
+        if len(check_lines) != len(fasm_lines):
+            print("  There is a different number of fasm lines in the original and new file")
+            exit(1)
+        for i in range(len(check_lines)):
+            if check_lines[i] != fasm_lines[i]:
+                print("  Mismatch on line {}".format(i+1))
+                print("    Expected: {}".format(check_lines[i]))
+                print("    Actual: {}".format(fasm_lines[i]))
+                exit(1)
+        print("  Everything matches")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -187,7 +161,7 @@ if __name__ == "__main__":
 
     init2fasm(
             baseDir, args.memname, baseDir / args.mddname,
-            baseDir / args.memfile, baseDir / "real.fasm", 
+            baseDir / args.memfile, baseDir / "test.fasm", 
             baseDir / "real.fasm" if args.check == True else None,
             args.verbose, args.printmappings
         )
