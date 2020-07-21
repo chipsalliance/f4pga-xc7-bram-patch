@@ -27,14 +27,14 @@ proc mddMake {fname} {
         set fp [open "$fname.mdd" w]
     }
 
-    puts "DESIGN $::env(DESIGN_NAME)"
-    puts $fp "DESIGN $::env(DESIGN_NAME)"
+    puts "DESIGN myDesign"
+    puts $fp "DESIGN myDesign"
     puts "PART [get_parts -of  [current_design]]"
     puts $fp "PART [get_parts -of  [current_design]]"
 
 
 
-    foreach c [get_cells * -hier -filter {REF_NAME == "RAMB18E1" || REF_NAME == "RAMB36E1"}] {
+    foreach c [get_cells * -hier -filter { REF_NAME == "RAMB18E1" || REF_NAME == "RAMB36E1" || REF_NAME == "RAMB18E2" || REF_NAME == "RAMB36E2"}] {
         puts "\nCELL $c"
         puts $fp "\nCELL $c"
         set tileaddr [get_tiles -of [get_bels -of $c]]
