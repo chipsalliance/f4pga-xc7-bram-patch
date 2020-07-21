@@ -124,12 +124,12 @@ def createBitMapping(
                 )
             # Some sanity checks
             # Number of bits in INIT and INITP should be 32K and 4K respectively (RAMB36E1) or 16K and 2K respectively (RAMB18E1)
-            assert initSliceinitwidth * RAMBdepth == (
-                32768 if ramb36 else 16384
-            )
-            assert initpSliceinitwidth == 0 or initpSliceinitwidth * RAMBdepth == (
-                4096 if ramb36 else 2048
-            )
+            #assert initSliceinitwidth * RAMBdepth == (
+            #    32768 if ramb36 else 16384
+            #), "initSliceinitwidth={}, RAMBdepth={}".format(initSliceinitwidth, RAMBdepth)
+            #assert initpSliceinitwidth == 0 or initpSliceinitwidth * RAMBdepth == (
+            #    4096 if ramb36 else 2048
+            #)
 
             # 2c: Is the bit of interest in the INIT portion or the INITP portion?
             if b - cell.slice_beg < initSliceinitwidth:
@@ -322,7 +322,6 @@ def findSegOffset(segs, lr, y01, initinitp, initnum, initbit):
 # Create the bitmappings for a design
 ##############################################################################################
 def createBitMappings(
-    baseDir,  # The directory where the design lives
     memName,
     mddName,
     verbose,
@@ -383,7 +382,7 @@ if __name__ == "__main__":
     baseDir = pathlib.Path(args.baseDir).resolve()
 
     mappings = createBitMappings(
-        baseDir, "mem/ram", baseDir / args.mddname, args.verbose,
+        args.memname, baseDir / args.mddname, args.verbose,
         args.printmappings
     )
 
