@@ -4,7 +4,7 @@
 # Description:
 #    Miscellaneous routines
 
-import parseutil
+import parseutil.parse_mdd as parse_mdd
 
 
 # Pad a string to a certain length with 'ch'
@@ -66,7 +66,7 @@ def readInitStringsFromFASMFile(fasmFile):
 
 # Return a dict mapping names to [words, bits] lists
 def getMDDMemories(mddName):
-    mdd = parseutil.parse_mdd.read_mdd(mddName)
+    mdd = parse_mdd.parse_mdd.read_mdd(mddName)
     lst = dict()
     for m in mdd:
         # Create memory name from cell_name and ram_name

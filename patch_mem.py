@@ -12,34 +12,6 @@ from prjxray.db import Database
 from prjxray import fasm_disassembler
 
 
-def readAndFilterMDDData(mdd, selectedMemToPatch, verbose=False):
-    # Handles either Path or strings
-    if isinstance(mdd, pathlib.Path):
-        mdd = str(mdd)
-
-    # Read and filter the MDD file contents based on selectedMemToPatch
-    tmp_mdd_data = mddutil.read_mdd(mdd)
-    mdd_data = [
-        m for m in tmp_mdd_data
-        # Reassemble RAM name by removing the ram_reg_*_* part from it.
-        # The user wants to specify 'mem/ram' instead of mem/ram_reg_0_0/ram
-        if '/'.join(m.cell_name.split('/')[:-1]) + '/' +
-        m.ram_name == selectedMemToPatch
-    ]
-    if len(mdd_data) == 0:
-        print(
-            "No memories found in MDD file corresponding to {}, aborting.".
-            format(selectedMemToPatch)
-        )
-        exit(1)
-
-    if verbose:
-        print("Memories to be patched ({}):".format(len(mdd_data)))
-        for l in mdd_data:
-            print("  " + l.toString())
-        print("")
-
-    return mdd_data
 
 
 def patch_mem(

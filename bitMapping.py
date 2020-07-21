@@ -14,7 +14,7 @@ import json
 import pathlib
 import struct
 import DbgParser
-import patch_mem
+import parseutil.parse_mdd as parse_mdd
 import re
 
 
@@ -322,7 +322,7 @@ def createBitMappings(
 ):
 
     # 1. Load the MDD file.
-    mdd_data = patch_mem.readAndFilterMDDData(mddName, memName)
+    mdd_data = parse_mdd.readAndFilterMDDData(mddName, memName)
     words, bits = misc.getMDDMemorySize(mdd_data)
     #print("Words = {}, bits = {}".format(words, bits))
 
