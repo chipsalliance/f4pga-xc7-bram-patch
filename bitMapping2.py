@@ -50,12 +50,10 @@ class Mapping:
 
 
 # Add mappings for a particular BRAM primitive into the mappingsn array and return it
-def createBitMapping(
-    words, bits, cell, mappings, verbose, printMappings
-):
+def createBitMapping(words, bits, cell, mappings, verbose, printMappings):
 
     # 1. Flag of whether this is RAMB36E cell or not
-    ramb36 = (cell.type == "RAMB36E1") or (cell.type == "RAMB36E2") 
+    ramb36 = (cell.type == "RAMB36E1") or (cell.type == "RAMB36E2")
 
     # 2. Get the info on this BRAM tile from tilegrid.json
     #tilegridname = os.environ["XRAY_DIR"] + "/database/" + os.environ[
@@ -196,10 +194,9 @@ def createBitMapping(
             if printMappings or verbose:
                 if parity:
                     print(
-                        "init.mem[{}][{}] -> {}.{}_Y{}.INITP_{:02x}[{:03}]"
-                        .format(
-                            w, b, cell.tile,
-                            cell.type[:-2], y01, initRow, bbb
+                        "init.mem[{}][{}] -> {}.{}_Y{}.INITP_{:02x}[{:03}]".
+                        format(
+                            w, b, cell.tile, cell.type[:-2], y01, initRow, bbb
                             #cell.tile,
                             #hex(cell.baseaddr), segoffset[0], segoffset[1],
                             #cell.wordoffset
@@ -208,10 +205,9 @@ def createBitMapping(
 
                 else:
                     print(
-                        "init.mem[{}][{}] -> {}.{}_Y{}.INIT_{:02x}[{:03}]"
-                        .format(
-                            w, b, cell.tile,
-                            cell.type[:-2], y01, initRow, bbb
+                        "init.mem[{}][{}] -> {}.{}_Y{}.INIT_{:02x}[{:03}]".
+                        format(
+                            w, b, cell.tile, cell.type[:-2], y01, initRow, bbb
                             #cell.tile,
                             #hex(cell.baseaddr), segoffset[0], segoffset[1],
                             #cell.wordoffset
@@ -219,7 +215,7 @@ def createBitMapping(
                     )
 
             # 2.j1: Compute xyz (7 series)
-            xyz = initRow * 512 + 2*bbb + y01
+            xyz = initRow * 512 + 2 * bbb + y01
             xyz = xyz + 32768 if parity else xyz
 
             # 2.k: Finally, build a Mapping object and add it to the mappings list (to be returned below)
@@ -321,12 +317,7 @@ def findSegOffset(segs, lr, y01, initinitp, initnum, initbit):
 ##############################################################################################
 # Create the bitmappings for a design
 ##############################################################################################
-def createBitMappings(
-    memName,
-    mddName,
-    verbose,
-    printMappings
-):
+def createBitMappings(memName, mddName, verbose, printMappings):
 
     # 1. Load the MDD file.
     mdd_data = parse_mdd.readAndFilterMDDData(mddName, memName)
@@ -382,8 +373,7 @@ if __name__ == "__main__":
     baseDir = pathlib.Path(args.baseDir).resolve()
 
     mappings = createBitMappings(
-        args.memname, baseDir / args.mddname, args.verbose,
-        args.printmappings
+        args.memname, baseDir / args.mddname, args.verbose, args.printmappings
     )
 
     # Since this is a test program, print out what was returned
