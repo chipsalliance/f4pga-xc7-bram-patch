@@ -1,3 +1,47 @@
+proc getConsts { m } {
+    set p [get_pins -of_objects $m -filter {DIRECTION == IN && NAME =~ "*ADDRA*"}]
+    set vss []
+    set gnds []
+    foreach j $p {
+        if { [lsearch [get_nets -of $j] *const1*] != -1 } {
+            set vs [regsub "\\\["  [regsub "\\\]" $j " "] " " ]
+            lappend vss "[lindex [split $vs] 1]"
+        }
+        if { [lsearch [get_nets -of $j] *const0*] != -1 } {
+            set gnd [regsub "\\\["  [regsub "\\\]" $j " "] " " ]
+            lappend gnds "[lindex [split $gnd] 1]"
+        }
+    }
+
+    lsort -integer -decreasing $vss
+    lsort -integer -decreasing $gnds
+
+    set highorder []
+    set loworder []
+
+    for {set i 13} {$i >= 0} {incr i -1} {
+        if { [lsearch -exact $vss $i] >= 0 } {
+            lappend highorder 1
+        } elseif { [lsearch -exact $gnds $i] >= 0 } {
+            lappend highorder 0
+        } else {
+            break
+        }
+    }
+
+    for {set i 0} {$i < 14} {incr i 1} {
+        if { [lsearch -exact $vss $i] >= 0 } {
+            lappend loworder 1
+        } elseif { [lsearch -exact $gnds $i] >= 0 } {
+            lappend loworder 0
+        } else {
+            break
+        }
+    }
+    
+    return [list $highorder [lreverse $loworder]]
+}
+
 proc mddMake {fname} {
     set props [list \
                    [list CELLTYPE REF_NAME] \
@@ -46,6 +90,11 @@ proc mddMake {fname} {
             puts "  [lindex $p 0] $val"
             puts $fp "  [lindex $p 0] $val"
         }
+        set cp [getConsts $c]
+        puts "  HIGHCONSTPORTS \[ [lindex $cp 0] \]"
+        puts $fp "  HIGHCONSTPORTS \[ [lindex $cp 0] \]"
+        puts "  LOWCONSTPORTS \[ [lindex $cp 1] \]"
+        puts $fp "  LOWCONSTPORTS \[ [lindex $cp 1] \]"
         puts "ENDCELL"
         puts $fp "ENDCELL"
     }
