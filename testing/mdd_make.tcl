@@ -16,14 +16,14 @@ proc getConsts { m } {
     lsort -integer -decreasing $vss
     lsort -integer -decreasing $gnds
 
-    set highorder []
-    set loworder []
+    set highOrder []
+    set lowOrder []
 
     for {set i 13} {$i >= 0} {incr i -1} {
         if { [lsearch -exact $vss $i] >= 0 } {
-            lappend highorder 1
+            lappend highOrder 1
         } elseif { [lsearch -exact $gnds $i] >= 0 } {
-            lappend highorder 0
+            lappend highOrder 0
         } else {
             break
         }
@@ -31,16 +31,39 @@ proc getConsts { m } {
 
     for {set i 0} {$i < 14} {incr i 1} {
         if { [lsearch -exact $vss $i] >= 0 } {
-            lappend loworder 1
+            lappend lowOrder 1
         } elseif { [lsearch -exact $gnds $i] >= 0 } {
-            lappend loworder 0
+            lappend lowOrder 0
         } else {
             break
         }
     }
-    
-    return [list $highorder [lreverse $loworder]]
+
+    # Now compute numerator for starting bits location
+    set a $highOrder
+    set x 0
+    foreach n $a {
+        set x [expr $x * 2]
+        if { $n > 0 } {
+            incr x
+        }
+    }
+    set a $lowOrder
+    set y 0
+    foreach n $a {
+        set y [expr $y * 2]
+        if { $n > 0 } {
+            incr y
+        }
+    }
+
+    set lowOrder [lreverse $lowOrder]
+    set dh [expr 1 << [llen $highOrder]]
+    set dl [expr 1 << [llen $lowOrder]]
+    return [list [list $x $dh $y $dl] $highOrder $lowOrder]
 }
+
+
 
 proc mddMake {fname} {
     set props [list \
@@ -91,10 +114,20 @@ proc mddMake {fname} {
             puts $fp "  [lindex $p 0] $val"
         }
         set cp [getConsts $c]
-        puts "  HIGHCONSTPORTS \[ [lindex $cp 0] \]"
-        puts $fp "  HIGHCONSTPORTS \[ [lindex $cp 0] \]"
-        puts "  LOWCONSTPORTS \[ [lindex $cp 1] \]"
-        puts $fp "  LOWCONSTPORTS \[ [lindex $cp 1] \]"
+        set cp [getConsts $c]
+        set hinum [lindex [lindex $cp 0] 0]
+        set hiden [lindex [lindex $cp 0] 1]
+        set lonum [lindex [lindex $cp 0] 2]
+        set loden [lindex [lindex $cp 0] 3]
+        set hcp [lindex $cp 1]
+        set lcp [lindex $cp 2]
+        puts "  STARTINGOFFSET [expr 32768 * $hinum / $hiden]"
+        set so [expr 32768 * $hinum / $hiden]
+        puts $fp "  STARTINGOFFSET $so"
+        puts "  HIGHCONSTPORTS \[ $hcp \]"
+        puts $fp "  HIGHCONSTPORTS \[ $hcp \]"
+        puts "  LOWCONSTPORTS \[ $lcp \]"
+        puts $fp "  LOWCONSTPORTS \[ $lcp \]"
         puts "ENDCELL"
         puts $fp "ENDCELL"
     }
