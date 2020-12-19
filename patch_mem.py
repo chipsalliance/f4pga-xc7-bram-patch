@@ -28,7 +28,7 @@ def patch_mem(
     assert mdd is not None
     assert selectedMemToPatch is not None
 
-    mdd_data = readAndFilterMDDData(mdd, selectedMemToPatch, verbose)
+    mdd_data = mddutil.readAndFilterMDDData(mdd, selectedMemToPatch, verbose)
 
     # Get all the FASM tuples
     fasm_tups = read_fasm(fasm)

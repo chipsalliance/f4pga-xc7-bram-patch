@@ -42,7 +42,7 @@ def main():
         # do more later
     ]
 
-    widths = widths_to_test
+    widths = weird_widths_to_test
     depths = depths_to_test
 
     for wid in widths:
