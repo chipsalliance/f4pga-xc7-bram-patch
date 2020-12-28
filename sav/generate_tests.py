@@ -15,17 +15,13 @@ def main():
     topdir = "./testing/tests"
     master = os.path.join(topdir, 'master')
 
-    widths_to_test = [1, 2, 4, 8, 9, 16, 18, 32, 36, 64, 72]
+    widths_to_test = [
+        1, 2, 4, 8, 9, 16, 18, 32, 36, 64, 72, 128, 144, 256, 288
+    ]
     depths_to_test = [
-        ('128', 128),
-        ('256', 256),
-        ('512', 512),
-        ('1k', 1024),
-        ('2k', 2048),
-        ('4k', 2048 * 2),
-        ('8k', 2048 * 4),
-        ('16k', 2048 * 8),
-        ('32k', 2048 * 16)  #, ('64k', 2048 * 32), ('128k', 2048 * 64)
+        ('128', 128), ('256', 256), ('512', 512), ('1k', 1024), ('2k', 2048),
+        ('4k', 2048 * 2), ('8k', 2048 * 4), ('16k', 2048 * 8),
+        ('32k', 2048 * 16), ('64k', 2048 * 32), ('128k', 2048 * 64)
     ]
 
     weird_widths_to_test = [
@@ -43,7 +39,7 @@ def main():
     ]
 
     widths = weird_widths_to_test
-    depths = depths_to_test
+    depths = weird_depths_to_test
 
     for wid in widths:
         for depth_tup in depths:

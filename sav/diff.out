@@ -1,0 +1,123 @@
+diff --git a/generate_tests.py b/generate_tests.py
+index b6a3c5e..b3bec8d 100644
+--- a/generate_tests.py
++++ b/generate_tests.py
+@@ -38,8 +38,8 @@ def main():
+         # do more later
+     ]
+ 
+-    widths = widths_to_test
+-    depths = depths_to_test
++    widths = weird_widths_to_test
++    depths = weird_depths_to_test
+ 
+     for wid in widths:
+         for depth_tup in depths:
+diff --git a/parseutil/parse_init_test.py b/parseutil/parse_init_test.py
+index ecb4eb2..752722b 100644
+--- a/parseutil/parse_init_test.py
++++ b/parseutil/parse_init_test.py
+@@ -16,7 +16,7 @@ def pad(ch, wid, data):
+     tmp = str(data)
+     return (ch * (wid - len(tmp)) + tmp)
+ 
+-
++# Read the init.mem file into an array and return it
+ def initfile_to_initlist(infile, mdd):
+     width = mddutil.get_width(mdd)
+     # print(width)
+@@ -197,14 +197,22 @@ def initlines_to_memfasm(initlines, infile_name):
+ 
+     return memfasm
+ 
+-
++# Create the new tuples from initfile contents
+ def initfile_to_memfasm(infile, fasm_tups, memfasm_name, mdd):
++    # Read the init.mem file into an array
+     init = initfile_to_initlist(infile, mdd=mdd)
++    print("Here is init:")
++    for i in range(12):
++        print(init[i])
++    #
+     modified_mdd = initlist_to_edif_celldata(
+         init=init, fasm_tups=fasm_tups, mdd=mdd
+     )
++    #
+     initlines = edif_celldata_to_fasm_initlines(mdd=modified_mdd)
++    #
+     memfasm = initlines_to_memfasm(initlines, infile)
++    #
+     # memfasm = [line for line in memfasm]
+     # for line in memfasm:
+     # print(type(line))
+diff --git a/patch_mem.py b/patch_mem.py
+index 7815186..96d1d11 100644
+--- a/patch_mem.py
++++ b/patch_mem.py
+@@ -47,6 +47,7 @@ def patch_mem(
+     cleared_tups = fasmutil.clear_init(fasm_tups, mdd_data)
+ 
+     # Create the new tuples from initfile contents
++    print("Reading {}".format(init))
+     memfasm = initutil.initfile_to_memfasm(
+         infile=init,
+         fasm_tups=fasm_tups,
+diff --git a/run_tests.py b/run_tests.py
+index f4365e8..2cc4cd8 100644
+--- a/run_tests.py
++++ b/run_tests.py
+@@ -275,7 +275,7 @@ if __name__ == "__main__":
+             exit(1)
+     else:
+         print(
+-            "Usage:\n   python run_tests.py   #To run series of tests\nOR\n   python run_tests.py fasmToPatch, init, mdd, patchedFasm, origFasm hdlMemToPatch # To run a directed test",
++            "Usage:\n   python run_tests.py   #To run series of tests\nOR\n   python run_tests.py fasmToPatch, init, mdd, patchedFasm, origFasm hdlMemToPatch # To run a directed test\nOR\n   python run_tests.py directoryName",
+             file=sys.stderr
+         )
+         exit(1)
+diff --git a/testing/make_top.py b/testing/make_top.py
+index 2714adf..97bf88f 100644
+--- a/testing/make_top.py
++++ b/testing/make_top.py
+@@ -32,6 +32,8 @@ def main():
+ 
+ def write_topfile(fname, wid_mem, f_init, depth_mem, init_frmt):
+     addr_wid = int(math.log(depth_mem, 2))
++    if 1<<addr_wid -1 < depth_mem:
++        addr_wid += 1
+     # print('{}'.format(addr_wid))
+     with open(fname, 'w') as f:
+         write_top_hdr(f=f, wid_mem=wid_mem, addr_wid=addr_wid)
+diff --git a/testing/random_memmaker.py b/testing/random_memmaker.py
+index 39e6856..7634e10 100755
+--- a/testing/random_memmaker.py
++++ b/testing/random_memmaker.py
+@@ -1,11 +1,17 @@
+ import sys
+ import random as r
++import math
+ 
+ 
+ def pad(ch, wid, data):
+     data = str(data)
+     return (ch * (wid - len(data)) + data)
+ 
++def mylog2(n):
++    val = 0
++    while round(math.pow(2, val)) < n:
++        val += 1
++    return val
+ 
+ def main(fname, width, depth, allOnes=False):
+ 
+@@ -14,6 +20,10 @@ def main(fname, width, depth, allOnes=False):
+     if type(depth) is str:
+         depth = int(depth)
+ 
++    # Go up to next power of 2
++    addrwid = mylog2(depth)
++    depth =  1<<addrwid
++
+     make_mem(fname=fname, width=width, depth=depth, allOnes=allOnes)
+ 
+ 
