@@ -34,7 +34,11 @@ def write_topfile(fname, wid_mem, f_init, depth_mem, init_frmt):
 
     # Compute size of addresses needed, incremement up to next size if needed
     addr_wid = int(math.log(depth_mem, 2))
-    assert 2**addr_wid == depth_mem, "Can only handle memories with powers of two depths: {}".format(
+    if 2**addr_wid < depth_mem:
+        addr_wid += 1
+    print("Addr wid = " + str(addr_wid))
+
+    assert 2**addr_wid >= depth_mem, "Wrong mem depth: {}".format(
         depth_mem
     )
 
@@ -54,15 +58,20 @@ def write_topfile(fname, wid_mem, f_init, depth_mem, init_frmt):
 def write_top_hdr(f, addr_wid, wid_mem=WID_MEM, dout_count=COUNT):
     module = 'module top(\n'
     module += 'input logic clk,\n'
-    module += 'input logic[{}:0] raddr,\n'.format(addr_wid - 1)
-    module += 'input logic[{}:0] waddr,\n'.format(addr_wid - 1)
-    module += 'input logic [{}:0] din,\n'.format(wid_mem - 1)
-    if dout_count is not None:
-        for x in range(dout_count):
-            module += 'output logic [{}:0] dout{},\n'.format(wid_mem - 1, x)
-    else:
-        module += 'output logic [{}:0] dout,\n'.format(wid_mem - 1)
+    #module += 'input logic[{}:0] raddr,\n'.format(addr_wid - 1)
+    #module += 'input logic[{}:0] waddr,\n'.format(addr_wid - 1)
+    #module += 'input logic [{}:0] din,\n'.format(wid_mem - 1)
+    #if dout_count is not None:
+    #    for x in range(dout_count):
+    #        module += 'output logic [{}:0] dout{},\n'.format(wid_mem - 1, x)
+    #else:
+    #    module += 'output logic [{}:0] dout,\n'.format(wid_mem - 1)
     module += 'input logic reset);\n\n'
+    module += 'logic[{}:0] raddr;\n'.format(addr_wid - 1)
+    module += 'logic[{}:0] waddr;\n'.format(addr_wid - 1)
+    module += 'logic [{}:0] din;\n'.format(wid_mem - 1)
+    module += "\n"
+
     f.write(module)
 
 
@@ -71,28 +80,21 @@ def write_module(
     f_init=F_INIT,
     init_frmt=INIT_FRMT,
     wid_mem=WID_MEM,
-    depth_mem=DEPTH_MEM,
-    suffix=None
+    depth_mem=DEPTH_MEM
 ):
     if init_frmt == "hex":
         init_frmt = 1
     else:
         init_frmt = 0
 
-    modline = 'memory #('
+    modline = '(* dont_touch = "true" *) memory #('
     modline += '"{}", {}, {}, {}) '.format(
         f_init, init_frmt, wid_mem, depth_mem
     )
-    if suffix is not None:
-        modline += 'mem{} (\n'.format(suffix)
-    else:
-        modline += 'mem(\n'
+    modline += 'mem(\n'
 
     modline += '\t.clk(clk), \n\t.raddr(raddr), \n\t.waddr(waddr), \n\t.din(din), '
-    if suffix is not None:
-        modline += '\n\t.dout(dout{}), '.format(suffix)
-    else:
-        modline += '\n\t.dout(dout), '
+    #modline += '\n\t.dout(dout), '
     modline += '\n\t.reset(reset));\n\n'
     f.write(modline)
 
