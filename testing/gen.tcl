@@ -7,15 +7,15 @@ read_verilog $::env(SV_FILE_LOC)
 
 synth_design -top top -flatten_hierarchy full
 
-set_property CFGBVS VCCO [current_design]
-set_property CONFIG_VOLTAGE 3.3 [current_design]
+#set_property CFGBVS VCCO [current_design]
+#set_property CONFIG_VOLTAGE 3.3 [current_design]
 set_property BITSTREAM.GENERAL.PERFRAMECRC YES [current_design]
 # set_param tcl.collectionResultDisplayLimit 0
 set_property BITSTREAM.General.UnconstrainedPins {Allow} [current_design]
 
-foreach site [get_sites -of [get_tiles -filter {TYPE == BRAM_R}]] {
-  set_property PROHIBIT true $site
-}
+#foreach site [get_sites -of [get_tiles -filter {TYPE == BRAM_R}]] {
+#  set_property PROHIBIT true $site
+#}
 
 place_design
 route_design
