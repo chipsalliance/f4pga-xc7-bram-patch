@@ -14,6 +14,7 @@ import os.path
 import subprocess
 import sys
 import patch_mem as patch_mem
+import glob
 
 
 def doTest(fasmToPatch, init, mdd, patchedFasm, origFasm, selectedMemToPatch):
@@ -247,7 +248,7 @@ if __name__ == "__main__":
         status = doTest(
             fasmToPatch="{}/alt.fasm".format(d),
             init="{}/init/init.mem".format(d),
-            mdd="{}/mapping.mdd".format(d),
+            mdd=glob.glob("{}/*.mdd".format(d))[0],
             patchedFasm="{}/patched.fasm".format(d),
             origFasm="{}/real.fasm".format(d),
             selectedMemToPatch="mem/ram"
