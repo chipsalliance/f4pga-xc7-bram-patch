@@ -12,8 +12,6 @@ from prjxray.db import Database
 from prjxray import fasm_disassembler
 
 
-
-
 def patch_mem(
     fasm=None,
     init=None,
@@ -56,13 +54,11 @@ def patch_mem(
         # new memory tuples to create a partial FASM file
         merged = merge_tuples(cleared_tups=frame_tups, mem_tups=memfasm)
         write_fasm(outfile, merged)
-        print("In partial")
     else:
         # Merge all non-INIT tuples (cleared_tups) in with the new memory tuples
         # to create a new complete FASM file
         merged = merge_tuples(cleared_tups=cleared_tups, mem_tups=memfasm)
         write_fasm(outfile, merged)
-        print("We ain't in Kansas no more")
 
     print("Patching done...")
 

@@ -44,6 +44,7 @@ class Cell:
         )
         return s
 
+
 def readAndFilterMDDData(mdd, selectedMemToPatch, verbose=False):
     # Handles either Path or strings
     if isinstance(mdd, pathlib.Path):
