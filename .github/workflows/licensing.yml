@@ -19,3 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: SymbiFlow/actions/checks@main
+      with:
+        exclude_license: |
+          ./singletests/read3/128b1/vivado/usage_statistics_webtalk.xml
+          ./singletests/simple/128b1/vivado/usage_statistics_webtalk.xml
