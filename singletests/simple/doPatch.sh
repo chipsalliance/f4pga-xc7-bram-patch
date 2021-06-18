@@ -1,3 +1,12 @@
+#!/bin/bash
+# Copyright (C) 2020-2021  The Project U-Ray Authors.
+#
+# Use of this source code is governed by a ISC-style
+# license that can be found in the LICENSE file or at
+# https://opensource.org/licenses/ISC
+#
+# SPDX-License-Identifier: ISC
+
 # The runTest.sh script will run a single test against the design generated here.
 
 # This script, however, will just patch 128b1/real.fasm with some new contents 
