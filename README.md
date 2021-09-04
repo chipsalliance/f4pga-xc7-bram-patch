@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 1. Overview
 This software will take a bitstream and patch it with new memory contents to create a new bitstream.
 
